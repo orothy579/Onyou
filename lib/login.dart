@@ -71,16 +71,16 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                   )),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.purple.shade100),
-                overlayColor: MaterialStateProperty.all(Colors.purple),
-                padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
+              // style: ButtonStyle(
+              //   backgroundColor: MaterialStateProperty.all(Colors.purple.shade100),
+              //   overlayColor: MaterialStateProperty.all(Colors.purple),
+              //   padding: MaterialStateProperty.all(const EdgeInsets.all(15)),
+              //   shape: MaterialStateProperty.all(
+              //     RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(30),
+              //     ),
+              //   ),
+              // ),
             ),
 
           ],
