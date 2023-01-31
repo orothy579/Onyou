@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'login.dart';
+import 'colors.dart';
+
+final ThemeData _onbodyTheme = _buildOnebodyTheme();
+
+ThemeData _buildOnebodyTheme() {
+  final ThemeData base = ThemeData.light();
+  return base.copyWith(
+      colorScheme: base.colorScheme.copyWith(
+      primary: kShrinePink100,
+      onPrimary: kShrineBrown900,
+      secondary: kShrineBrown900,
+      error: kShrineErrorRed,
+  ),
+  // TODO: Add the text themes (103)
+  // TODO: Add the icon themes (103)
+  // TODO: Decorate the inputs (103)
+  );
+}
+
 
 class OnyouApp extends StatefulWidget {
   const OnyouApp({Key? key}) : super(key: key);
@@ -20,6 +39,7 @@ class _OnyouAppState extends State<OnyouApp> {
         '/home' : (BuildContext context) => const HomePage(),
         '/login' : (BuildContext context) => const LoginPage(),
       },
+      theme: _buildOnebodyTheme(),
     );
   }
 }
