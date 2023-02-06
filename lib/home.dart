@@ -1,9 +1,67 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/bottom_navigation_bar.dart';
 import 'colors.dart';
 
 
 List<String> list = <String>['OCB', 'OBC', 'OEC', 'OFC' , 'OSW'];
+
+
+Future<List<Widget>>getNoticeUrl()  async {
+  final ref = FirebaseStorage.instance.ref().child('notice/2.jpeg');
+  var url =  await ref.getDownloadURL();
+  List<String> imgList = []; // new list 생성
+  imgList.add(url);
+  print(url);
+
+  final List<Widget> imageSliders = imgList
+      .map((item) => Container(
+    child: Container(
+      margin: EdgeInsets.all(5.0),
+      child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          child: Stack(
+            children: <Widget>[
+              Image.network(item, fit: BoxFit.cover, width: 1000.0),
+              Positioned(
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.fromARGB(200, 0, 0, 0),
+                        Color.fromARGB(0, 0, 0, 0)
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 20.0),
+                  child: Text(
+                    'No. ${imgList.indexOf(item)} image',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )),
+    ),
+  ))
+      .toList();
+
+  return imageSliders;
+}
+
 
 
 class HomePage extends StatefulWidget {
@@ -15,16 +73,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
   void _onItemTapped(int index){
     setState(() {
       _selectedIndex = index;
     });
   }
+
   // For Dropdown
   String _dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
+    getNoticeUrl();
     return
       Scaffold(
         appBar: AppBar(
@@ -80,9 +141,71 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
+          
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                .collection('notice')
+                .doc('image')
+                .snapshots(),
+              builder: (context , snapshot){
+                List<dynamic> imgList = snapshot.data?.get('image');
 
+                final List<Widget> imageSliders = imgList
+                    .map((item) => Container(
+                  child: Container(
+                    margin: EdgeInsets.all(5.0),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        child: Stack(
+                          children: <Widget>[
+                            Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                            Positioned(
+                              bottom: 0.0,
+                              left: 0.0,
+                              right: 0.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(200, 0, 0, 0),
+                                      Color.fromARGB(0, 0, 0, 0)
+                                    ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 20.0),
+                                child: Text(
+                                  'No. ${imgList.indexOf(item)} image',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                  ),
+                ))
+                    .toList();
 
-            //
+                if(snapshot.data != null){
+                  return CarouselSlider(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true,
+                      ),
+                      items: imageSliders,
+                    );
+                }
+                else
+                  return const Center(child: CircularProgressIndicator());
+              }
+            )
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:onebody/addnotice.dart';
 import 'home.dart';
 import 'login.dart';
 import 'colors.dart';
@@ -38,6 +39,7 @@ class _OnyouAppState extends State<OnyouApp> {
       routes: {
         '/home' : (BuildContext context) => const HomePage(),
         '/login' : (BuildContext context) => const LoginPage(),
+        '/add' : (BuildContext context) => const AddNoticePage(),
       },
       theme: _buildOnebodyTheme(),
     );
