@@ -23,16 +23,13 @@ class _AddNoticePageState extends State<AddNoticePage> {
 
   //upload images to Storage
   uploadImage() async {
-    QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('group').get();
-    List<DocumentSnapshot> _myDocCount = _myDoc.docs;
-    var count = _myDocCount.length;
-    print(_myDocCount.length);
+    String dt  = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     var file = File(image!.path);
 
-    var snapshot = await _firebaseStorage.ref().child('notice/notice-$count').putFile(file);
+    var snapshot = await _firebaseStorage.ref().child('notice/notice-$dt').putFile(file);
     var downloadUrl = await snapshot.ref.getDownloadURL();
     setState(() {
       imageUrl = downloadUrl;
@@ -42,8 +39,7 @@ class _AddNoticePageState extends State<AddNoticePage> {
   //Create products data to Firestore Database.
   final db = FirebaseFirestore.instance;
 
-  void groupSession() async {
-    final now = FieldValue.serverTimestamp();
+  void noticeSession() async {
     imageUrl == null ? imageUrl = "https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800" : null;
 
     FirebaseFirestore.instance
@@ -64,7 +60,6 @@ class _AddNoticePageState extends State<AddNoticePage> {
     return Scaffold(
 
         appBar: AppBar(
-          backgroundColor: Colors.purple,
 
           title: Text('공지 추가하기'),
 
@@ -73,7 +68,7 @@ class _AddNoticePageState extends State<AddNoticePage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.save),
-              onPressed: groupSession,
+              onPressed: noticeSession,
             )
           ],
         ),
