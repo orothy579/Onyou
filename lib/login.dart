@@ -33,7 +33,8 @@ class LoginPage extends StatelessWidget {
     final data = await FirebaseAuth.instance.signInAnonymously();
 
     await FirebaseFirestore.instance.collection('users').doc(data.user!.uid).set({
-      'email': 'Anonymous',
+      'name' : "익명",
+      'email': '익명',
       'uid': data.user!.uid,
       'image': 'https://img.freepik.com/premium-vector/cute-jesus-with-finger-heart-shape_123847-889.jpg',
       'liked' : [],
@@ -57,7 +58,7 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   signInWithGoogle().then((value) => Navigator.pushNamed(context, '/home'));
                 },
-                child: Text('Google Sign In')
+                child: Text('구글로 로그인')
             ),
             const SizedBox(height: 30.0),
             ElevatedButton(
@@ -67,7 +68,7 @@ class LoginPage extends StatelessWidget {
 
                 );
               },
-              child: const Text('Anonymous',
+              child: const Text('익명으로 로그인',
                   style: TextStyle(
                     fontSize: 20,
                   )),
