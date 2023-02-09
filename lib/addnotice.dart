@@ -6,6 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:onebody/screens/bottom_bar.dart';
+import 'package:onebody/screens/home.dart';
 
 
 
@@ -60,7 +62,20 @@ class _AddNoticePageState extends State<AddNoticePage> {
     return Scaffold(
 
         appBar: AppBar(
-
+          leading:
+              IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: ()  {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context,__,___) => BottomBar(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  }
+              ),
           title: Text('공지 추가하기'),
 
           centerTitle: true,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:onebody/addnotice.dart';
 import 'package:onebody/screens/bottom_bar.dart';
-import 'home.dart';
+import 'screens/home.dart';
 import 'login.dart';
-import 'colors.dart';
+import 'app_styles.dart';
 
 final ThemeData _onbodyTheme = _buildOnebodyTheme();
 

@@ -110,7 +110,8 @@ class BasicDemo extends StatelessWidget {
     List<int> list = [1, 2, 3, 4, 5];
     return Scaffold(
       appBar: AppBar(title: Text('Basic demo')),
-      body: Container(
+      body:
+      Container(
           child: CarouselSlider(
             options: CarouselOptions(),
             items: list
