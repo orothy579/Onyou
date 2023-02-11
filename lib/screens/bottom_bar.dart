@@ -30,9 +30,15 @@ class BottomBar extends StatefulWidget {
     });
   }
 
+  late ScrollController _scrollController;
+
+
    @override
    Widget build(BuildContext context) {
+     var controller = PrimaryScrollController.of(context);
+
      return Scaffold(
+
        appBar: AppBar(
          backgroundColor: Colors.transparent,
          elevation: 0,
@@ -90,22 +96,48 @@ class BottomBar extends StatefulWidget {
        ),
 
        body : Center(child: _widgetOptions[_selectedIndex]),
-       bottomNavigationBar: BottomNavigationBar(
-         currentIndex: _selectedIndex,
-         onTap: _onItemTapped,
-         elevation: 10,
-         showSelectedLabels: true,
-         showUnselectedLabels: true,
-         selectedItemColor: kShrinePink300,
-         unselectedItemColor: kShrineBrown900,
-         items: const[
-           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈',),
-           BottomNavigationBarItem(icon: Icon(Icons.group), label: '팀'),
-           BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: '쇼핑'),
-           BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
-         ],
+       bottomNavigationBar:
 
-       ),
+
+         BottomNavigationBar(
+           currentIndex: _selectedIndex,
+           onTap: _onItemTapped,
+           elevation: 10,
+           showSelectedLabels: true,
+           showUnselectedLabels: true,
+           selectedItemColor: kShrinePink300,
+           unselectedItemColor: kShrineBrown900,
+           items: [
+             BottomNavigationBarItem(
+               icon: InkWell(
+                 onDoubleTap: () {controller.jumpTo(0);},
+                 child : Icon(Icons.home),
+                 ),
+               label: "홈"
+             ),
+             BottomNavigationBarItem(
+                 icon: InkWell(
+                   onDoubleTap: () {controller.jumpTo(0);},
+                   child : Icon(Icons.group),
+                 ),
+                 label: "팀"
+             ),
+             BottomNavigationBarItem(
+                 icon: InkWell(
+                   onDoubleTap: () {controller.jumpTo(0);},
+                   child : Icon(Icons.shopping_cart),
+                 ),
+                 label: "쇼핑"
+             ),
+             BottomNavigationBarItem(
+                 icon: InkWell(
+                   onDoubleTap: () {controller.jumpTo(0);},
+                   child : Icon(Icons.settings),
+                 ),
+                 label: "설정"
+             ),
+           ],
+         ),
      );
    }
  }

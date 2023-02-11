@@ -20,11 +20,8 @@ class LoginPage extends StatelessWidget {
       'email': data.user!.email,
       'uid': data.user!.uid,
       'image': data.user!.photoURL,
-      'praynumber':"0",
       'liked' : [],
       'prayTitle':[],
-      'praynumber': 0,
-      'total_time' : 0,
     }, SetOptions(merge : true));
     return data.user;
   }

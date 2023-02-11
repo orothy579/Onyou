@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:onebody/screens/bottom_bar.dart';
+
+import '../model/Notice.dart';
 
 
 
@@ -17,7 +20,8 @@ class AddNoticePage extends StatefulWidget {
 
 
 class _AddNoticePageState extends State<AddNoticePage> {
-
+  final _title = TextEditingController();
+  final _description = TextEditingController();
   String imageUrl= 'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800';
 
   //upload images to Storage
@@ -39,7 +43,15 @@ class _AddNoticePageState extends State<AddNoticePage> {
   final db = FirebaseFirestore.instance;
 
   void noticeSession() async {
+    final now = FieldValue.serverTimestamp();
     imageUrl == null ? imageUrl = "https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800" : null;
+
+    Notice notice = Notice(
+      image: imageUrl,
+      title: _title.text,
+      description: _description.text,
+      create_timestamp: now,
+    );
 
     FirebaseFirestore.instance
         .collection('notice')
@@ -49,6 +61,10 @@ class _AddNoticePageState extends State<AddNoticePage> {
           'image': FieldValue.arrayUnion([imageUrl])
         }
     );
+
+    await db.collection('Notice').doc(notice.title).set(notice.toJson()).then(
+            (value) => log("Notice uploaded successfully!"),
+        onError: (e) => log("Error while uploading!"));
 
     Navigator.pushNamed(context,'/home');
   }
@@ -100,7 +116,28 @@ class _AddNoticePageState extends State<AddNoticePage> {
                   IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt))
                 ],
               ),
-              const SizedBox(height: 5.0),
+              const SizedBox(height: 18.0),
+
+              Row(
+                children: <Widget>[
+                  Expanded(child: Card(child: Column(children: [
+                    TextField(
+                      controller: _title,
+                      decoration: InputDecoration(
+                        labelText: '공지 제목을 입력 해주세요 (홈 화면에 표시 돼요.)',
+                      ),
+                    ),
+                    SizedBox(height: 18.0,),
+                    TextField(
+                      controller: _description,
+                      decoration: InputDecoration(
+                        labelText: '자세한 내용을 입력해주세요.',
+                      ),
+                    ),
+                  ],),))
+                ],
+              ),
+
             ],
           ),
         ),
