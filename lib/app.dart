@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onebody/addnotice.dart';
+import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'screens/home.dart';
 import 'login.dart';

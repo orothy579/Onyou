@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:onebody/addnotice.dart';
+import 'package:onebody/addPages/addnotice.dart';
+import 'package:onebody/addPages/addstory.dart';
 import 'package:onebody/screens/home.dart';
 
 import '../app_styles.dart';
@@ -58,6 +59,21 @@ class BottomBar extends StatefulWidget {
                transitionDuration: Duration.zero,
                reverseTransitionDuration: Duration.zero,
                      ),
+                 );
+               }
+           ),
+           IconButton(
+               icon: Icon(
+                 Icons.add_circle,
+               ),
+               onPressed: ()  {
+                 Navigator.push(
+                   context,
+                   PageRouteBuilder(
+                     pageBuilder: (context,__,___) => AddStoryPage(),
+                     transitionDuration: Duration.zero,
+                     reverseTransitionDuration: Duration.zero,
+                   ),
                  );
                }
            ),

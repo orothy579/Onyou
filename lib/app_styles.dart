@@ -12,7 +12,7 @@ const textColor = Color(0xFF3b3b3b);
 
 TextStyle textStyle = const TextStyle(fontSize: 16, color: textColor , fontWeight: FontWeight.w500);
 TextStyle headLineStyle1 = const TextStyle(fontSize: 26, color: textColor , fontWeight: FontWeight.bold);
-TextStyle headLineStyle2 = const TextStyle(fontSize: 17, color: textColor , fontWeight: FontWeight.bold);
+TextStyle headLineStyle2 = const TextStyle(fontSize: 17, color: kShrineBrown900 , fontWeight: FontWeight.bold);
 TextStyle headLineStyle3 = const TextStyle(fontSize: 17, color: textColor , fontWeight: FontWeight.w500);
 TextStyle headLineStyle4 =  TextStyle(fontSize: 17, color: Colors.grey.shade500 , fontWeight: FontWeight.w500);
 
