@@ -7,9 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:onebody/screens/bottom_bar.dart';
-
 import '../model/Story.dart';
-import '../model/user.dart';
 
 
 
@@ -58,13 +56,16 @@ class _AddStoryPageState extends State<AddStoryPage> {
     final DocumentReference documentRef = myCollection.doc(_uid);
 
   // Get the value of a specific field in the document
-    final fieldVal = await documentRef.get().then((doc) => doc.get('name'));
+    final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
+    final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
+
 
     _imageUrl == null ? _imageUrl = "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png" : null;
 
     Story story = Story(
       image: _imageUrl,
-      name : fieldVal,
+      name : fieldValname,
+      u_image : fieldValimage,
       title: _title.text,
       description: _description.text,
       create_timestamp: now,
@@ -97,13 +98,13 @@ class _AddStoryPageState extends State<AddStoryPage> {
                 );
               }
           ),
-          title: Text('이야기 나누기'),
+          title: Text('소식을 전하세요 ☺️'),
 
           centerTitle: true,
 
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.save),
+              icon: Icon(Icons.send),
               onPressed: StorySession,
             )
           ],
@@ -114,7 +115,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
           child: Column(
             children: [
               Container(
-                  margin: EdgeInsets.all(50),
+                  margin: EdgeInsets.all(25),
                   child: (_imageUrl != null)
                       ? Image.network(_imageUrl!)
                       : IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt_outlined), iconSize: 300,)
@@ -126,6 +127,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
               Row(
                 children: <Widget>[
                   Expanded(child: Card(child: Column(children: [
+                    SizedBox(height: 100.0,),
                     TextField(
                       controller: _title,
                       decoration: InputDecoration(

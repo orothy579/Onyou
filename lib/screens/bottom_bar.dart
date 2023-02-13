@@ -43,16 +43,23 @@ class BottomBar extends StatefulWidget {
          backgroundColor: Colors.transparent,
          elevation: 0,
          leading: IconButton(
-             icon: Icon(
-               Icons.menu,
+             icon: const Icon(
+               Icons.exit_to_app,
              ),
-             onPressed: () => {Navigator.pushNamed(context, '/profile')}),
+             onPressed: () async {
+               Navigator.pushNamed(context, '/login');
+               await FirebaseAuth.instance.signOut();
+             }
+         ),
+
          actions: <Widget>[
            IconButton(
                icon: Icon(
                  Icons.shopping_cart,
                ),
-               onPressed: () => {Navigator.pushNamed(context, '/wishlist')}),
+               onPressed: () => {Navigator.pushNamed(context, '/wishlist')
+               }
+           ),
            IconButton(
                icon: Icon(
                  Icons.add,
@@ -83,15 +90,6 @@ class BottomBar extends StatefulWidget {
                  );
                }
            ),
-           IconButton(
-               icon: const Icon(
-                 Icons.exit_to_app,
-               ),
-               onPressed: () async {
-                 Navigator.pushNamed(context, '/login');
-                 await FirebaseAuth.instance.signOut();
-               }
-               ),
          ],
        ),
 

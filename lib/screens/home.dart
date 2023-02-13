@@ -1,3 +1,4 @@
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,68 +11,7 @@ import '../model/Story.dart';
 import 'detail.dart';
 
 List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];
-List<Widget> list_whoarewe = <Widget>[
-  Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:
-  [
-    Text(
-      "Onebody Community(OC)는\n"
-      "예수그리스도의 한 몸 된 지체로서\n"
-      "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
-    ),
-    Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          child: Text("더 알아보기", style: TextStyle(color: kShrineBrown900)),
-          onPressed: () => {_launchUrl(_url['Instagram']!)},
-        ),
-      ],
-    ),
-  ]
-  ),
-  Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: [
-      Icon(
-        Icons.volunteer_activism_outlined,
-        size: 50,
-      ),
-      Text("인스타그램에 방문 하셔서 \n다양한 소식과 혜택을 접해 보세요!"),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            child: const Text(
-              "방문하기",
-              style: TextStyle(color: Colors.black54),
-            ),
-            onPressed: () => {_launchUrl(_url['Instagram']!)},
-          ),
-        ],
-      )
-    ],
-  ),
-  Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      const Icon(Icons.video_camera_back, size: 50),
-      const Text("새로운 영상이 올라왔어요!"),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          TextButton(
-            child: const Text(
-              "방문하기",
-              style: TextStyle(color: Colors.black54),
-            ),
-            onPressed: () => {_launchUrl(_url['Youtube']!)},
-          ),
-        ],
-      )
-    ],
-  ),
-];
+
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {
@@ -139,6 +79,79 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    List<Widget> list_whoarewe = <Widget>[
+      Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:
+      [
+        Text(
+          "Onebody Community(OC)는\n"
+              "예수그리스도의 한 몸 된 지체로서\n"
+              "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton(
+              child: Text("더 알아보기", style: TextStyle(color: kShrineBrown900)),
+              onPressed: () => {_launchUrl(_url['Instagram']!)},
+            ),
+          ],
+        ),
+      ]
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            Icons.volunteer_activism_outlined,
+            size: 50,
+          ),
+          Text("인스타그램에 방문 하셔서 \n다양한 소식과 혜택을 접해 보세요!"),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                child: const Text(
+                  "방문하기",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                onPressed: () => {_launchUrl(_url['Instagram']!)},
+              ),
+            ],
+          )
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const Icon(Icons.video_camera_back, size: 50),
+          const Text("새로운 영상이 올라왔어요!"),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                child: const Text(
+                  "방문하기",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                onPressed: () => {_launchUrl(_url['Youtube']!)},
+              ),
+            ],
+          )
+        ],
+      ),
+      Center(
+        child: IconButton(
+          iconSize: 50,
+          icon: Icon(Icons.question_mark),
+          onPressed: (){
+            Navigator.pushNamed(context, '/sentence');
+          },
+        ),
+      ),
+    ];
+
     return Scaffold(
       body: ListView(
         scrollDirection: Axis.vertical,
@@ -214,7 +227,6 @@ class _HomePageState extends State<HomePage> {
                           return data['image'];
                         }).toList();
 
-
                     List<Widget> imageSliders = imgList
                         .map((item) => ClipRRect(
                         borderRadius: const BorderRadius.all(Radius.circular(10.0),),
@@ -250,16 +262,22 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                             ),
-                            TextButton(
-                                onPressed: (){Navigator.pushNamed(context, '/addnotice');},
-                                child: Text(
-                                    "더 알아보기",
-                                  style: TextStyle(
-                                  color: kShrineBrown900,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
+
+                                Positioned(
+                                  bottom: 0.0,
+                                  left: 200.0,
+                                  right: 0.0,
+                                  child: TextButton(
+                                      onPressed: (){Navigator.pushNamed(context, '/login');},
+                                      child: Text(
+                                          "더 알아보기",
+                                        style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      )),
                                 ),
-                                ))
                           ],
                         ))).toList();
 
@@ -268,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                         enlargeCenterPage: true,
                         enableInfiniteScroll: false,
                         initialPage: 0,
-                        autoPlay: false,
+                        autoPlay: true,
                       ),
                       items: imageSliders,
                     );
@@ -329,9 +347,55 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text("${data.name}"),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              shape: BoxShape.circle
+                                          ),
+                                          width: 20,
+                                          height: 20,
+                                          child: Image.network(data.u_image!),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("${data.name}"),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(70, 5, 0, 5),
+                                        child: TextButton(
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Colors.blueAccent,
+                                            padding: EdgeInsets.zero,
+                                            minimumSize: Size.zero,
+                                            textStyle: TextStyle(
+                                                fontSize: 10,
+                                                overflow: TextOverflow
+                                                    .ellipsis
+                                            ),
+                                            tapTargetSize:
+                                            MaterialTapTargetSize
+                                                .shrinkWrap,
+                                          ),
+                                          onPressed: () => {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder:
+                                                        (context) =>
+                                                        DetailPage(
+                                                          storys: datas[
+                                                          index],
+                                                        )))
+                                          },
+                                          child: const Text("more"),
+                                        ),
+                                      ),
+
+                                    ],
                                   ),
                                   SizedBox(height: 5.0),
                                   AspectRatio(
@@ -347,43 +411,15 @@ class _HomePageState extends State<HomePage> {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
+
                                               "[${data.title!}]",
                                               maxLines: 1,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold
+                                              ),
                                             ),
                                             const SizedBox(height: 8.0),
                                             Text(" ${data.description}"),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                TextButton(
-                                                  child: const Text("more"),
-                                                  style: TextButton.styleFrom(
-                                                    padding: EdgeInsets.zero,
-                                                    minimumSize: Size.zero,
-                                                    textStyle: const TextStyle(
-                                                        fontSize: 10,
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                    tapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                  ),
-                                                  onPressed: () => {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder:
-                                                                (context) =>
-                                                                    DetailPage(
-                                                                      storys: datas[
-                                                                          index],
-                                                                    )))
-                                                  },
-                                                ),
-                                              ],
-                                            ),
                                           ],
                                         ),
                                       ),

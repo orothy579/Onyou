@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
+import 'package:onebody/screens/sentence.dart';
 import 'screens/home.dart';
 import 'login.dart';
 import 'app_styles.dart';
@@ -41,8 +42,9 @@ class _OnyouAppState extends State<OnyouApp> {
       routes: {
         '/home' : (BuildContext context) => const BottomBar(), //HomePage() 가 원래 맞음
         '/login' : (BuildContext context) => const LoginPage(),
-        '/addnoitce' : (BuildContext context) => const AddNoticePage(),
+        '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
+        '/sentence' : (BuildContext context) => const SentencePage(),
       },
       theme: _buildOnebodyTheme(),
     );

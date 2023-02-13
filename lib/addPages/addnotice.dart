@@ -22,9 +22,7 @@ class AddNoticePage extends StatefulWidget {
 class _AddNoticePageState extends State<AddNoticePage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
-  String imageUrl= 'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3'
-      '.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.'
-      'JPEG.charis628/1496480599234.jpg?type=w800';
+  String? imageUrl;
 
   //upload images to Storage
   uploadImage() async {
@@ -46,7 +44,7 @@ class _AddNoticePageState extends State<AddNoticePage> {
 
   void noticeSession() async {
     final now = FieldValue.serverTimestamp();
-    imageUrl == null ? imageUrl = "https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800" : null;
+    imageUrl == null ? imageUrl = "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png" : null;
 
     Notice notice = Notice(
       image: imageUrl,
@@ -83,13 +81,13 @@ class _AddNoticePageState extends State<AddNoticePage> {
                     );
                   }
               ),
-          title: Text('공지 추가하기'),
+          title: Text('공지를 추가 해요 ⭐️'),
 
           centerTitle: true,
 
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.save),
+              icon: Icon(Icons.send),
               onPressed: noticeSession,
             )
           ],
@@ -100,16 +98,12 @@ class _AddNoticePageState extends State<AddNoticePage> {
           child: Column(
             children: [
               Container(
-                  margin: EdgeInsets.all(50),
+                  margin: EdgeInsets.all(25),
                   child: (imageUrl != null)
-                      ? Image.network(imageUrl)
-                      : Image.network(
-                      'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800')),
-              Row(
-                children: [
-                  IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt))
-                ],
+                      ? Image.network(imageUrl!)
+                      : IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt_outlined), iconSize: 300,)
               ),
+
               const SizedBox(height: 18.0),
 
               Row(

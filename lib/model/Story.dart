@@ -6,6 +6,7 @@ class Story  {
     this.image,
     this.title,
     this.name,
+    this.u_image,
     this.description,
     this.create_timestamp,
     this.reference,
@@ -14,6 +15,7 @@ class Story  {
   String? image;
   String? title;
   String? name;
+  String? u_image;
   String? description;
   Timestamp? create_timestamp;
   DocumentReference? reference;
@@ -22,6 +24,7 @@ class Story  {
     image = json['image'];
     title = json['title'];
     name = json['name'];
+    u_image = json['u_image'];
     description = json['description'];
     create_timestamp = json['create_timestamp'];
   }
@@ -30,6 +33,7 @@ class Story  {
     "image" : image,
     "title" : title,
     "name" : name,
+    "u_image" : u_image,
     "description" : description,
     "create_timestamp" : create_timestamp,
   };
