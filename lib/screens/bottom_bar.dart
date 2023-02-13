@@ -96,10 +96,9 @@ class BottomBar extends StatefulWidget {
        ),
 
        body : Center(child: _widgetOptions[_selectedIndex]),
-       bottomNavigationBar:
-
-
-         BottomNavigationBar(
+       bottomNavigationBar: GestureDetector(
+         onDoubleTap: () {controller.animateTo(0, duration: Duration(milliseconds: 280), curve: Curves.linear);},
+       child:  BottomNavigationBar(
            currentIndex: _selectedIndex,
            onTap: _onItemTapped,
            elevation: 10,
@@ -108,36 +107,13 @@ class BottomBar extends StatefulWidget {
            selectedItemColor: kShrinePink300,
            unselectedItemColor: kShrineBrown900,
            items: [
-             BottomNavigationBarItem(
-               icon: InkWell(
-                 onDoubleTap: () {controller.jumpTo(0);},
-                 child : Icon(Icons.home),
-                 ),
-               label: "홈"
-             ),
-             BottomNavigationBarItem(
-                 icon: InkWell(
-                   onDoubleTap: () {controller.jumpTo(0);},
-                   child : Icon(Icons.group),
-                 ),
-                 label: "팀"
-             ),
-             BottomNavigationBarItem(
-                 icon: InkWell(
-                   onDoubleTap: () {controller.jumpTo(0);},
-                   child : Icon(Icons.shopping_cart),
-                 ),
-                 label: "쇼핑"
-             ),
-             BottomNavigationBarItem(
-                 icon: InkWell(
-                   onDoubleTap: () {controller.jumpTo(0);},
-                   child : Icon(Icons.settings),
-                 ),
-                 label: "설정"
-             ),
+             BottomNavigationBarItem(icon: Icon(Icons.home) , label: "홈"),
+             BottomNavigationBarItem(icon: Icon(Icons.groups) , label: "팀"),
+             BottomNavigationBarItem(icon: Icon(Icons.shopping_cart) , label: "굿즈"),
+             BottomNavigationBarItem(icon: Icon(Icons.settings) , label: "설정"),
+
            ],
-         ),
+         ),)
      );
    }
  }

@@ -5,6 +5,7 @@ class Story  {
   Story({
     this.image,
     this.title,
+    this.name,
     this.description,
     this.create_timestamp,
     this.reference,
@@ -12,20 +13,23 @@ class Story  {
 
   String? image;
   String? title;
+  String? name;
   String? description;
   Timestamp? create_timestamp;
   DocumentReference? reference;
 
   Story.fromJson(dynamic json, this.reference){
     image = json['image'];
-    title = json['name'];
+    title = json['title'];
+    name = json['name'];
     description = json['description'];
     create_timestamp = json['create_timestamp'];
   }
 
   Map<String, dynamic> toJson() => {
     "image" : image,
-    "name" : title,
+    "title" : title,
+    "name" : name,
     "description" : description,
     "create_timestamp" : create_timestamp,
   };

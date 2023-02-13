@@ -22,7 +22,9 @@ class AddNoticePage extends StatefulWidget {
 class _AddNoticePageState extends State<AddNoticePage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
-  String imageUrl= 'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800';
+  String imageUrl= 'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3'
+      '.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.'
+      'JPEG.charis628/1496480599234.jpg?type=w800';
 
   //upload images to Storage
   uploadImage() async {
@@ -53,14 +55,6 @@ class _AddNoticePageState extends State<AddNoticePage> {
       create_timestamp: now,
     );
 
-    FirebaseFirestore.instance
-        .collection('notice')
-        .doc('image')
-        .update(
-        {
-          'image': FieldValue.arrayUnion([imageUrl])
-        }
-    );
 
     await db.collection('Notice').doc(notice.title).set(notice.toJson()).then(
             (value) => log("Notice uploaded successfully!"),

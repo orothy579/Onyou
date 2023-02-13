@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 
 import '../model/Story.dart';
+import '../model/user.dart';
 
 
 
@@ -22,7 +24,8 @@ class AddStoryPage extends StatefulWidget {
 class _AddStoryPageState extends State<AddStoryPage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
-  String imageUrl= "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F257CF14F56D00BF80D";
+  String? _imageUrl;
+
   //upload images to Storage
   uploadImage() async {
     String dt  = DateTime.now().toString();
@@ -34,25 +37,38 @@ class _AddStoryPageState extends State<AddStoryPage> {
     var snapshot = await _firebaseStorage.ref().child('story/story-$dt').putFile(file);
     var downloadUrl = await snapshot.ref.getDownloadURL();
     setState(() {
-      imageUrl = downloadUrl;
+      _imageUrl = downloadUrl;
     });
   }
 
   //Create products data to Firestore Database.
   final db = FirebaseFirestore.instance;
+  final _uid = FirebaseAuth.instance.currentUser!.uid;
 
-  void noticeSession() async {
+
+
+
+  void StorySession() async {
     Timestamp now = Timestamp.now();
 
-    imageUrl == null ? imageUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F257CF14F56D00BF80D" : null;
+    // Get a reference to the Firestore collection
+    final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
+
+  // Get a document reference
+    final DocumentReference documentRef = myCollection.doc(_uid);
+
+  // Get the value of a specific field in the document
+    final fieldVal = await documentRef.get().then((doc) => doc.get('name'));
+
+    _imageUrl == null ? _imageUrl = "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png" : null;
 
     Story story = Story(
-      image: imageUrl,
+      image: _imageUrl,
+      name : fieldVal,
       title: _title.text,
       description: _description.text,
       create_timestamp: now,
     );
-
 
     await db.collection('story').doc(story.title).set(story.toJson()).then(
             (value) => log("Story uploaded successfully!"),
@@ -88,7 +104,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.save),
-              onPressed: noticeSession,
+              onPressed: StorySession,
             )
           ],
         ),
@@ -99,15 +115,12 @@ class _AddStoryPageState extends State<AddStoryPage> {
             children: [
               Container(
                   margin: EdgeInsets.all(50),
-                  child: (imageUrl != null)
-                      ? Image.network(imageUrl)
-                      : Image.network(
-                      'https://mblogthumb-phinf.pstatic.net/MjAxNzA2MThfODEg/MDAxNDk3NzExNzEzODM3.prLxdRgEPcgdHtuCpSb_oq1dFOMOs3XmcJYfc6e4dEkg.YYczrm92ql7i7kO8EaRzy3Hr8ysxYVymceHeVORLhwgg.JPEG.charis628/1496480599234.jpg?type=w800')),
-              Row(
-                children: [
-                  IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt))
-                ],
+                  child: (_imageUrl != null)
+                      ? Image.network(_imageUrl!)
+                      : IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt_outlined), iconSize: 300,)
+
               ),
+
               const SizedBox(height: 18.0),
 
               Row(
@@ -119,7 +132,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                         labelText: '제목을 입력 해주세요.',
                       ),
                     ),
-                    SizedBox(height: 18.0,),
+                    SizedBox(height: 100.0,),
                     TextField(
                       controller: _description,
                       decoration: InputDecoration(
