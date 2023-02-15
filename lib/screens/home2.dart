@@ -149,7 +149,9 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body:
- ListView(
+      SizedBox(
+        height: MediaQuery.of(context).size.width,
+        child: Column(
             children: [
               //For dropdown
               //Dropdown
@@ -297,6 +299,7 @@ class _HomePageState extends State<HomePage> {
                       items: imageSliders,
                     );
                   }),
+
               SizedBox(height: 18.0),
               //Who are we?
               Center(
@@ -452,12 +455,10 @@ class _HomePageState extends State<HomePage> {
                       return const Center(child: CircularProgressIndicator());
                     }
                   }),
-            ],
-   shrinkWrap: true,
+            ]
+        ),
 
- ),
-
-
+      ),
     );
   }
 }

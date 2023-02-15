@@ -3,7 +3,6 @@ import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
-import 'screens/home.dart';
 import 'login.dart';
 import 'app_styles.dart';
 
@@ -13,9 +12,9 @@ ThemeData _buildOnebodyTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
       colorScheme: base.colorScheme.copyWith(
-      primary: kShrinePink100,
-      onPrimary: kShrineBrown900,
-      secondary: kShrineBrown900,
+      primary: mainGreen,
+      onPrimary: Colors.white,
+      secondary: Colors.white,
       error: kShrineErrorRed,
   ),
   // TODO: Add the text themes (103)
@@ -46,7 +45,7 @@ class _OnyouAppState extends State<OnyouApp> {
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
       },
-      theme: _buildOnebodyTheme(),
+      theme: _onbodyTheme,
     );
   }
 }
