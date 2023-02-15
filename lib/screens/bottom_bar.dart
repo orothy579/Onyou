@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onebody/screens/home.dart';
+import 'package:onebody/screens/team.dart';
 
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
@@ -19,7 +20,7 @@ class _BottomBarState extends State<BottomBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
-    const Text("Search"),
+    const TeamPage(),
     const Text("Tickets"),
     const Text("Profile")
   ];

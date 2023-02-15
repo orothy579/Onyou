@@ -28,10 +28,10 @@ Future<void> _launchUrl(Uri url) async {
 }
 
 Future<Users> getUser(String userkey) async {
-  DocumentReference<Map<String,dynamic>> documentReference =
-  FirebaseFirestore.instance.collection('users').doc(userkey);
-  final DocumentSnapshot<Map<String,dynamic>> documentSnapshot =
-  await documentReference.get();
+  DocumentReference<Map<String, dynamic>> documentReference =
+      FirebaseFirestore.instance.collection('users').doc(userkey);
+  final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await documentReference.get();
   Users user = Users.fromSnapshot(documentSnapshot);
   return user;
 }
@@ -40,7 +40,7 @@ Future<List<Story>> getDataASC() async {
   var logger = Logger();
 
   CollectionReference<Map<String, dynamic>> collectionReference =
-  FirebaseFirestore.instance.collection('story');
+      FirebaseFirestore.instance.collection('story');
   QuerySnapshot<Map<String, dynamic>> querySnapshot = await collectionReference
       .orderBy('create_timestamp', descending: true)
       .get();
@@ -59,7 +59,7 @@ Future<List<Notice>> getNoticeDataASC() async {
   var logger = Logger();
 
   CollectionReference<Map<String, dynamic>> collectionReference =
-  FirebaseFirestore.instance.collection('Notice');
+      FirebaseFirestore.instance.collection('Notice');
   QuerySnapshot<Map<String, dynamic>> querySnapshot = await collectionReference
       .orderBy('create_timestamp', descending: true)
       .get();
@@ -94,8 +94,8 @@ class _HomePageState extends State<HomePage> {
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         Text(
           "Onebody Community(OC)는\n"
-              "예수그리스도의 한 몸 된 지체로서\n"
-              "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
+          "예수그리스도의 한 몸 된 지체로서\n"
+          "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -168,26 +168,35 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             elevation: 20,
-            title: Text("Onebody Community" ,style: TextStyle(fontSize: 10),),
+            title: Text(
+              "Onebody Community",
+              style: TextStyle(fontSize: 10),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
-              title : FutureBuilder<Users>(
+              title: FutureBuilder<Users>(
                 future: getUser(_uid),
-                builder: (context, snapshot){
-                  if(snapshot.hasData){
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
                     Users data = snapshot.data!;
                     return ListView(
                       children: [
-                        Text("Shalom," , style: TextStyle(fontSize: 15),),
+                        Text(
+                          "Shalom,",
+                          style: TextStyle(fontSize: 15),
+                        ),
                         Row(
                           children: [
-                            Text("${data.name!} 님" , style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text(
+                              "${data.name!} 님",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
                             Container(
                               alignment: Alignment.bottomRight,
-                              child : Container(
+                              child: Container(
                                 decoration: BoxDecoration(
-                                    color: camel,
-                                    shape: BoxShape.circle),
+                                    color: camel, shape: BoxShape.circle),
                                 width: 20,
                                 height: 20,
                                 child: Image.network(data.image!),
@@ -196,25 +205,19 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ],
-
                     );
-                  }
-                  else if(snapshot.hasError){
+                  } else if (snapshot.hasError) {
                     return Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child : Text(
+                        child: Text(
                           'Error: ${snapshot.error}',
                           style: TextStyle(fontSize: 15),
-                        )
-                    );
-                  }
-
-                  else{
+                        ));
+                  } else {
                     return const Center(child: CircularProgressIndicator());
                   }
                 },
               ),
-
               centerTitle: false,
               expandedTitleScale: 1.0,
             ),
@@ -263,8 +266,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () async {
                     Navigator.pushNamed(context, '/login');
                     await FirebaseAuth.instance.signOut();
-                  }
-              ),
+                  }),
             ],
             // 최대 높이
             expandedHeight: 100,
@@ -290,35 +292,7 @@ class _HomePageState extends State<HomePage> {
                     //         _dropdownValue = value!;
                     //       });
                     //     }),
-                    //Welcome Message With Stream Builder
 
-                    // //For welcome message
-                    // StreamBuilder(
-                    //   stream: FirebaseFirestore.instance
-                    //       .collection('users')
-                    //       .doc(_uid)
-                    //       .snapshots(),
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasData && snapshot.data?.exists != null) {
-                    //       String name = snapshot.data!.get('email');
-                    //       return Row(
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //           Text("${name} 님 안녕하세요! ",
-                    //               style: TextStyle(
-                    //                 fontSize: 10,
-                    //                 fontWeight: FontWeight.bold,
-                    //               )),
-                    //           Icon(
-                    //             Icons.handshake,
-                    //           )
-                    //         ],
-                    //       );
-                    //     } else {
-                    //       return const Center(child: CircularProgressIndicator());
-                    //     }
-                    //   },
-                    // ),
                     //"공지사항"
                     SizedBox(height: 30.0),
                     //carousel
@@ -329,94 +303,98 @@ class _HomePageState extends State<HomePage> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Text("News", style: headLineGreenStyle)
-                      ),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Text("News", style: headLineGreenStyle)),
                     ),
                     //For blank
                     SizedBox(height: 30.0),
                     StreamBuilder(
-                        stream: FirebaseFirestore.instance.collection('Notice').snapshots(),
+                        stream: FirebaseFirestore.instance
+                            .collection('Notice')
+                            .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError ||
-                              snapshot.connectionState == ConnectionState.waiting)
-                            return const Center(child: CircularProgressIndicator());
+                              snapshot.connectionState ==
+                                  ConnectionState.waiting)
+                            return const Center(
+                                child: CircularProgressIndicator());
 
                           //ChatGpt 리얼 대박이다 !! 고마워!!! document의 전체 내용을 받아와!
-                          List<dynamic> imgList =
-                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                          List<dynamic> imgList = snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
                             Map<String, dynamic> data =
-                            document.data() as Map<String, dynamic>;
+                                document.data() as Map<String, dynamic>;
                             return data['image'];
                           }).toList();
-                          
-                          List<dynamic> noticeName =
-                          snapshot.data!.docs.map((DocumentSnapshot document) {
+
+                          List<dynamic> noticeName = snapshot.data!.docs
+                              .map((DocumentSnapshot document) {
                             Object? data = document.get("name");
                             return data;
                           }).toList();
 
-                          final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                          final List<QueryDocumentSnapshot> documents =
+                              snapshot.data!.docs;
 
                           List<Widget> imageSliders = imgList
                               .map((item) => ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                              child: Stack(
-                                children: <Widget>[
-                                  Image.network(
-                                    item,
-                                    fit: BoxFit.contain,
-                                    width: 100000,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0),
                                   ),
-                                  Positioned(
-                                    bottom: 0.0,
-                                    left: 0.0,
-                                    right: 0.0,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Color.fromARGB(100, 0, 0, 0),
-                                            Color.fromARGB(0, 0, 0, 0)
-                                          ],
-                                          begin: Alignment.bottomCenter,
-                                          end: Alignment.topCenter,
-                                        ),
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Image.network(
+                                        item,
+                                        fit: BoxFit.contain,
+                                        width: 100000,
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 10.0, horizontal: 20.0),
-                                      child: Text(
-                                        '${documents[imgList.indexOf(item)]['name']}',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 0.0,
-                                    left: 200.0,
-                                    right: 0.0,
-                                    child: TextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/login');
-                                        },
-                                        child: Text(
-                                          "더 알아보기",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.0,
-                                            fontWeight: FontWeight.bold,
+                                      Positioned(
+                                        bottom: 0.0,
+                                        left: 0.0,
+                                        right: 0.0,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color.fromARGB(100, 0, 0, 0),
+                                                Color.fromARGB(0, 0, 0, 0)
+                                              ],
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                            ),
                                           ),
-                                        )),
-                                  ),
-                                ],
-                              )))
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 10.0, horizontal: 20.0),
+                                          child: Text(
+                                            '${documents[imgList.indexOf(item)]['name']}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0.0,
+                                        left: 200.0,
+                                        right: 0.0,
+                                        child: TextButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, '/login');
+                                            },
+                                            child: Text(
+                                              "더 알아보기",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )),
+                                      ),
+                                    ],
+                                  )))
                               .toList();
 
                           return CarouselSlider(
@@ -438,31 +416,29 @@ class _HomePageState extends State<HomePage> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Text("소개", style: headLineGreenStyle)
-                      ),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Text("소개", style: headLineGreenStyle)),
                     ),
                     SizedBox(height: 30.0),
                     Container(
                         child: CarouselSlider(
-                          options: CarouselOptions(
-                            height: 150,
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 10),
-                            viewportFraction: 1,
-                          ),
-                          items: list_whoarewe
-                              .map((item) => Container(
-                            margin: EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(child: item),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              color: camel,
-                            ),
-                          ))
-                              .toList(),
-                        )),
+                      options: CarouselOptions(
+                        height: 150,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 10),
+                        viewportFraction: 1,
+                      ),
+                      items: list_whoarewe
+                          .map((item) => Container(
+                                margin: EdgeInsets.symmetric(horizontal: 20),
+                                child: Center(child: item),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  color: camel,
+                                ),
+                              ))
+                          .toList(),
+                    )),
                     SizedBox(height: 30.0),
                     Center(
                       child: Container(
@@ -471,10 +447,8 @@ class _HomePageState extends State<HomePage> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)
-                          ),
-                          child: Text("공동체 소식", style: headLineGreenStyle)
-                      ),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Text("공동체 소식", style: headLineGreenStyle)),
                     ),
                     FutureBuilder<List<Story>>(
                         future: getDataASC(),
@@ -489,47 +463,58 @@ class _HomePageState extends State<HomePage> {
                                   return Card(
                                     shadowColor: Colors.grey,
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     clipBehavior: Clip.antiAlias,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Row(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: camel,
                                                     shape: BoxShape.circle),
                                                 width: 20,
                                                 height: 20,
-                                                child: Image.network(data.u_image!),
+                                                child: Image.network(
+                                                    data.u_image!),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Text("${data.name}"),
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.fromLTRB(70, 5, 0, 5),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  70, 5, 0, 5),
                                               child: TextButton(
                                                 style: TextButton.styleFrom(
-                                                  foregroundColor: Colors.blueAccent,
+                                                  foregroundColor:
+                                                      Colors.blueAccent,
                                                   padding: EdgeInsets.zero,
                                                   minimumSize: Size.zero,
                                                   textStyle: TextStyle(
                                                       fontSize: 10,
-                                                      overflow: TextOverflow.ellipsis),
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
                                                   tapTargetSize:
-                                                  MaterialTapTargetSize.shrinkWrap,
+                                                      MaterialTapTargetSize
+                                                          .shrinkWrap,
                                                 ),
                                                 onPressed: () => {
-                                                  Navigator.of(context)
-                                                      .push(MaterialPageRoute(
-                                                      builder: (context) => DetailPage(
-                                                        storys: datas[index],
-                                                      )))
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DetailPage(
+                                                                storys: datas[
+                                                                    index],
+                                                              )))
                                                 },
                                                 child: const Text("more"),
                                               ),
@@ -547,13 +532,14 @@ class _HomePageState extends State<HomePage> {
                                             child: SingleChildScrollView(
                                               child: Column(
                                                 crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
                                                     "[${data.title!}]",
                                                     maxLines: 1,
                                                     style: TextStyle(
-                                                        fontWeight: FontWeight.bold),
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
                                                   const SizedBox(height: 8.0),
                                                   Text(" ${data.description}"),
@@ -566,12 +552,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio: 8 / 9,
                                 ),
-                                shrinkWrap: true
-                            );
+                                shrinkWrap: true);
                           } else if (snapshot.hasError) {
                             return Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -580,21 +566,17 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(fontSize: 15),
                                 ));
                           } else {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                         }),
                   ],
-
                 ),
               ],
             ),
           ),
         ],
       ),
-
-
-
     );
   }
 }
-
