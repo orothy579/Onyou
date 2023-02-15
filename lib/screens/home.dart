@@ -4,10 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../addPages/addnotice.dart';
+import '../addPages/addstory.dart';
 import '../app_styles.dart';
 import 'package:logger/logger.dart';
 import '../model/Notice.dart';
 import '../model/Story.dart';
+import '../model/user.dart';
 import 'detail.dart';
 
 List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];
@@ -22,6 +25,15 @@ Future<void> _launchUrl(Uri url) async {
   if (!await launchUrl(url)) {
     throw 'Could not launch $url';
   }
+}
+
+Future<Users> getUser(String userkey) async {
+  DocumentReference<Map<String,dynamic>> documentReference =
+  FirebaseFirestore.instance.collection('users').doc(userkey);
+  final DocumentSnapshot<Map<String,dynamic>> documentSnapshot =
+  await documentReference.get();
+  Users user = Users.fromSnapshot(documentSnapshot);
+  return user;
 }
 
 Future<List<Story>> getDataASC() async {
@@ -149,313 +161,437 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body:
- ListView(
-            children: [
-              //For dropdown
-              //Dropdown
-              // DropdownButton<String>(
-              //     value: _dropdownValue,
-              //     items: list.map<DropdownMenuItem<String>>((String value) {
-              //       return DropdownMenuItem<String>(
-              //         value: value,
-              //         child: Text(value),
-              //       );
-              //     }).toList(),
-              //     onChanged: (String? value) {
-              //       setState(() {
-              //         _dropdownValue = value!;
-              //       });
-              //     }),
-              //Welcome Message With Stream Builder
-
-              // //For welcome message
-              // StreamBuilder(
-              //   stream: FirebaseFirestore.instance
-              //       .collection('users')
-              //       .doc(_uid)
-              //       .snapshots(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.hasData && snapshot.data?.exists != null) {
-              //       String name = snapshot.data!.get('email');
-              //       return Row(
-              //         mainAxisAlignment: MainAxisAlignment.center,
-              //         children: [
-              //           Text("${name} 님 안녕하세요! ",
-              //               style: TextStyle(
-              //                 fontSize: 10,
-              //                 fontWeight: FontWeight.bold,
-              //               )),
-              //           Icon(
-              //             Icons.handshake,
-              //           )
-              //         ],
-              //       );
-              //     } else {
-              //       return const Center(child: CircularProgressIndicator());
-              //     }
-              //   },
-              // ),
-              //"공지사항"
-              SizedBox(height: 18.0), //carousel
-
-              Center(
-                child: Container(
-                    height: 25,
-                    width: 100,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: boxGrey,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Text("News", style: headLineGreenStyle)
-                ),
-              ),
-              //For blank
-              SizedBox(height: 18.0),
-              StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection('Notice').snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError ||
-                        snapshot.connectionState == ConnectionState.waiting)
-                      return const Center(child: CircularProgressIndicator());
-
-                    //ChatGpt 리얼 대박이다 !! 고마워!!! document의 전체 내용을 받아와!
-                    List<dynamic> imgList =
-                    snapshot.data!.docs.map((DocumentSnapshot document) {
-                      Map<String, dynamic> data =
-                      document.data() as Map<String, dynamic>;
-                      return data['image'];
-                    }).toList();
-
-                    List<Widget> imageSliders = imgList
-                        .map((item) => ClipRRect(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                        child: Stack(
-                          children: <Widget>[
-                            Image.network(
-                              item,
-                              fit: BoxFit.contain,
-                              width: 100000,
-                            ),
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Container(
+      CustomScrollView(
+        // CustomScrollView는 children이 아닌 slivers를 사용하며, slivers에는 스크롤이 가능한 위젯이나 리스트가 등록가능함
+        slivers: <Widget>[
+          // 앱바 추가
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            elevation: 20,
+            title: Text("Onebody Community" ,style: TextStyle(fontSize: 10),),
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
+              title : FutureBuilder<Users>(
+                future: getUser(_uid),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    Users data = snapshot.data!;
+                    return ListView(
+                      children: [
+                        Text("Shalom," , style: TextStyle(fontSize: 15),),
+                        Row(
+                          children: [
+                            Text("${data.name!} 님" , style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            Container(
+                              alignment: Alignment.bottomRight,
+                              child : Container(
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(100, 0, 0, 0),
-                                      Color.fromARGB(0, 0, 0, 0)
-                                    ],
-                                    begin: Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 20.0),
-                                child: Text(
-                                  'No.${imgList.indexOf(item)}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                    color: camel,
+                                    shape: BoxShape.circle),
+                                width: 20,
+                                height: 20,
+                                child: Image.network(data.image!),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 0.0,
-                              left: 200.0,
-                              right: 0.0,
-                              child: TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/login');
-                                  },
-                                  child: Text(
-                                    "더 알아보기",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )),
-                            ),
+                            )
                           ],
-                        )))
-                        .toList();
+                        ),
+                      ],
 
-                    return CarouselSlider(
-                      options: CarouselOptions(
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false,
-                        initialPage: 0,
-                        autoPlay: true,
+                    );
+                  }
+                  else if(snapshot.hasError){
+                    return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child : Text(
+                          'Error: ${snapshot.error}',
+                          style: TextStyle(fontSize: 15),
+                        )
+                    );
+                  }
+
+                  else{
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+
+              centerTitle: false,
+              expandedTitleScale: 1.0,
+            ),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => {Navigator.pushNamed(context, '/wishlist')}),
+              IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, __, ___) => AddNoticePage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
                       ),
-                      items: imageSliders,
                     );
                   }),
-              SizedBox(height: 18.0),
-              //Who are we?
-              Center(
-                child: Container(
-                    height: 25,
-                    width: 100,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: boxGrey,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Text("소개", style: headLineGreenStyle)
-                ),
-              ),
-              SizedBox(height: 18.0),
-              Container(
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      height: 150,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 10),
-                      viewportFraction: 1,
-                    ),
-                    items: list_whoarewe
-                        .map((item) => Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
-                      child: Center(child: item),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: camel,
+              IconButton(
+                  icon: Icon(
+                    Icons.add_circle,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, __, ___) => AddStoryPage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
                       ),
-                    ))
-                        .toList(),
-                  )),
-              SizedBox(height: 18.0),
-              Center(
-                child: Container(
-                    height: 25,
-                    width: 100,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: boxGrey,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Text("공동체 소식", style: headLineGreenStyle)
-                ),
+                    );
+                  }),
+              IconButton(
+                  icon: const Icon(
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    Navigator.pushNamed(context, '/login');
+                    await FirebaseAuth.instance.signOut();
+                  }
               ),
-              SizedBox(height: 18.0),
-              FutureBuilder<List<Story>>(
-                  future: getDataASC(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Story> datas = snapshot.data!;
-                      return GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: datas.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Story data = datas[index];
-                            return Card(
-                              shadowColor: Colors.grey,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              clipBehavior: Clip.antiAlias,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+            ],
+            // 최대 높이
+            expandedHeight: 100,
+          ),
+          // 리스트 추가
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                Column(
+                  children: [
+                    //For dropdown
+                    //Dropdown
+                    // DropdownButton<String>(
+                    //     value: _dropdownValue,
+                    //     items: list.map<DropdownMenuItem<String>>((String value) {
+                    //       return DropdownMenuItem<String>(
+                    //         value: value,
+                    //         child: Text(value),
+                    //       );
+                    //     }).toList(),
+                    //     onChanged: (String? value) {
+                    //       setState(() {
+                    //         _dropdownValue = value!;
+                    //       });
+                    //     }),
+                    //Welcome Message With Stream Builder
+
+                    // //For welcome message
+                    // StreamBuilder(
+                    //   stream: FirebaseFirestore.instance
+                    //       .collection('users')
+                    //       .doc(_uid)
+                    //       .snapshots(),
+                    //   builder: (context, snapshot) {
+                    //     if (snapshot.hasData && snapshot.data?.exists != null) {
+                    //       String name = snapshot.data!.get('email');
+                    //       return Row(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //           Text("${name} 님 안녕하세요! ",
+                    //               style: TextStyle(
+                    //                 fontSize: 10,
+                    //                 fontWeight: FontWeight.bold,
+                    //               )),
+                    //           Icon(
+                    //             Icons.handshake,
+                    //           )
+                    //         ],
+                    //       );
+                    //     } else {
+                    //       return const Center(child: CircularProgressIndicator());
+                    //     }
+                    //   },
+                    // ),
+                    //"공지사항"
+                    SizedBox(height: 30.0),
+                    //carousel
+                    Center(
+                      child: Container(
+                          height: 25,
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: boxGrey,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Text("News", style: headLineGreenStyle)
+                      ),
+                    ),
+                    //For blank
+                    SizedBox(height: 30.0),
+                    StreamBuilder(
+                        stream: FirebaseFirestore.instance.collection('Notice').snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError ||
+                              snapshot.connectionState == ConnectionState.waiting)
+                            return const Center(child: CircularProgressIndicator());
+
+                          //ChatGpt 리얼 대박이다 !! 고마워!!! document의 전체 내용을 받아와!
+                          List<dynamic> imgList =
+                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                            Map<String, dynamic> data =
+                            document.data() as Map<String, dynamic>;
+                            return data['image'];
+                          }).toList();
+                          
+                          List<dynamic> noticeName =
+                          snapshot.data!.docs.map((DocumentSnapshot document) {
+                            Object? data = document.get("name");
+                            return data;
+                          }).toList();
+
+                          final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
+                          List<Widget> imageSliders = imgList
+                              .map((item) => ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                              child: Stack(
                                 children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: camel,
-                                              shape: BoxShape.circle),
-                                          width: 20,
-                                          height: 20,
-                                          child: Image.network(data.u_image!),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("${data.name}"),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(70, 5, 0, 5),
-                                        child: TextButton(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: Colors.blueAccent,
-                                            padding: EdgeInsets.zero,
-                                            minimumSize: Size.zero,
-                                            textStyle: TextStyle(
-                                                fontSize: 10,
-                                                overflow: TextOverflow.ellipsis),
-                                            tapTargetSize:
-                                            MaterialTapTargetSize.shrinkWrap,
-                                          ),
-                                          onPressed: () => {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                                builder: (context) => DetailPage(
-                                                  storys: datas[index],
-                                                )))
-                                          },
-                                          child: const Text("more"),
-                                        ),
-                                      ),
-                                    ],
+                                  Image.network(
+                                    item,
+                                    fit: BoxFit.contain,
+                                    width: 100000,
                                   ),
-                                  SizedBox(height: 5.0),
-                                  AspectRatio(
-                                      aspectRatio: 18 / 11,
-                                      child: Image.network(data.image!)),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          16.0, 12.0, 16.0, 8.0),
-                                      child: SingleChildScrollView(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              "[${data.title!}]",
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const SizedBox(height: 8.0),
-                                            Text(" ${data.description}"),
+                                  Positioned(
+                                    bottom: 0.0,
+                                    left: 0.0,
+                                    right: 0.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color.fromARGB(100, 0, 0, 0),
+                                            Color.fromARGB(0, 0, 0, 0)
                                           ],
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10.0, horizontal: 20.0),
+                                      child: Text(
+                                        '${documents[imgList.indexOf(item)]['name']}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
+                                  Positioned(
+                                    bottom: 0.0,
+                                    left: 200.0,
+                                    right: 0.0,
+                                    child: TextButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/login');
+                                        },
+                                        child: Text(
+                                          "더 알아보기",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                  ),
                                 ],
-                              ),
-                            );
-                          },
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 8 / 9,
-                          ),
-                          shrinkWrap: true
-                      );
-                    } else if (snapshot.hasError) {
-                      return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Error: ${snapshot.error}',
-                            style: TextStyle(fontSize: 15),
-                          ));
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  }),
-            ],
-   shrinkWrap: true,
+                              )))
+                              .toList();
 
- ),
+                          return CarouselSlider(
+                            options: CarouselOptions(
+                              enlargeCenterPage: true,
+                              enableInfiniteScroll: false,
+                              initialPage: 0,
+                              autoPlay: true,
+                            ),
+                            items: imageSliders,
+                          );
+                        }),
+                    SizedBox(height: 30.0),
+                    //Who are we?
+                    Center(
+                      child: Container(
+                          height: 25,
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: boxGrey,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Text("소개", style: headLineGreenStyle)
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+                    Container(
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 150,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 10),
+                            viewportFraction: 1,
+                          ),
+                          items: list_whoarewe
+                              .map((item) => Container(
+                            margin: EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(child: item),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              color: camel,
+                            ),
+                          ))
+                              .toList(),
+                        )),
+                    SizedBox(height: 30.0),
+                    Center(
+                      child: Container(
+                          height: 25,
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: boxGrey,
+                              borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Text("공동체 소식", style: headLineGreenStyle)
+                      ),
+                    ),
+                    FutureBuilder<List<Story>>(
+                        future: getDataASC(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<Story> datas = snapshot.data!;
+                            return GridView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: datas.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  Story data = datas[index];
+                                  return Card(
+                                    shadowColor: Colors.grey,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10)),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: camel,
+                                                    shape: BoxShape.circle),
+                                                width: 20,
+                                                height: 20,
+                                                child: Image.network(data.u_image!),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text("${data.name}"),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(70, 5, 0, 5),
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor: Colors.blueAccent,
+                                                  padding: EdgeInsets.zero,
+                                                  minimumSize: Size.zero,
+                                                  textStyle: TextStyle(
+                                                      fontSize: 10,
+                                                      overflow: TextOverflow.ellipsis),
+                                                  tapTargetSize:
+                                                  MaterialTapTargetSize.shrinkWrap,
+                                                ),
+                                                onPressed: () => {
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                      builder: (context) => DetailPage(
+                                                        storys: datas[index],
+                                                      )))
+                                                },
+                                                child: const Text("more"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5.0),
+                                        AspectRatio(
+                                            aspectRatio: 18 / 11,
+                                            child: Image.network(data.image!)),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                16.0, 12.0, 16.0, 8.0),
+                                            child: SingleChildScrollView(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "[${data.title!}]",
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(height: 8.0),
+                                                  Text(" ${data.description}"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 8 / 9,
+                                ),
+                                shrinkWrap: true
+                            );
+                          } else if (snapshot.hasError) {
+                            return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Error: ${snapshot.error}',
+                                  style: TextStyle(fontSize: 15),
+                                ));
+                          } else {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                        }),
+                  ],
+
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+
 
 
     );
