@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/addPages/addstory.dart';
+import 'package:onebody/practice/main_screen.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'login.dart';
@@ -35,11 +36,11 @@ class _OnyouAppState extends State<OnyouApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Onyou',
+      title: 'Onebody Community',
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/home' : (BuildContext context) => const BottomBar(), //HomePage() 가 원래 맞음
+        '/home' : (BuildContext context) => const MainScreen(),//BottomBar(),
         '/login' : (BuildContext context) => const LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
