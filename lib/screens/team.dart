@@ -7,7 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
-import '../app_styles.dart';
+import '../style/app_styles.dart';
 import '../model/utils.dart';
 
 class TeamPage extends StatefulWidget {
@@ -227,8 +227,10 @@ class _TeamPageState extends State<TeamPage> {
                     firstDay: kFirstDay,
                     lastDay: kLastDay,
                     focusedDay: _focusedDay,
+                    availableCalendarFormats: {CalendarFormat.month : 'Month'},
                     selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                     rangeStartDay: _rangeStart,
+                    sixWeekMonthsEnforced: true,
                     rangeEndDay: _rangeEnd,
                     calendarFormat: _calendarFormat,
                     rangeSelectionMode: _rangeSelectionMode,
@@ -250,6 +252,7 @@ class _TeamPageState extends State<TeamPage> {
                     onPageChanged: (focusedDay) {
                       _focusedDay = focusedDay;
                     },
+
                   ),
                   const SizedBox(height: 8.0),
                   SizedBox(

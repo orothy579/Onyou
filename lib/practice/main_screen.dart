@@ -1,5 +1,8 @@
-import 'dart:convert';
+//자 이 파일은 어떤 파일이냐 하면, 한 디바이스에서, 다른 디바이스로 버튼을 누르면 푸쉬 알람이 가게 하는 파일임!
+// 나중에 관리자 계정에만 표시 되게 할 것이고, 파이어 베이스에 등록된 모든 유저의 토큰을 일괄적으로 저장하게 하고 싶은딩
+// 이거 어케하누 ? ? ? ? 일단 지금 당장 필요한 것은 아닌 것 같옴!
 
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +16,7 @@ class MainScreen extends StatefulWidget {
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
+
 
 class _MainScreenState extends State<MainScreen> {
   String? mtoken;
@@ -76,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
         }
     );
   }
-  //save Token in firebase, Token is diffretn from diffrent device
+  //save Token in firebase, Token is different from different device
   void saveToken(String token) async {
     await FirebaseFirestore.instance.collection("UserTokens").doc("User2").set(
       {

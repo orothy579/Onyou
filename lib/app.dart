@@ -5,7 +5,7 @@ import 'package:onebody/practice/main_screen.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'login.dart';
-import 'app_styles.dart';
+import 'style/app_styles.dart';
 
 final ThemeData _onbodyTheme = _buildOnebodyTheme();
 
@@ -40,7 +40,7 @@ class _OnyouAppState extends State<OnyouApp> {
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/home' : (BuildContext context) => const MainScreen(),//BottomBar(),
+        '/home' : (BuildContext context) => const BottomBar(),
         '/login' : (BuildContext context) => const LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),

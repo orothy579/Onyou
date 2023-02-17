@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
-import '../app_styles.dart';
+import '../style/app_styles.dart';
 import 'package:logger/logger.dart';
 import '../model/Notice.dart';
 import '../model/Story.dart';
