@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/addPages/addstory.dart';
-import 'package:onebody/practice/main_screen.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'login.dart';
 import 'style/app_styles.dart';
+import 'package:get/get.dart';
 
 final ThemeData _onbodyTheme = _buildOnebodyTheme();
 
@@ -35,7 +35,7 @@ class OnyouApp extends StatefulWidget {
 class _OnyouAppState extends State<OnyouApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Onebody Community',
       initialRoute: '/login',
       debugShowCheckedModeBanner: false,

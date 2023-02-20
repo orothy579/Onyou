@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
+import 'dimension.dart';
+
 class BigText extends StatelessWidget {
   Color? color;
   final String text;
@@ -8,7 +10,7 @@ class BigText extends StatelessWidget {
 
   BigText({Key? key, this.color = const Color(0x0fffffff),
     required this.text,
-    this.size =20,
+    this.size =0,
     this.height = 1.2
   }) : super(key: key);
 
@@ -20,7 +22,7 @@ class BigText extends StatelessWidget {
       text,
       style: TextStyle(
         color: color,
-        fontSize: size,
+        fontSize: size ==0?Dimensions.font20:size,
         height: height
       ),
     );

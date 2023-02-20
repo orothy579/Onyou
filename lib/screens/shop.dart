@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onebody/screens/productPage.dart';
 import 'package:onebody/style/app_styles.dart';
-import 'package:onebody/style/smallText.dart';
+import 'package:onebody/utils/smallText.dart';
+
+import '../utils/dimension.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({Key? key}) : super(key: key);
@@ -14,12 +16,13 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
+    print("current height is " + MediaQuery.of(context).size.height.toString());
     return Scaffold(
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(top: 45, bottom: 15),
-            padding: EdgeInsets.only(left: 20, right: 20),
+            margin: EdgeInsets.only(top: Dimensions.height45, bottom: Dimensions.height15),
+            padding: EdgeInsets.only(left: Dimensions.width20, right: Dimensions.width20),
             child: Column(
               children: [
                 Container(
@@ -40,11 +43,11 @@ class _ShopPageState extends State<ShopPage> {
                       ),
                       Center(
                         child: Container(
-                          width: 45,
-                          height: 45,
-                          child: Icon(Icons.search , color: Colors.white,),
+                          width: Dimensions.height45,
+                          height: Dimensions.height45,
+                          child: Icon(Icons.search , color: Colors.white, size: Dimensions.iconSize24,),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(Dimensions.radius15),
                             color: mainGreen,
                           ),
 
