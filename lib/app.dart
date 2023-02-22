@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:onebody/addPages/addnotice.dart';
 import 'package:onebody/addPages/addstory.dart';
 import 'package:onebody/pages/product/popular_product_detail.dart';
+import 'package:onebody/pages/product/recommended_food_detail.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'login.dart';
@@ -38,7 +39,7 @@ class _OnyouAppState extends State<OnyouApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Onebody Community',
-      initialRoute: '/popular_detail',
+      initialRoute: '/recommended_detail',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home' : (BuildContext context) => const BottomBar(),
@@ -47,6 +48,7 @@ class _OnyouAppState extends State<OnyouApp> {
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
         '/popular_detail' : (BuildContext context) => const PopularProductDetail(),
+        '/recommended_detail' :(BuildContext context) => const RecommendedFoodDetail()
       },
       theme: _onbodyTheme,
     );

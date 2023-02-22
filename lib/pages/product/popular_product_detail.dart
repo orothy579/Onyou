@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onebody/widgets/app_column.dart';
+import 'package:onebody/widgets/expandable_text_widget.dart';
 
 import '../../style/app_styles.dart';
 import '../../utils/bigText.dart';
@@ -69,13 +70,16 @@ class PopularProductDetail extends StatelessWidget {
                 children: [
                   AppColumn(text: "말씀 카드",),
                   SizedBox(height: Dimensions.height20,),
-                  BigText(text: "Introduce")
+                  BigText(text: "Introduce"),
+                  SizedBox(height: Dimensions.height20,),
+                  //expandable text widget
+                  Expanded(child: SingleChildScrollView(child: ExpandableTextWdiget(text: "예수님께서는 38년 된 병자에게 물어보셨습니다. “네가 낫고자 하느냐”  38년 동안 외로이 연못 옆에 누워  물이 움직일 때 까지(천사가 내려와 물을 움직이게 할 때 들어가면 낫기 때문 - 요5:4)기다리며 살았던 그 병자는  어떤 마음으로 하루 하루를, 38년을 살았을까요.  그 세월동안 병이 익숙해지고, 병이 나을꺼라는 기대와그에 따른 절망의 반복 속. 이제는 병이 나을꺼라는 믿음보단병이 낫지 못할꺼라는 믿음이 더 강해져 기대도 소망도 갖지 못하는그런 마음이었을까요. 예수께서는 우리에게도 물어보십니다. 한나야, 너가 정말 낫기를 원하니? 치유의 하나님인 나를 신뢰하니? 반드시 반드시, 너를 이전보다 건강케 할거라는 약속이 여전히 너를 주장하니? 무어라 대답할까요. 믿음의 대답을 주께 드리기 원합니다.  ”예 주님, 제가 정말 낫기를 원합니다.“ ")))
+
                 ],
               ),
 
           ),
           ),
-          //expandable text widget
         ],
       ),
       //bottomNavigationBar
