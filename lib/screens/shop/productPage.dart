@@ -1,12 +1,14 @@
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onebody/style/app_styles.dart';
 import 'package:onebody/utils/bigText.dart';
-import 'package:onebody/utils/icon_and_text_widget.dart';
+import 'package:onebody/widgets/app_column.dart';
+import 'package:onebody/widgets/icon_and_text_widget.dart';
 
-import '../utils/smallText.dart';
-import '../utils/dimension.dart';
+import '../../utils/smallText.dart';
+import '../../utils/dimension.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -41,6 +43,7 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        //slide section
         Container(
           height: Dimensions.pageView,
           child: PageView.builder(
@@ -50,6 +53,7 @@ class _ProductPageState extends State<ProductPage> {
                 return _buildPageItem(position);
               }),
         ),
+        //dots
         new DotsIndicator(
           dotsCount: 5,
           position: _currPageValue,
@@ -61,6 +65,96 @@ class _ProductPageState extends State<ProductPage> {
                 borderRadius: BorderRadius.circular(5.0)
             ),
           ),
+        ),
+        //Popular text
+        SizedBox(height: Dimensions.height30,),
+        Container(
+          margin: EdgeInsets.only(left: Dimensions.width30),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              BigText(text: "Popular" , ),
+              SizedBox(width: Dimensions.width10,),
+              Container(
+                margin: const EdgeInsets.only(bottom: 3),
+                child: BigText(text: ".", color : Colors.black26),
+              ),
+              SizedBox(width: Dimensions.width10,),
+              Container(
+                margin: const EdgeInsets.only(bottom: 2),
+                child: SmallText(text: "Food pairing",),
+              ),
+
+
+
+            ],
+          ),
+        ),
+        //list of products
+        Container(
+          height: 900,
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+              // shrinkWrap: true,
+              itemCount: 10,
+              itemBuilder: (context,index){
+                return Container(
+                  margin: EdgeInsets.only(left: Dimensions.width20 , right:  Dimensions.width20, top:  Dimensions.height10,bottom: Dimensions.height10),
+                  child: Row(
+                    children: [
+                      //image section
+                      Container(
+                        width:Dimensions.listViewImgSize,
+                        height: Dimensions.listViewImgSize,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.white38,
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              "https://lafudgestorew.cafe24.com/web/upload/2023/0217/to_br_01_1.png"
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      //text container
+                      Expanded(
+                        child: Container(
+                          height: Dimensions.listViewTextContSize,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(Dimensions.radius20),
+                              bottomRight: Radius.circular(Dimensions.radius20)
+                            ),
+                            color: Colors.white,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
+                            child: Column(
+                              mainAxisAlignment:  MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                BigText(text: "Nutritious friuit meal in china"),
+                                SizedBox(height: Dimensions.height10,),
+                                SmallText(text: "with chinese characteristics"),
+                                Row(
+
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      )
+
+                    ],
+                  ),
+
+
+                );
+
+              }),
         )
       ],
     );
@@ -133,65 +227,7 @@ class _ProductPageState extends State<ProductPage> {
                 ]),
             child: Container(
               padding: EdgeInsets.only(top: Dimensions.height15,  left: Dimensions.width20 ,right: Dimensions.width20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BigText(
-                    text: "말씀 카드",
-                    color: Colors.black54,
-                  ),
-                  SizedBox(
-                    height: Dimensions.height10,
-                  ),
-                  Row(
-                    children: [
-                      Wrap(
-                        children: List.generate(5, (index) {
-                          return Icon(
-                            Icons.star,
-                            color: mainGreen,
-                            size: 15,
-                          );
-                        }),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SmallText(text: "4.5"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SmallText(text: "1287"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      SmallText(
-                        text: "comments",
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: Dimensions.height20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconAndTextWidget(
-                          icon: Icons.circle_sharp,
-                          text: "Normal",
-                          iconColor: camel),
-                      IconAndTextWidget(
-                          icon: Icons.location_on,
-                          text: "1.7",
-                          iconColor: camel),
-                      IconAndTextWidget(
-                          icon: Icons.access_time_sharp,
-                          text: "32min",
-                          iconColor: camel),
-                    ],
-                  )
-                ],
-              ),
+              child: AppColumn(text:"말씀 카드"),
             ),
           ),
         ),

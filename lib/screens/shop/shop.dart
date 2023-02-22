@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:onebody/screens/productPage.dart';
+import 'package:onebody/screens/shop/productPage.dart';
 import 'package:onebody/style/app_styles.dart';
 import 'package:onebody/utils/smallText.dart';
 
-import '../utils/dimension.dart';
+import '../../utils/dimension.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({Key? key}) : super(key: key);
@@ -59,7 +59,7 @@ class _ShopPageState extends State<ShopPage> {
               ],
             ),
           ),
-          ProductPage()
+          Expanded(child: SingleChildScrollView(child: ProductPage()))
         ],
       )
     );

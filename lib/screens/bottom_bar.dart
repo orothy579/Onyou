@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:onebody/screens/home.dart';
-import 'package:onebody/screens/shop.dart';
+import 'package:onebody/screens/shop/shop.dart';
 import 'package:onebody/screens/team.dart';
 import 'package:http/http.dart' as http;
 import '../style/app_styles.dart';
