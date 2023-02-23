@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:onebody/screens/shop/shop.dart';
 import 'package:onebody/widgets/app_column.dart';
 import 'package:onebody/widgets/expandable_text_widget.dart';
 
-import '../../style/app_styles.dart';
-import '../../utils/bigText.dart';
-import '../../utils/dimension.dart';
-import '../../utils/smallText.dart';
-import '../../widgets/app_icon.dart';
-import '../../widgets/icon_and_text_widget.dart';
+import '../../../style/app_styles.dart';
+import '../../../utils/bigText.dart';
+import '../../../utils/dimension.dart';
+import '../../../widgets/app_icon.dart';
+
 
 class PopularProductDetail extends StatelessWidget {
   const PopularProductDetail({Key? key}) : super(key: key);
@@ -45,7 +47,11 @@ class PopularProductDetail extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppIcon(icon: Icons.arrow_back_ios),
+                  GestureDetector(
+                      onTap:(){
+                        Navigator.pop(context);
+                      },
+                      child: AppIcon(icon: Icons.arrow_back_ios)),
                   AppIcon(icon: Icons.shopping_cart_outlined),
                 ],
               )

@@ -4,11 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../addPages/addnotice.dart';
-import '../addPages/addstory.dart';
 import '../style/app_styles.dart';
 import '../model/utils.dart';
+import 'addPages/addnotice.dart';
+import 'addPages/addstory.dart';
 
 class TeamPage extends StatefulWidget {
   const TeamPage({Key? key}) : super(key: key);

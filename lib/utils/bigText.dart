@@ -23,6 +23,7 @@ class BigText extends StatelessWidget {
       style: TextStyle(
         color: color,
         fontSize: size ==0?Dimensions.font20:size,
+        overflow: overFlow
       ),
     );
   }

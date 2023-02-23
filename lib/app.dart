@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:onebody/addPages/addnotice.dart';
-import 'package:onebody/addPages/addstory.dart';
-import 'package:onebody/pages/product/popular_product_detail.dart';
-import 'package:onebody/pages/product/recommended_food_detail.dart';
+import 'package:onebody/controllers/popular_product_controller.dart';
+import 'package:onebody/screens/addPages/addnotice.dart';
+import 'package:onebody/screens/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/sentence.dart';
-import 'login.dart';
+import 'package:onebody/screens/shop/detail/popular_product_detail.dart';
+import 'package:onebody/screens/shop/detail/recommended_food_detail.dart';
+import 'controllers/recommended_product_controller.dart';
+import 'screens/login.dart';
 import 'style/app_styles.dart';
 import 'package:get/get.dart';
 
@@ -37,9 +39,12 @@ class OnyouApp extends StatefulWidget {
 class _OnyouAppState extends State<OnyouApp> {
   @override
   Widget build(BuildContext context) {
+    Get.find<PopularProductController>().getPopularProductList();
+    Get.find<RecommendedProductController>().getRecommendedProductList();
+
     return GetMaterialApp(
       title: 'Onebody Community',
-      initialRoute: '/recommended_detail',
+      initialRoute: '/login',
       debugShowCheckedModeBanner: false,
       routes: {
         '/home' : (BuildContext context) => const BottomBar(),

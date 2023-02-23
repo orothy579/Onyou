@@ -4,13 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../addPages/addnotice.dart';
-import '../addPages/addstory.dart';
+
 import '../style/app_styles.dart';
 import 'package:logger/logger.dart';
 import '../model/Notice.dart';
 import '../model/Story.dart';
 import '../model/user.dart';
+import 'addPages/addnotice.dart';
+import 'addPages/addstory.dart';
 import 'detail.dart';
 
 List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];

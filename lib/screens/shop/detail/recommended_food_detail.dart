@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:onebody/style/app_styles.dart';
 import 'package:onebody/widgets/app_icon.dart';
 import 'package:onebody/widgets/expandable_text_widget.dart';
+import '../../../utils/bigText.dart';
+import '../../../utils/dimension.dart';
 
-import '../../utils/bigText.dart';
-import '../../utils/dimension.dart';
 
 class RecommendedFoodDetail extends StatelessWidget {
   const RecommendedFoodDetail({Key? key}) : super(key: key);

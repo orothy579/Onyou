@@ -5,11 +5,14 @@ class SmallText extends StatelessWidget {
   final String text;
   double size;
   double height;
+  TextOverflow overFlow;
 
   SmallText({Key? key, this.color = const Color(0xFFccc7c5),
     required this.text,
     this.size =12,
-    this.height = 1.2
+    this.height = 1.2,
+    this.overFlow = TextOverflow.visible
+
   }) : super(key: key);
 
 
@@ -21,8 +24,9 @@ class SmallText extends StatelessWidget {
       style: TextStyle(
         color: color,
         fontSize: size,
-        height: height
+        height: height,
       ),
+      overflow: overFlow,
     );
   }
 }

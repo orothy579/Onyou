@@ -31,20 +31,20 @@ class AppColumn extends StatelessWidget {
                 return Icon(
                   Icons.star,
                   color: mainGreen,
-                  size: 15,
+                  size: Dimensions.iconSize16,
                 );
               }),
             ),
             SizedBox(
-              width: 10,
+              width: Dimensions.width10,
             ),
             SmallText(text: "4.5"),
             SizedBox(
-              width: 10,
+              width: Dimensions.width10,
             ),
             SmallText(text: "1287"),
             SizedBox(
-              width: 10,
+              width: Dimensions.width10,
             ),
             SmallText(
               text: "comments",
@@ -52,7 +52,7 @@ class AppColumn extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: Dimensions.height20,
+          height: Dimensions.height10,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
