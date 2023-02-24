@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import '../style/app_styles.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key}) : super(key: key);
+  const BottomBar({Key? key,}) : super(key: key);
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -22,6 +22,8 @@ class _BottomBarState extends State<BottomBar> {
   int _selectedIndex = 0;
   String? mtoken;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+
 
   void initState(){
     super.initState();
@@ -135,7 +137,6 @@ class _BottomBarState extends State<BottomBar> {
         )
     );
 
-    print("Hello 찬휘");
     print("$title / ${body}");
   }
 

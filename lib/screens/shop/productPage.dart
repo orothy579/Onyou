@@ -9,10 +9,11 @@ import 'package:onebody/model/products.dart';
 import 'package:onebody/style/app_styles.dart';
 import 'package:onebody/utils/bigText.dart';
 import 'package:onebody/widgets/app_column.dart';
+import '../../routes/route_helper.dart';
 import '../../utils/app_constant.dart';
 import '../../utils/smallText.dart';
 import '../../utils/dimension.dart';
-import 'detail/popular_product_detail.dart';
+import '../../widgets/icon_and_text_widget.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -51,17 +52,13 @@ class _ProductPageState extends State<ProductPage> {
         GetBuilder<PopularProductController>(builder: (popularProducts){
           return popularProducts.isLoaded?Container(
             height: Dimensions.pageView,
-            child: GestureDetector(
-              onTap: (){
-                Get.to(()=>PopularProductDetail());
-              },
-              child: PageView.builder(
+            child: PageView.builder(
                   controller: pageController,
                   itemCount: popularProducts.popularProductList.length,
                   itemBuilder: (context, position) {
                     return _buildPageItem(position , popularProducts.popularProductList[position]);
                   }),
-            ),
+
           ):CircularProgressIndicator(
             color: mainGreen,
           );
@@ -102,6 +99,8 @@ class _ProductPageState extends State<ProductPage> {
             ],
           ),
         ),
+        
+        //recommended products
         //list of products
         GetBuilder<RecommendedProductController>(builder: (recommendedProduct){
           return recommendedProduct.isLoaded?
@@ -110,60 +109,81 @@ class _ProductPageState extends State<ProductPage> {
                 shrinkWrap: true,
                 itemCount: recommendedProduct.recommendedProductList.length,
                 itemBuilder: (context,index){
-                  return Container(
-                    margin: EdgeInsets.only(left: Dimensions.width20 , right:  Dimensions.width20, top:  Dimensions.height10,bottom: Dimensions.height10),
-                    child: Row(
-                      children: [
-                        //image section
-                        Container(
-                          width:Dimensions.listViewImgSize,
-                          height: Dimensions.listViewImgSize,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Dimensions.radius20),
-                            color: Colors.white38,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  AppConstants.BASE_URL+AppConstants.UPLOAD_URL+recommendedProduct.recommendedProductList[index].img
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        //text container
-                        Expanded(
-                          child: Container(
-                            height: Dimensions.listViewTextContSize,
+                  return GestureDetector(
+                    onTap: (){
+                      Get.toNamed(RouteHelper.getRecommendedProducts(index));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(left: Dimensions.width20 , right:  Dimensions.width20, top:  Dimensions.height10,bottom: Dimensions.height10),
+                      child: Row(
+                        children: [
+                          //image section
+                          Container(
+                            width:Dimensions.listViewImgSize,
+                            height: Dimensions.listViewImgSize,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(Dimensions.radius20),
-                                  bottomRight: Radius.circular(Dimensions.radius20)
-                              ),
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
-                              child: Column(
-                                mainAxisAlignment:  MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  BigText(text: recommendedProduct.recommendedProductList[index].name!),
-                                  SizedBox(height: Dimensions.height10,),
-                                  SmallText(text: recommendedProduct.recommendedProductList[index].description!, overFlow: TextOverflow.ellipsis,),
-                                  Row(
-
-                                  )
-                                ],
+                              borderRadius: BorderRadius.circular(Dimensions.radius20),
+                              color: Colors.white38,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    AppConstants.BASE_URL+AppConstants.UPLOAD_URL+recommendedProduct.recommendedProductList[index].img
+                                ),
                               ),
                             ),
                           ),
 
-                        )
+                          //text container
+                          Expanded(
+                            child: Container(
+                              height: Dimensions.listViewTextContSize,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(Dimensions.radius20),
+                                    bottomRight: Radius.circular(Dimensions.radius20)
+                                ),
+                                color: Colors.white,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
+                                child: Column(
+                                  mainAxisAlignment:  MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    BigText(text: recommendedProduct.recommendedProductList[index].name!),
+                                    SizedBox(height: Dimensions.height10,),
+                                    SmallText(text: recommendedProduct.recommendedProductList[index].description!, overFlow: TextOverflow.ellipsis,),
+                                    SizedBox(height: Dimensions.height10,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconAndTextWidget(
+                                            icon: Icons.circle_sharp,
+                                            text: "Normal",
+                                            iconColor: camel),
+                                        IconAndTextWidget(
+                                            icon: Icons.location_on,
+                                            text: "1.7",
+                                            iconColor: camel),
+                                        IconAndTextWidget(
+                                            icon: Icons.access_time_sharp,
+                                            text: "32min",
+                                            iconColor: camel),
+                                      ],
+                                    )
 
-                      ],
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                          )
+
+                        ],
+                      ),
+
+
                     ),
-
-
                   );
 
                 })
@@ -204,25 +224,30 @@ class _ProductPageState extends State<ProductPage> {
     return Transform(
       transform: matrix,
       child: Stack(children: [
-        Container(
-          height: Dimensions.pageViewContainer,
-          margin: EdgeInsets.only(left: Dimensions.width10, right: Dimensions.width20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Dimensions.radius30),
-              color: index.isEven ? Color(0xFF69c5df) : Color(0xFF9294cc),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                    AppConstants.BASE_URL+AppConstants.UPLOAD_URL+popularProduct.img!
+        GestureDetector(
+          onTap: (){
+            Get.toNamed(RouteHelper.getPopularProducts(index));
+          },
+          child: Container(
+            height: Dimensions.pageViewContainer,
+            margin: EdgeInsets.only(left: Dimensions.width10, right: Dimensions.width20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Dimensions.radius30),
+                color: index.isEven ? Color(0xFF69c5df) : Color(0xFF9294cc),
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      AppConstants.BASE_URL+AppConstants.UPLOAD_URL+popularProduct.img!
+                  ),
                 ),
-              ),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(0.7),
-                    blurRadius: 5.0,
-                    spreadRadius: 0.0,
-                    offset: Offset(0, 7))
-              ]),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.7),
+                      blurRadius: 5.0,
+                      spreadRadius: 0.0,
+                      offset: Offset(0, 7))
+                ]),
+          ),
         ),
         Align(
           alignment: Alignment.bottomCenter,

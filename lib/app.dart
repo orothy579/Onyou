@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:onebody/controllers/popular_product_controller.dart';
+import 'package:onebody/routes/route_helper.dart';
 import 'package:onebody/screens/addPages/addnotice.dart';
 import 'package:onebody/screens/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
+import 'package:onebody/screens/home.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'package:onebody/screens/shop/detail/popular_product_detail.dart';
 import 'package:onebody/screens/shop/detail/recommended_food_detail.dart';
+import 'package:onebody/screens/shop/shop.dart';
 import 'controllers/recommended_product_controller.dart';
 import 'screens/login.dart';
 import 'style/app_styles.dart';
@@ -45,15 +48,17 @@ class _OnyouAppState extends State<OnyouApp> {
     return GetMaterialApp(
       title: 'Onebody Community',
       initialRoute: '/login',
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
+      getPages: RouteHelper.routes,
       routes: {
         '/home' : (BuildContext context) => const BottomBar(),
         '/login' : (BuildContext context) => const LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
-        '/popular_detail' : (BuildContext context) => const PopularProductDetail(),
-        '/recommended_detail' :(BuildContext context) => const RecommendedFoodDetail()
+        '/shop' : (BuildContext context) => const ShopPage(),
+        '/hommie': (BuildContext context) => const HomePage()
       },
       theme: _onbodyTheme,
     );
