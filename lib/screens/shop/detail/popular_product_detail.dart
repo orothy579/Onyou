@@ -18,7 +18,8 @@ import '../../bottom_bar.dart';
 
 class PopularProductDetail extends StatelessWidget {
   int pageId;
-  PopularProductDetail({Key? key, required this.pageId}) : super(key: key);
+  final String page;
+  PopularProductDetail({Key? key, required this.pageId, required this.page}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var product =
@@ -55,18 +56,19 @@ class PopularProductDetail extends StatelessWidget {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          Get.to(BottomBar(id: 2));
+                            Get.to(BottomBar(id: 2));
                         },
                         child: AppIcon(icon: Icons.arrow_back_ios)),
                     GetBuilder<PopularProductController>(builder: (controller) {
                       return GestureDetector(
                         onTap: () {
-                          Get.to(() => CartPage());
+                          if(controller.totalItems>=1)
+                          Get.toNamed(RouteHelper.cartPage);
                         },
                         child: Stack(
                           children: [
                             AppIcon(icon: Icons.shopping_cart_outlined),
-                            Get.find<PopularProductController>().totalItems >= 1
+                            controller.totalItems >= 1
                                 ? Positioned(
                                     right: 0,
                                     top: 0,

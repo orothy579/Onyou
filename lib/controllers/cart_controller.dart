@@ -29,6 +29,7 @@ class CartController extends GetxController{
           quantity : value.quantity! + quantity,
           isExist : true,
           time : DateTime.now().toString(),
+          product: product,
         );
       });
 
@@ -48,13 +49,16 @@ class CartController extends GetxController{
             quantity : quantity,
             isExist : true,
             time : DateTime.now().toString(),
+            product: product,
           );});
       } else{
         Get.snackbar("Item count", "하나 이상은 카트에 넣어야 해요.");
       }
 
+
     }
     // print("length of the item is " + _items.length.toString());
+    update();
 
   }
 

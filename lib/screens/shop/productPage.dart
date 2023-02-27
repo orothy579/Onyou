@@ -111,7 +111,7 @@ class _ProductPageState extends State<ProductPage> {
                 itemBuilder: (context,index){
                   return GestureDetector(
                     onTap: (){
-                      Get.toNamed(RouteHelper.getRecommendedProducts(index));
+                      Get.toNamed(RouteHelper.getRecommendedProducts(index , "cartPage")  );
                     },
                     child: Container(
                       margin: EdgeInsets.only(left: Dimensions.width20 , right:  Dimensions.width20, top:  Dimensions.height10,bottom: Dimensions.height10),
@@ -226,7 +226,7 @@ class _ProductPageState extends State<ProductPage> {
       child: Stack(children: [
         GestureDetector(
           onTap: (){
-            Get.toNamed(RouteHelper.getPopularProducts(index));
+            Get.toNamed(RouteHelper.getPopularProducts(index, "cartPage"));
           },
           child: Container(
             height: Dimensions.pageViewContainer,

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:onebody/controllers/popular_product_controller.dart';
 import 'package:onebody/controllers/recommended_product_controller.dart';
+import 'package:onebody/routes/route_helper.dart';
 import 'package:onebody/style/app_styles.dart';
 import 'package:onebody/widgets/app_icon.dart';
 import 'package:onebody/widgets/expandable_text_widget.dart';
@@ -18,7 +19,8 @@ import '../../cart/cart_page.dart';
 
 class RecommendedFoodDetail extends StatelessWidget {
   int pageId;
-  RecommendedFoodDetail({Key? key, required this.pageId}) : super(key: key);
+  final String page;
+  RecommendedFoodDetail({Key? key, required this.pageId , required this.page}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,8 @@ class RecommendedFoodDetail extends StatelessWidget {
                   return
                     GestureDetector(
                       onTap: (){
-                        Get.to(()=> CartPage());
+                        if(controller.totalItems>=1)
+                          Get.toNamed(RouteHelper.cartPage);
                       },
                       child: Stack(
                       children: [
