@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:onebody/controllers/cart_controller.dart';
 import 'package:onebody/data/repository/popular_product_repo.dart';
 
+import '../model/cart_model.dart';
 import '../model/products.dart';
 
 class PopularProductController extends GetxController{
@@ -34,16 +35,23 @@ class PopularProductController extends GetxController{
   void setQuantity(bool isIncrement) {
     if(isIncrement){
       _quantity = checkQuantity(quantity+1);
+      print("number of items " + _quantity.toString());
     }else{
       _quantity = checkQuantity(quantity-1);
+      //print("decrement " + _quantity.toString());
     }
     update();
   }
+
   int checkQuantity(int quantity){
-    if(quantity<0){
-      Get.snackbar("Item count", "더 적게 담을 수 없어요!");
+    if((_inCartItems+quantity)<0){
+      Get.snackbar("ð", "더 적게 담을 수 없어요!");
+      if(_inCartItems>0){
+        _quantity = -_inCartItems;
+        return _quantity;
+      }
       return 0;
-    } else if(quantity>100){
+    } else if((_inCartItems+quantity)>100){
       Get.snackbar("Item count", "더 많이 담을 수 없어요!");
       return 100; //maximum quantity
     } else {
@@ -51,25 +59,42 @@ class PopularProductController extends GetxController{
     }
   }
 
-  void initProduct(CartController cart){
+  void initProduct(ProductsModel product, CartController cart){
     _quantity = 0;
     _inCartItems = 0;
     _cart = cart;
+    var exist =false;
+    exist = _cart.existInCart(product);
 
-    //if exist
-    //get from storage _inCartitems = 3
+    print("exist or not "+ exist.toString());
+    if(exist){
+      _inCartItems = _cart.getQuantity(product);
+    }
+    print("the quantity in the cart is " + _inCartItems.toString());
+
   }
 
   void addItem(ProductsModel product){
-    if(_quantity >0){
+
       _cart.addItem(product, _quantity);
+
       _quantity=0;
+      _inCartItems = _cart.getQuantity(product);
+
       _cart.items.forEach((key, value) {
-        print("The id is "+ value.id.toString() + "The quantity is" + value.quantity.toString());
+        print("The id is "+ value.id.toString() + " The quantity is " + value.quantity.toString());
       });
-    }else{
-      Get.snackbar("Item count", "하나 이상은 카트에 넣어야 해요.");
-    }
+
+      update();
+
+  }
+
+  int get totalItems{
+    return _cart.totalItems;
+  }
+
+  List<CartModel> get getItems{
+    return _cart.getItems;
   }
 
 }

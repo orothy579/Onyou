@@ -91,7 +91,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context,__,___) => BottomBar(),
+                    pageBuilder: (context,__,___) => BottomBar(id: 0),
                     transitionDuration: Duration.zero,
                     reverseTransitionDuration: Duration.zero,
                   ),

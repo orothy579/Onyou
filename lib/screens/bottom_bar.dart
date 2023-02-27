@@ -5,23 +5,31 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:onebody/screens/home.dart';
 import 'package:onebody/screens/shop/shop.dart';
 import 'package:onebody/screens/team.dart';
 import 'package:http/http.dart' as http;
+import '../controllers/cart_controller.dart';
+import '../controllers/popular_product_controller.dart';
+import '../helper/dependencies.dart';
 import '../style/app_styles.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key,}) : super(key: key);
+  int id;
+  BottomBar({Key? key, required this.id}) : super(key: key);
 
   @override
   State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int _selectedIndex = 0;
+  // int _selectedIndex = id;
   String? mtoken;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  int get _selectedIndex => widget.id;
 
 
 
@@ -30,6 +38,7 @@ class _BottomBarState extends State<BottomBar> {
     requestPermission();
     getToken();
     initInfo();
+
   }
 
   initInfo(){
@@ -149,7 +158,7 @@ class _BottomBarState extends State<BottomBar> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.id = index;
     });
   }
 

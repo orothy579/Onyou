@@ -4,6 +4,7 @@ import 'package:onebody/routes/route_helper.dart';
 import 'package:onebody/screens/addPages/addnotice.dart';
 import 'package:onebody/screens/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
+import 'package:onebody/screens/cart/cart_page.dart';
 import 'package:onebody/screens/home.dart';
 import 'package:onebody/screens/sentence.dart';
 import 'package:onebody/screens/shop/detail/popular_product_detail.dart';
@@ -52,13 +53,14 @@ class _OnyouAppState extends State<OnyouApp> {
       debugShowCheckedModeBanner: false,
       getPages: RouteHelper.routes,
       routes: {
-        '/home' : (BuildContext context) => const BottomBar(),
+        '/home' : (BuildContext context) => BottomBar(id : 0),
         '/login' : (BuildContext context) => const LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
         '/shop' : (BuildContext context) => const ShopPage(),
-        '/hommie': (BuildContext context) => const HomePage()
+        '/hommie': (BuildContext context) => const HomePage(),
+        '/cart' : (BuildContext context) => const CartPage()
       },
       theme: _onbodyTheme,
     );
