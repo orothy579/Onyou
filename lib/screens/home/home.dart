@@ -3,15 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../style/app_styles.dart';
+import '../../style/app_styles.dart';
 import 'package:logger/logger.dart';
-import '../model/Notice.dart';
-import '../model/Story.dart';
-import '../model/user.dart';
-import 'addPages/addnotice.dart';
-import 'addPages/addstory.dart';
+import '../../model/Notice.dart';
+import '../../model/Story.dart';
+import '../../model/user.dart';
+import '../addPages/addnotice.dart';
+import '../addPages/addstory.dart';
+import './detail.dart';
 import 'detail.dart';
 
 List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];
@@ -88,6 +89,7 @@ class _HomePageState extends State<HomePage> {
   String _dropdownValue = list_dropdown.first;
   int _current = 0;
   final CarouselController _controller = CarouselController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,13 +172,13 @@ class _HomePageState extends State<HomePage> {
             automaticallyImplyLeading: false,
             elevation: 20,
             title: Text(
-              "Onebody Community",
+              "${FirebaseAuth.instance.currentUser!.uid}",
               style: TextStyle(fontSize: 10),
             ),
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
               title: FutureBuilder<Users>(
-                future: getUser(_uid),
+                future: getUser(FirebaseAuth.instance.currentUser!.uid),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Users data = snapshot.data!;
@@ -265,8 +267,10 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                   ),
                   onPressed: () async {
-                    Navigator.pushNamed(context, '/login');
                     await FirebaseAuth.instance.signOut();
+                    await GoogleSignIn().signOut();
+
+                    Navigator.pushNamed(context, '/login');
                   }),
             ],
             // 최대 높이

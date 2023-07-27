@@ -17,8 +17,18 @@ class _ShopPageState extends State<ShopPage> {
   @override
   Widget build(BuildContext context) {
     print("current height is " + MediaQuery.of(context).size.height.toString());
-    return Scaffold(
-      body: Column(
+    return
+
+      Scaffold(
+      body:
+      // Center(
+      //   child: Text(
+      //     '곧 업데이트 될 예정입니다. ☺️',
+      //     style: TextStyle(fontSize: 24),
+      //   ),
+      // ),
+
+      Column(
         children: [
           Container(
             margin: EdgeInsets.only(top: Dimensions.height45, bottom: Dimensions.height15),

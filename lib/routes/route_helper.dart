@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:onebody/screens/home.dart';
+import 'package:onebody/screens/home/home.dart';
 import 'package:onebody/screens/shop/detail/popular_product_detail.dart';
 import '../screens/cart/cart_page.dart';
 import '../screens/shop/detail/recommended_food_detail.dart';

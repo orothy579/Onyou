@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app.dart';
 import 'firebase_options.dart';
-import 'package:get/get.dart';
 import 'helper/dependencies.dart' as dep;
+import 'package:provider/provider.dart';
+
+import 'model/utils.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.messageId}');
@@ -12,6 +14,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 Future<void> main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
   await dep.init();
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,5 +24,11 @@ Future<void> main() async{
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  runApp(const OnyouApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => EventProvider(),
+      child: OnyouApp(),
+    )
+  );
+
 }

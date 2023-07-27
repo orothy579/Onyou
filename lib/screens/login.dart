@@ -20,8 +20,9 @@ class LoginPage extends StatelessWidget {
       'email': data.user!.email,
       'uid': data.user!.uid,
       'image': data.user!.photoURL,
-      'liked' : [],
       'prayTitle':[],
+      'statusmessage': '',
+      'teamRef': '', // initially empty, to be updated when user joins a team
     }, SetOptions(merge : true));
     return data.user;
   }
@@ -34,13 +35,13 @@ class LoginPage extends StatelessWidget {
       'email': '익명',
       'uid': data.user!.uid,
       'image': 'https://img.freepik.com/premium-vector/cute-jesus-with-finger-heart-shape_123847-889.jpg',
-      'liked' : [],
       'prayTitle':[],
-      'praynumber': 0,
-      'total_time' : 0,
+      'statusmessage': '',
+      'teamRef': '', // initially empty, to be updated when user joins a team
     }, SetOptions(merge : true));
     return data.user;
   }
+
 
 
   @override

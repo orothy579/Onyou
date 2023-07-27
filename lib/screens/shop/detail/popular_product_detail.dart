@@ -62,8 +62,9 @@ class PopularProductDetail extends StatelessWidget {
                     GetBuilder<PopularProductController>(builder: (controller) {
                       return GestureDetector(
                         onTap: () {
-                          if(controller.totalItems>=1)
-                          Get.toNamed(RouteHelper.cartPage);
+                          if(controller.totalItems>=1) {
+                            Get.toNamed(RouteHelper.cartPage);
+                          }
                         },
                         child: Stack(
                           children: [

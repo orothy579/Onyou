@@ -6,9 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:onebody/screens/bottom_bar.dart';
-
 import '../../model/Notice.dart';
-
 
 
 class AddNoticePage extends StatefulWidget {

@@ -1,19 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class Users  {
-
   Users({
     this.email,
-    this.status_message,
-    this.image,
     this.uid,
+    this.image,
     this.name,
-    this.like,
-    this.time,
-    this.praynumber,
-    this.totaltime,
-    this.date,
+    this.status_message,
+    this.prayerTitle,
+    this.teamRef,
   });
 
   String? email;
@@ -21,29 +16,22 @@ class Users  {
   String? image;
   String? name;
   String? status_message;
-  int? like;
-  Timestamp? time;
-  int? praynumber;
-  int? totaltime;
-  List<DateTime>? date;
-
+  List<String>? prayerTitle;
+  DocumentReference? teamRef;
   DocumentReference? reference;
 
   Users.fromJson(dynamic json, this.reference){
+    email = json['email'];
     uid = json['uid'];
     image = json['image'];
     name = json['name'];
     status_message = json['status_message'];
-    email = json['email'];
-    like = json['like'];
-    time = json['time'];
-    praynumber = json['praynumber'];
-    totaltime = json['totaltime'];
-    date = json['date'];
+    prayerTitle = List<String>.from(json['prayerTitle'] ?? []);
+    if (json['teamRef'] != null && json['teamRef'] != "") {
+      teamRef = FirebaseFirestore.instance.doc(json['teamRef']);
+    }
   }
 
-
   Users.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot)
-      : this.fromJson(snapshot.data(),snapshot.reference);
-
+      : this.fromJson(snapshot.data(), snapshot.reference);
 }

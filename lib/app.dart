@@ -5,13 +5,13 @@ import 'package:onebody/screens/addPages/addnotice.dart';
 import 'package:onebody/screens/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/cart/cart_page.dart';
-import 'package:onebody/screens/home.dart';
-import 'package:onebody/screens/sentence.dart';
-import 'package:onebody/screens/shop/detail/popular_product_detail.dart';
-import 'package:onebody/screens/shop/detail/recommended_food_detail.dart';
+import 'package:onebody/screens/home/home.dart';
+import 'package:onebody/screens/home/sentence.dart';
+import 'package:onebody/screens/profile.dart';
+import 'package:onebody/screens/register.dart';
 import 'package:onebody/screens/shop/shop.dart';
 import 'controllers/recommended_product_controller.dart';
-import 'screens/login.dart';
+import 'screens/login2.dart';
 import 'style/app_styles.dart';
 import 'package:get/get.dart';
 
@@ -54,13 +54,15 @@ class _OnyouAppState extends State<OnyouApp> {
       getPages: RouteHelper.routes,
       routes: {
         '/home' : (BuildContext context) => BottomBar(id : 0),
-        '/login' : (BuildContext context) => const LoginPage(),
+        '/login' : (BuildContext context) => LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
         '/shop' : (BuildContext context) => const ShopPage(),
         '/hommie': (BuildContext context) => const HomePage(),
-        '/cart' : (BuildContext context) => const CartPage()
+        '/cart' : (BuildContext context) => const CartPage(),
+        '/register' : (BuildContext context) => RegisterPage(),
+        '/profileRegister' : (BuildContext context) => ProfilePage(),
       },
       theme: _onbodyTheme,
     );
