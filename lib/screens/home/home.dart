@@ -171,10 +171,6 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             elevation: 20,
-            title: Text(
-              "${FirebaseAuth.instance.currentUser!.uid}",
-              style: TextStyle(fontSize: 10),
-            ),
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
               title: FutureBuilder<Users>(
@@ -225,12 +221,12 @@ class _HomePageState extends State<HomePage> {
               expandedTitleScale: 1.0,
             ),
             actions: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
-                  ),
-                  onPressed: () => {Navigator.pushNamed(context, '/wishlist')}),
+              // IconButton(
+              //     icon: Icon(
+              //       Icons.shopping_cart,
+              //       color: Colors.white,
+              //     ),
+              //     onPressed: () => {Navigator.pushNamed(context, '/wishlist')}),
               IconButton(
                   icon: Icon(
                     Icons.add,

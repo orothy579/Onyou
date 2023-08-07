@@ -11,7 +11,7 @@ import 'package:onebody/screens/profile.dart';
 import 'package:onebody/screens/register.dart';
 import 'package:onebody/screens/shop/shop.dart';
 import 'controllers/recommended_product_controller.dart';
-import 'screens/login2.dart';
+import 'screens/login.dart';
 import 'style/app_styles.dart';
 import 'package:get/get.dart';
 

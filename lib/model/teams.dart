@@ -4,7 +4,7 @@ class Team {
   final String id; // Firestore 문서 ID
   final String name; // 팀 이름
   final List<DocumentReference> users; // 팀에 속한 유저들의 문서 참조
-  final List<String> prayerTitles; // 팀 내 기도제목들
+  final List<DocumentReference> prayerTitles; // 팀 내 기도제목들을 참조하는 문서 참조
   final List<DocumentReference> stories; // 팀원들이 올린 스토리의 문서 참조
 
   Team({
@@ -22,7 +22,7 @@ class Team {
       id: doc.id,
       name: data['name'],
       users: (data['users'] as List).map((userRef) => FirebaseFirestore.instance.doc(userRef)).toList(),
-      prayerTitles: List<String>.from(data['prayerTitles']),
+      prayerTitles: (data['prayerTitles'] as List).map((prayerTitleRef) => FirebaseFirestore.instance.doc(prayerTitleRef)).toList(),
       stories: (data['stories'] as List).map((storyRef) => FirebaseFirestore.instance.doc(storyRef)).toList(),
     );
   }
@@ -32,7 +32,7 @@ class Team {
     return {
       'name': name,
       'users': users.map((docRef) => docRef.path).toList(),
-      'prayerTitles': prayerTitles,
+      'prayerTitles': prayerTitles.map((docRef) => docRef.path).toList(),
       'stories': stories.map((docRef) => docRef.path).toList(),
     };
   }

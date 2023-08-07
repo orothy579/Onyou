@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -332,9 +334,8 @@ class _TeamPageState extends State<TeamPage> {
                     color: Colors.white,
                   ),
                   onPressed: () async {
-                    uploadTeam("TEST");
-                    // Navigator.pushNamed(context, '/login');
-                    // await FirebaseAuth.instance.signOut();
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushNamed(context, '/login');
                   }),
             ],
             // 최대 높이
@@ -363,86 +364,125 @@ class _TeamPageState extends State<TeamPage> {
                     ),
 
                     StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('teams')
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Something went wrong');
-                          }
+                      stream: FirebaseFirestore.instance
+                          .collection('teams')
+                          .snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Something went wrong');
+                        }
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Text("Loading");
-                          }
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Text("Loading");
+                        }
 
-                          List<Widget> teamWidgets = snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data() as Map<String, dynamic>;
-                            return Container(
-                              margin: EdgeInsets.all(10.0), // 위젯 주변에 마진 추가
-                              padding: EdgeInsets.all(10.0), // 위젯 내부에 패딩 추가
-                              decoration: BoxDecoration(
-                                color: camel, // Living Coral 색상
-                                borderRadius: BorderRadius.circular(15), // 테두리 둥글게
-                                boxShadow: [ // 그림자 효과
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3), // 그림자 위치
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: GestureDetector(
-                                  child: Text(
-                                    data['name'],
-                                    style: TextStyle( // 텍스트 스타일링
-                                      color: Colors.white, // 텍스트 색상
-                                      fontWeight: FontWeight.bold, // 텍스트 두께
-                                      fontSize: 20, // 텍스트 크기
+                        List<Widget> teamWidgets = snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data =
+                          document.data() as Map<String, dynamic>;
+                          return FutureBuilder<QuerySnapshot>(
+                            future: FirebaseFirestore.instance
+                                .collection('teams')
+                                .doc(document.id)
+                                .collection('prayerTitles')
+                                .get(),
+                            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> prayerSnapshot) {
+                              if (prayerSnapshot.hasError) {
+                                return Text('Something went wrong');
+                              }
+
+                              if (prayerSnapshot.connectionState == ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              }
+
+                              String prayerTitle = "No prayers found for this team";
+                              if (prayerSnapshot.data != null && prayerSnapshot.data!.docs.isNotEmpty) {
+                                final Random random = Random();
+                                final int randomIndex = random.nextInt(prayerSnapshot.data!.docs.length);
+                                final DocumentSnapshot randomPrayerDoc = prayerSnapshot.data!.docs[randomIndex];
+                                final Map<String, dynamic> randomPrayerData = randomPrayerDoc.data() as Map<String, dynamic>;
+                                prayerTitle = randomPrayerData['description'];
+                              }
+
+                              return Container(
+                                margin: EdgeInsets.all(10.0),
+                                padding: EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white70,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 3),
                                     ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TeamDetailPage(
-                                            teamDocument: document
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  ],
                                 ),
-                              ),
-                            );
-                          }).toList();
+                                child: Center(
+                                  child: GestureDetector(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,  // 가로 방향으로 중앙에 배치합니다.
+                                      mainAxisSize: MainAxisSize.max,  // 가능한 최대 크기로 확장합니다.
+                                      children: [
+                                        SizedBox(height: 20),  // 추가 간격
+                                        Text(
+                                          data['name'],
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        SizedBox(height: 130),  // 더 큰 간격
+                                        Text(
+                                          prayerTitle,
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TeamDetailPage(
+                                              teamDocument: document
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
 
-                          return CarouselSlider(
-                            options: CarouselOptions(
-                              height: 400,
-                              aspectRatio: 16/9, // 화면 비율 조정
-                              viewportFraction: 0.8, // Carousel에서 보여지는 아이템의 비율을 설정 (0.0 ~ 1.0)
-                              initialPage: 0, // 초기 페이지를 설정
-                              enableInfiniteScroll: true, // 무한 스크롤을 활성화
-                              reverse: false, // 역방향 스크롤을 활성화
-                              autoPlay: true, // 자동 플레이를 활성화
-                              autoPlayInterval: Duration(seconds: 3), // 자동 플레이 간격을 설정
-                              autoPlayAnimationDuration: Duration(milliseconds: 800), // 페이지 전환 애니메이션 지속 시간을 설정
-                              autoPlayCurve: Curves.fastOutSlowIn, // 페이지 전환 애니메이션 효과를 설정
-                              enlargeCenterPage: true, // 중앙의 아이템을 확대하여 강조 효과를 줌
-                              onPageChanged: (index, reason) { // 페이지 변경 시 이벤트 핸들러
-                                // 페이지가 변경될 때 마다 수행할 작업을 여기에 작성
-                              },
-                              scrollDirection: Axis.horizontal, // 스크롤 방향을 설정 (가로 또는 세로)
-                            ),
-                            items: teamWidgets,
+                            },
                           );
-                        },
-                      ),
+                        }).toList();
+
+                        return CarouselSlider(
+                          options: CarouselOptions(
+                            height: 400,
+                            aspectRatio: 16/9,
+                            viewportFraction: 0.8,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayAnimationDuration: Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            enlargeCenterPage: true,
+                            onPageChanged: (index, reason) {},
+                            scrollDirection: Axis.horizontal,
+                          ),
+                          items: teamWidgets,
+                        );
+                      },
+                    ),
+
                     StreamBuilder<Map<DateTime, List<Event>>>(
                       stream: Provider.of<EventProvider>(context, listen: false)
                           .getEventsFromFirebase(),
@@ -454,26 +494,6 @@ class _TeamPageState extends State<TeamPage> {
                           final allEvents = snapshot.data;
                           return Column(
                             children: [
-                              Container(
-                                alignment: Alignment.centerRight,
-                                child: IconButton(
-                                  icon: Icon(Icons.add),
-                                  onPressed: () {
-                                    showDateRangePicker(
-                                      context: context,
-                                      firstDate: DateTime(2023, 1, 1),
-                                      lastDate: DateTime(2023, 12, 31),
-                                    ).then((dateRange) {
-                                      if (dateRange != null) {
-                                        // 선택한 날짜 범위 처리
-                                        setState(() {
-                                          // _selectedDateRange = dateRange;
-                                        });
-                                      }
-                                    });
-                                  },
-                                ),
-                              ),
                               SizedBox(
                                 height: 18.0,
                               ),
