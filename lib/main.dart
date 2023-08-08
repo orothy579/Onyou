@@ -5,6 +5,8 @@ import 'app.dart';
 import 'firebase_options.dart';
 import 'helper/dependencies.dart' as dep;
 import 'package:provider/provider.dart';
+import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+
 
 import 'model/utils.dart';
 
@@ -14,6 +16,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 
 Future<void> main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  KakaoSdk.init(
+    nativeAppKey: '5bf2605b815ccdf83bfe6e59a0c43d85',
+    javaScriptAppKey: '1df23e709fe1c0e1acffdc3a13156ae2',
+  );
 
   WidgetsFlutterBinding.ensureInitialized();
   await dep.init();

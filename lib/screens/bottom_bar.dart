@@ -190,7 +190,10 @@ class _BottomBarState extends State<BottomBar> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.groups_outlined), label: "팀"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart_outlined), label: "굿즈"),
+                  icon: Icon(Icons.view_timeline_outlined), label: "커뮤니티"),
+              // BottomNavigationBarItem(
+              //     icon: Icon(Icons.shopping_cart_outlined), label: "굿즈"),
+              BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "일정"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.settings_outlined), label: "설정"),
             ],
