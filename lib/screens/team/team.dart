@@ -144,21 +144,6 @@ class _TeamPageState extends State<TeamPage> {
     });
   }
 
-  // void _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: _focusedDay, // 기본 날짜를 선택합니다. 여기서 selectedDate는 DateTime 객체입니다.
-  //     firstDate: DateTime(2021, 8),
-  //     lastDate: DateTime(2101),
-  //   );
-  //   if (picked != null && picked != _focusedDay)
-  //     setState(() {
-  //       _focusedDay = picked;
-  //     });
-  //   // 이제 selectedDate에 선택된 날짜가 저장되었습니다. 이 날짜에 이벤트를 추가할 수 있습니다.
-  //    _addEvent(_selectedDay!);
-  // }
-
   void _addEvent(DateTime date, Event event) async {
     final eventProvider = Provider.of<EventProvider>(context, listen: false);
 
@@ -281,37 +266,6 @@ class _TeamPageState extends State<TeamPage> {
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  void uploadTeam(String teamName) async {
-    DocumentReference docRef = _db.collection('teams').doc(teamName); // 새로운 팀 문서 참조 생성
-
-    Map<String, dynamic> teamData = {
-      'name': teamName,
-      'users': [
-        '09a81GTEiDXmbY7x1OYTHkhgqOm2',
-        '5SsMr0RhztTjiwoCCH7clxhOlvd2',
-        // 팀에 속한 유저들의 ID 또는 참조
-      ],
-      'prayerTitle': [
-        '감사합니다',
-        '고맙습니다.',
-        // 팀의 기도 제목
-      ],
-    };
-
-    await docRef.set(teamData); // 팀 데이터 업로드
-
-    CollectionReference storiesRef = docRef.collection('stories'); // 팀의 stories 서브컬렉션 참조
-
-    Map<String, dynamic> storyData = {
-      'title': '이야기 제목',
-      'description': '이야기 내용',
-      'u_image' :'https://dfstudio-d420.kxcdn.com/wordpress/wp-content/uploads/2019/06/digital_camera_photo-980x653.jpg',
-      'create_timestamp': FieldValue.serverTimestamp(), // 서버 시간으로 생성 타임스탬프 설정
-    };
-
-    await storiesRef.add(storyData); // 이야기 데이터 업로드
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -422,29 +376,30 @@ class _TeamPageState extends State<TeamPage> {
                                 child: Center(
                                   child: GestureDetector(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,  // 가로 방향으로 중앙에 배치합니다.
-                                      mainAxisSize: MainAxisSize.max,  // 가능한 최대 크기로 확장합니다.
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        SizedBox(height: 20),  // 추가 간격
+                                        SizedBox(height: 20),
                                         Text(
                                           data['name'],
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 20,
+                                            fontSize: 30,
                                           ),
                                         ),
-                                        SizedBox(height: 130),  // 더 큰 간격
+                                        SizedBox(height: 150), // add a spacing between the name and the prayer title
                                         Text(
                                           prayerTitle,
                                           style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 16,
+                                            fontSize: 18,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    onTap: () {
+
+                                      onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -464,14 +419,14 @@ class _TeamPageState extends State<TeamPage> {
 
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: 400,
+                            height: 550,
                             aspectRatio: 16/9,
-                            viewportFraction: 0.8,
+                            viewportFraction: 0.9,
                             initialPage: 0,
                             enableInfiniteScroll: true,
                             reverse: false,
                             autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayInterval: Duration(seconds: 5),
                             autoPlayAnimationDuration: Duration(milliseconds: 800),
                             autoPlayCurve: Curves.fastOutSlowIn,
                             enlargeCenterPage: true,
@@ -483,158 +438,7 @@ class _TeamPageState extends State<TeamPage> {
                       },
                     ),
 
-                    StreamBuilder<Map<DateTime, List<Event>>>(
-                      stream: Provider.of<EventProvider>(context, listen: false)
-                          .getEventsFromFirebase(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Text(
-                              "Something went wrong: ${snapshot.error}");
-                        } else {
-                          final allEvents = snapshot.data;
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 18.0,
-                              ),
-                              Stack(
-                                children: <Widget>[
-                                  Positioned(
-                                    top: 10,
-                                    left: 150,
-                                    right: 150,
-                                    child: Container(
-                                      height: 25,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: boxGrey,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned.fill(
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "공동체 일정",
-                                        style: headLineGreenStyle,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.centerRight,
-                                    child: IconButton(
-                                      icon: Icon(Icons.add),
-                                      padding: EdgeInsets.only(right: 10.0),
-                                      onPressed: () async {
-                                        _showEventInputDialog(
-                                            context, _selectedDay!);
-                                      }, // 오른쪽 여백 추가
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 18.0,
-                              ),
-                              TableCalendar<Event>(
-                                firstDay: kFirstDay,
-                                lastDay: kLastDay,
-                                focusedDay: _focusedDay,
-                                availableCalendarFormats: {
-                                  CalendarFormat.month: 'Month'
-                                },
-                                selectedDayPredicate: (day) =>
-                                    isSameDay(_selectedDay, day),
-                                rangeStartDay: _rangeStart,
-                                sixWeekMonthsEnforced: false,
-                                rangeEndDay: _rangeEnd,
-                                calendarFormat: _calendarFormat,
-                                rangeSelectionMode: _rangeSelectionMode,
-                                eventLoader: (day) {
-                                  return allEvents?[day] ?? [];
-                                },
-                                startingDayOfWeek: StartingDayOfWeek.sunday,
-                                calendarStyle: CalendarStyle(
-                                  outsideDaysVisible: false,
-                                ),
-                                onDaySelected: _onDaySelected,
-                                onRangeSelected: _onRangeSelected,
-                                onFormatChanged: (format) {
-                                  if (_calendarFormat != format) {
-                                    setState(() {
-                                      _calendarFormat = format;
-                                    });
-                                  }
-                                },
-                                onPageChanged: (focusedDay) {
-                                  _focusedDay = focusedDay;
-                                },
-                                // onDayLongPressed: (date, events) {
-                                //   _showEventInputDialog(context, date);
-                                // },
-                              ),
-                              StreamBuilder<List<Event>>(
-                                stream: getEventsByDate(_selectedDay),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    final events = snapshot.data;
-                                    return SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      child: ListView.builder(
-                                        physics: NeverScrollableScrollPhysics(),
-                                        itemCount: events?.length,
-                                        itemBuilder: (context, index) {
-                                          final event = events?[index];
-                                          return Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 12.0,
-                                              vertical: 4.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              border: Border.all(),
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                            ),
-                                            child: ListTile(
-                                              title: Text('${event?.title}'),
-                                              trailing: IconButton(
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.grey,
-                                                ),
-                                                onPressed: () {
-                                                  _showDeleteConfirmationDialog(
-                                                      context,
-                                                      _focusedDay,
-                                                      event!);
-                                                },
-                                              ),
-                                              onLongPress: () {
-                                                _showDeleteConfirmationDialog(
-                                                    context,
-                                                    _focusedDay,
-                                                    event!);
-                                              },
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text('Error: ${snapshot.error}');
-                                  } else {
-                                    return CircularProgressIndicator();
-                                  }
-                                },
-                              ),
-                            ],
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(height: 8.0),
+
                   ],
                 ),
               ],

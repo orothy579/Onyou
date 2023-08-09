@@ -4,22 +4,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
-
 import '../../model/prayerTitle.dart';
 
-class TeamDetailPage extends StatelessWidget {
+class TeamDetailPage extends StatefulWidget {
   final DocumentSnapshot teamDocument;
 
   TeamDetailPage({required this.teamDocument});
 
+  @override
+  _TeamDetailPageState createState() => _TeamDetailPageState();
+}
+
+class _TeamDetailPageState extends State<TeamDetailPage> {
   // Some TextField Controllers to get input from the user
   final descriptionController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${teamDocument['name']} 기도제목', style: TextStyle(color: Colors.black)),
+        title: Text('${widget.teamDocument['name']} 기도제목',
+            style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -30,7 +36,7 @@ class TeamDetailPage extends StatelessWidget {
             Expanded(
               flex: 1,
               child: StreamBuilder<QuerySnapshot>(
-                stream: teamDocument.reference
+                stream: widget.teamDocument.reference
                     .collection('prayerTitles')
                     .orderBy('dateTime', descending: true)
                     .snapshots(),
@@ -65,9 +71,9 @@ class TeamDetailPage extends StatelessWidget {
                   prayerTitlesByDate.entries.forEach((entry) {
                     sections.add(
                       Text(
-                        DateFormat('yyyy년 MM월 dd일').format(entry.key), // 헤더를 날짜로 설정합니다.
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black26),
-                        textAlign: TextAlign.center
+                          DateFormat('yyyy년 MM월 dd일').format(entry.key), // 헤더를 날짜로 설정합니다.
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black26),
+                          textAlign: TextAlign.center
                       ),
                     );
 
@@ -136,7 +142,7 @@ class TeamDetailPage extends StatelessWidget {
                 },
               ),
             ),
-          TextField(
+            TextField(
               controller: descriptionController,
               decoration: InputDecoration(
                 hintText: '기도제목을 입력하세요.',
@@ -151,6 +157,8 @@ class TeamDetailPage extends StatelessWidget {
                 suffixIcon: IconButton(
                   icon: Icon(Icons.send),
                   onPressed: () async {
+
+
                     final Currentuser = FirebaseAuth.instance.currentUser;
 
                     if (Currentuser != null) {
@@ -164,18 +172,26 @@ class TeamDetailPage extends StatelessWidget {
 
                       await FirebaseFirestore.instance
                           .collection('teams')
-                          .doc(teamDocument.id)
+                          .doc(widget.teamDocument.id)
                           .update({
                         'prayerTitle': FirebaseFirestore.instance
                             .collection('teams')
-                            .doc(teamDocument.id)
+                            .doc(widget.teamDocument.id)
                             .collection('prayerTitles')
                             .add(prayerTitle.toMap())
                       });
 
-                      descriptionController.clear();
                     }
+
+                    setState(() {
+                      FocusScope.of(context).unfocus();
+                      descriptionController.clear();
+                    });
+
+
                   },
+
+
                 ),
               ),
             ),
@@ -184,97 +200,11 @@ class TeamDetailPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    // 컨트롤러를 dispose 하여 메모리 누수를 방지
+    descriptionController.dispose();
+    super.dispose();
+  }
 }
-// import 'package:flutter/material.dart';
-//
-// class TeamDetailPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('팀예시', style: TextStyle(fontFamily: 'Billabong', fontSize: 35.0)),
-//         actions: <Widget>[
-//           IconButton(
-//             icon: Icon(Icons.add_box_outlined),
-//             onPressed: () {},
-//           ),
-//           IconButton(
-//             icon: Icon(Icons.favorite_border_outlined),
-//             onPressed: () {},
-//           ),
-//           IconButton(
-//             icon: Icon(Icons.chat_bubble_outline),
-//             onPressed: () {},
-//           ),
-//         ],
-//       ),
-//       body: ListView.builder(
-//         itemCount: 5, // or however many posts you want
-//         itemBuilder: (BuildContext context, int index) {
-//           return Column(
-//             children: <Widget>[
-//               ListTile(
-//                 leading: CircleAvatar(
-//                   backgroundImage: NetworkImage('https://i.pinimg.com/564x/bf/51/15/bf511502f561794019d0d8cd13fb17f9.jpg'),
-//                 ),
-//                 title: Text('User $index'),
-//                 trailing: IconButton(
-//                   icon: Icon(Icons.more_horiz),
-//                   onPressed: () {},
-//                 ),
-//               ),
-//               Container(
-//                 constraints: BoxConstraints.expand(
-//                   height: Theme.of(context).textTheme.headlineMedium!.fontSize! * 1.1 + 200.0,
-//                 ),
-//                 child: Image.network(
-//                   'https://i.pinimg.com/564x/dd/45/22/dd4522d608c0cf639ff65a5098425093.jpg',
-//                   fit: BoxFit.cover,
-//                 ),
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   Row(
-//                     children: <Widget>[
-//                       IconButton(
-//                         icon: Icon(Icons.favorite_border),
-//                         onPressed: () {},
-//                       ),
-//                       IconButton(
-//                         icon: Icon(Icons.mode_comment_outlined),
-//                         onPressed: () {},
-//                       ),
-//                       IconButton(
-//                         icon: Icon(Icons.share_outlined),
-//                         onPressed: () {},
-//                       ),
-//                     ],
-//                   ),
-//                   IconButton(
-//                     icon: Icon(Icons.bookmark_border),
-//                     onPressed: () {},
-//                   ),
-//                 ],
-//               ),
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//                 child: Text(
-//                   'Liked by username and others',
-//                   style: TextStyle(fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-//                 child: Text(
-//                   'View all comments',
-//                   style: TextStyle(color: Colors.grey),
-//                 ),
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }

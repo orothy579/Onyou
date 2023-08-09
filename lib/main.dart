@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'helper/dependencies.dart' as dep;
 import 'package:provider/provider.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 
 import 'model/utils.dart';
@@ -32,6 +33,7 @@ Future<void> main() async{
   );
   await FirebaseMessaging.instance.getInitialMessage();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await initializeDateFormatting();
 
   runApp(
     ChangeNotifierProvider(
