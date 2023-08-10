@@ -16,6 +16,7 @@ import '../controllers/popular_product_controller.dart';
 import '../helper/dependencies.dart';
 import '../style/app_styles.dart';
 import 'calendar/calendar.dart';
+import 'community/storylist.dart';
 
 class BottomBar extends StatefulWidget {
   int id;
@@ -153,7 +154,8 @@ class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
     const TeamPage(),
-    const ShopPage(),
+    StoryList(),
+    //const ShopPage(),
     const CalendarPage(),
     const Text("Profile")
   ];

@@ -10,7 +10,6 @@ import 'package:onebody/screens/bottom_bar.dart';
 import '../../model/Story.dart';
 
 
-
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({Key? key}) : super(key: key);
 
@@ -18,15 +17,13 @@ class AddStoryPage extends StatefulWidget {
   State<AddStoryPage> createState() => _AddStoryPageState();
 }
 
-
 class _AddStoryPageState extends State<AddStoryPage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
   String? _imageUrl;
 
-  //upload images to Storage
   uploadImage() async {
-    String dt  = DateTime.now().toString();
+    String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -39,12 +36,8 @@ class _AddStoryPageState extends State<AddStoryPage> {
     });
   }
 
-  //Create products data to Firestore Database.
   final db = FirebaseFirestore.instance;
   final _uid = FirebaseAuth.instance.currentUser!.uid;
-
-
-
 
   void StorySession() async {
     Timestamp now = Timestamp.now();
@@ -52,30 +45,32 @@ class _AddStoryPageState extends State<AddStoryPage> {
     // Get a reference to the Firestore collection
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
 
-  // Get a document reference
+    // Get a document reference
     final DocumentReference documentRef = myCollection.doc(_uid);
 
-  // Get the value of a specific field in the document
+    // Get the value of a specific field in the document
     final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
     final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
 
-
-    _imageUrl == null ? _imageUrl = "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png" : null;
+    _imageUrl = _imageUrl ?? "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png";
 
     Story story = Story(
       image: _imageUrl,
-      name : fieldValname,
-      u_image : fieldValimage,
+      name: fieldValname,
+      u_image: fieldValimage,
       title: _title.text,
       description: _description.text,
       create_timestamp: now,
+      userRef: documentRef,
+      likes: [],
     );
 
     await db.collection('story').doc(story.title).set(story.toJson()).then(
-            (value) => log("Story uploaded successfully!"),
-        onError: (e) => log("Error while uploading!"));
+          (value) => log("Story uploaded successfully!"),
+      onError: (e) => log("Error while uploading!"),
+    );
 
-    Navigator.pushNamed(context,'/home');
+    Navigator.pushNamed(context, '/home');
   }
 
   @override
@@ -153,4 +148,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
         resizeToAvoidBottomInset: true
     );
   }
+
 }
+

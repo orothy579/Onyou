@@ -13,7 +13,6 @@ import '../../model/user.dart';
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
 import './detail.dart';
-import 'detail.dart';
 
 List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];
 
@@ -479,7 +478,8 @@ class _HomePageState extends State<HomePage> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: camel,
-                                                    shape: BoxShape.circle),
+                                                    shape: BoxShape.circle
+                                                ),
                                                 width: 20,
                                                 height: 20,
                                                 child: Image.network(
