@@ -55,6 +55,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
     _imageUrl = _imageUrl ?? "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png";
 
     Story story = Story(
+      id : _title.text,
       image: _imageUrl,
       name: fieldValname,
       u_image: fieldValimage,

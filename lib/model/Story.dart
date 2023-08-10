@@ -30,6 +30,7 @@ class Story {
   List<String>? likes;
 
   Story.fromJson(dynamic json, this.reference) {
+    id = json['id'];
     image = json['image'];
     title = json['title'];
     name = json['name'];
@@ -46,6 +47,7 @@ class Story {
   }
 
   Map<String, dynamic> toJson() => {
+    "id" : id,
     "image": image,
     "title": title,
     "name": name,

@@ -20,6 +20,7 @@ class _StoryCardState extends State<StoryCard> {
   bool _isLiked = false;
 
   _toggleLike() async {
+
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       if (_isLiked) {
@@ -41,6 +42,8 @@ class _StoryCardState extends State<StoryCard> {
         _isLiked = !_isLiked;
       });
     }
+
+
   }
 
   bool  _showFullDescription = false ;

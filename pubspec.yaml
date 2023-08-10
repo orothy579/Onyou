@@ -96,6 +96,17 @@ flutter:
     - assets/kakao1.png
     - assets/kakao_login_medium_wide.png
     - assets/kakao_login_large_wide.png
+    - assets/Branding.jpeg
+    - assets/Branding1.jpeg
+    - assets/Builder Community.jpeg
+    - assets/Neighbor.jpeg
+    - assets/OBC.jpeg
+    - assets/OCB.jpeg
+    - assets/OEC.jpeg
+    - assets/OFC.jpeg
+    - assets/Onebody FC.jpeg
+    - assets/OnebodyHouse.jpeg
+    - assets/OSW.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
