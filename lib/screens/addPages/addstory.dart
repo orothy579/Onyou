@@ -20,20 +20,21 @@ class AddStoryPage extends StatefulWidget {
 class _AddStoryPageState extends State<AddStoryPage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
-  String? _imageUrl;
+  List<String> _imageUrls = []; // 이미지 URL 목록을 저장
 
-  uploadImage() async {
+  uploadImages() async {
     String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
     final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    var file = File(image!.path);
 
-    var snapshot = await _firebaseStorage.ref().child('story/story-$dt').putFile(file);
-    var downloadUrl = await snapshot.ref.getDownloadURL();
-    setState(() {
-      _imageUrl = downloadUrl;
-    });
+    List<XFile>? images = await _picker.pickMultiImage();
+    for (var image in images!) {
+      var file = File(image.path);
+      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-${image.name}').putFile(file);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      _imageUrls.add(downloadUrl);
+    }
+    setState(() {});
   }
 
   final db = FirebaseFirestore.instance;
@@ -41,22 +42,15 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
   void StorySession() async {
     Timestamp now = Timestamp.now();
-
-    // Get a reference to the Firestore collection
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
-
-    // Get a document reference
     final DocumentReference documentRef = myCollection.doc(_uid);
 
-    // Get the value of a specific field in the document
     final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
     final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
 
-    _imageUrl = _imageUrl ?? "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png";
-
     Story story = Story(
-      id : _title.text,
-      image: _imageUrl,
+      id: _title.text,
+      images: _imageUrls,  // 수정됨: 이미지 URL 목록을 전달
       name: fieldValname,
       u_image: fieldValimage,
       title: _title.text,
@@ -74,81 +68,96 @@ class _AddStoryPageState extends State<AddStoryPage> {
     Navigator.pushNamed(context, '/home');
   }
 
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
-        appBar: AppBar(
-          leading:
-          IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: ()  {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context,__,___) => BottomBar(id: 0),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                );
-              }
-          ),
-          title: Text('소식을 전하세요 ☺️'),
-
-          centerTitle: true,
-
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.send),
-              onPressed: StorySession,
-            )
-          ],
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurpleAccent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-
-        body:
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                  margin: EdgeInsets.all(25),
-                  child: (_imageUrl != null)
-                      ? Image.network(_imageUrl!)
-                      : IconButton(onPressed: uploadImage, icon: Icon(Icons.camera_alt_outlined), iconSize: 300,)
-
+        title: Text('소식을 전하세요 ☺️', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: StorySession,
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
               ),
-
-              const SizedBox(height: 18.0),
-
-              Row(
-                children: <Widget>[
-                  Expanded(child: Card(child: Column(children: [
-                    SizedBox(height: 100.0,),
-                    TextField(
-                      controller: _title,
-                      decoration: InputDecoration(
-                        labelText: '제목을 입력 해주세요.',
-                      ),
-                    ),
-                    SizedBox(height: 100.0,),
-                    TextField(
-                      controller: _description,
-                      decoration: InputDecoration(
-                        labelText: '어떤 이야기를 전하고 싶나요?',
-                      ),
-                    ),
-                    SizedBox(height: 100.0,),
-
-                  ],),))
+              itemCount: _imageUrls.length,
+              itemBuilder: (context, index) {
+                return Image.network(_imageUrls[index], fit: BoxFit.cover);
+              },
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: uploadImages,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_photo_alternate, size: 25,),
+                  SizedBox(width: 5),
+                  Text("사진 추가", style: TextStyle(fontSize: 16)),
                 ],
               ),
-
-            ],
-          ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.deepPurpleAccent,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: TextField(
+                controller: _title,
+                decoration: InputDecoration(
+                  labelText: '제목을 입력 해주세요.',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: TextField(
+                controller: _description,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: '어떤 이야기를 전하고 싶나요?',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+          ],
         ),
-        resizeToAvoidBottomInset: true
+      ),
     );
   }
-
 }
-

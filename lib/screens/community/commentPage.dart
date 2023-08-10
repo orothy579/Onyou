@@ -5,32 +5,50 @@ import 'package:flutter/material.dart';
 
 import '../../model/Story.dart';
 
-class CommentPage extends StatelessWidget {
+class CommentPage extends StatefulWidget {
   final Story story;
-  final TextEditingController _commentController = TextEditingController();
 
   CommentPage({required this.story});
+
+  @override
+  _CommentPageState createState() => _CommentPageState();
+}
+
+class _CommentPageState extends State<CommentPage> {
+  final TextEditingController _commentController = TextEditingController();
+  final List<DocumentSnapshot> comments = [];
 
   Future<void> _submitComment() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null && _commentController.text.isNotEmpty) {
-      await FirebaseFirestore.instance
+      final docRef = await FirebaseFirestore.instance
           .collection('story')
-          .doc(story.id)
+          .doc(widget.story.id)
           .collection('comments')
           .add({
         'userId': user.uid,
         'content': _commentController.text,
         'timestamp': Timestamp.now(),
       });
-      _commentController.clear();
+
+      final doc = await docRef.get();
+
+      setState(() {
+        comments.insert(0, doc);
+        _commentController.clear();
+      });
     }
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-
       builder: (BuildContext context, ScrollController scrollController) {
         return Column(
           children: [
@@ -45,7 +63,6 @@ class CommentPage extends StatelessWidget {
                 ),
               ),
             ),
-
             Container(
               height: 40.0,
               padding: const EdgeInsets.all(8.0),
@@ -65,7 +82,7 @@ class CommentPage extends StatelessWidget {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('story')
-                    .doc(story.id)
+                    .doc(widget.story.id)
                     .collection('comments')
                     .orderBy('timestamp', descending: true)
                     .snapshots(),
@@ -74,10 +91,12 @@ class CommentPage extends StatelessWidget {
                     return CircularProgressIndicator();
                   }
 
+                  comments..clear()..addAll(snapshot.data!.docs);
+
                   return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
+                    itemCount: comments.length,
                     itemBuilder: (context, index) {
-                      final doc = snapshot.data!.docs[index];
+                      final doc = comments[index];
                       return ListTile(
                         title: Text(doc['content']),
                         subtitle: Text(doc['timestamp'].toDate().toString()),
@@ -103,9 +122,9 @@ class CommentPage extends StatelessWidget {
           ],
         );
       },
-      initialChildSize: 1.0, // Change this value as needed
-      minChildSize: 0.5, // Change this value as needed
-      maxChildSize: 1.0, // Change this value as needed
+      initialChildSize: 1.0,
+      minChildSize: 0.5,
+      maxChildSize: 1.0,
     );
   }
 }

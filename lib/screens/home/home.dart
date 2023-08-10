@@ -523,9 +523,10 @@ class _HomePageState extends State<HomePage> {
                                           ],
                                         ),
                                         SizedBox(height: 5.0),
-                                        AspectRatio(
-                                            aspectRatio: 18 / 11,
-                                            child: Image.network(data.image!)),
+                                        // AspectRatio(
+                                        //     aspectRatio: 18 / 11,
+                                        //     child: Image.network(data.images.first)
+                                        // ),
                                         Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(

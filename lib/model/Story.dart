@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Story {
   Story({
-    this. id,
-    this. userId,
-    this.image,
+    this.id,
+    this.userId,
+    this.images, // 수정됨
     this.title,
     this.name,
     this.u_image,
@@ -18,7 +18,7 @@ class Story {
 
   String? id;
   String? userId;
-  String? image;
+  List<String>? images; // 수정됨
   String? title;
   String? name;
   String? u_image;
@@ -31,7 +31,7 @@ class Story {
 
   Story.fromJson(dynamic json, this.reference) {
     id = json['id'];
-    image = json['image'];
+    images = json['images'] != null ? List<String>.from(json['images']) : null; // 수정됨
     title = json['title'];
     name = json['name'];
     u_image = json['u_image'];
@@ -47,8 +47,8 @@ class Story {
   }
 
   Map<String, dynamic> toJson() => {
-    "id" : id,
-    "image": image,
+    "id": id,
+    "images": images, // 수정됨
     "title": title,
     "name": name,
     "u_image": u_image,

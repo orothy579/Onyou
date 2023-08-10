@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart'; // 추가된 import
 
 import '../../model/Story.dart';
 import 'commentPage.dart';
@@ -20,7 +21,6 @@ class _StoryCardState extends State<StoryCard> {
   bool _isLiked = false;
 
   _toggleLike() async {
-
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       if (_isLiked) {
@@ -42,16 +42,13 @@ class _StoryCardState extends State<StoryCard> {
         _isLiked = !_isLiked;
       });
     }
-
-
   }
 
-  bool  _showFullDescription = false ;
+  bool _showFullDescription = false;
 
   @override
   Widget build(BuildContext context) {
-    _isLiked =
-        widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
+    _isLiked = widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
 
     String displayDescription;
     if (widget.story.description!.length > 20) {
@@ -61,72 +58,117 @@ class _StoryCardState extends State<StoryCard> {
     } else {
       displayDescription = widget.story.description!;
     }
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20.0),
+        border: Border.all(color: Colors.grey[200]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2.0,
+            blurRadius: 5.0,
+            offset: Offset(0, 3),
+          ),
+        ],
 
-    return Card(
-      shadowColor: Colors.grey,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      clipBehavior: Clip.antiAlias,
+
+      ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(widget.story.u_image!),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(widget.story.u_image!),
+                ),
+                SizedBox(width: 10.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.story.title!,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Text(
+                      widget.story.name!,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                )
+              ],
             ),
-            title: Text(widget.story.title!),
-            subtitle: Text(widget.story.name!),
           ),
           Container(
             width: double.infinity,
             height: 300.0,
-            child: Image.network(
-              widget.story.image!,
-              fit: BoxFit.cover,
+            child: CarouselSlider.builder(
+              itemCount: widget.story.images!.length,
+              itemBuilder: (context, index, realIdx) {
+                return Image.network(
+                  widget.story.images![index],
+                  fit: BoxFit.cover,
+                );
+              },
+              options: CarouselOptions(
+                autoPlay: false,
+                enlargeCenterPage: true,
+                viewportFraction: 1.0,
+                aspectRatio: 16/9,
+              ),
             ),
           ),
-          SizedBox(height: 8.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                icon: Icon(
-                  _isLiked ? Icons.favorite : Icons.favorite_border,
-                  color: _isLiked ? Colors.red : Colors.grey,
-                ),
-                onPressed: _toggleLike,
-              ),
-              Text('${widget.story.likes!.length}'),
-              IconButton(
-                icon: Icon(Icons.comment),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true, // 스크롤을 제어하여 Bottom Sheet의 크기를 조절
-                    builder: (BuildContext context) {
-                      // 화면 크기를 가져옴
-                      double height = MediaQuery.of(context).size.height;
-
-                      return ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: height * 0.8, // 화면 높이의 70%를 최대 높이로 지정
-                        ),
-                        child: CommentPage(story: widget.story),
-                      );
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20), // Top 부분을 둥글게
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        _isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: _isLiked ? Colors.red : Colors.grey[600],
                       ),
+                      onPressed: _toggleLike,
                     ),
-                  );
-                },
-              )
+                    Text('${widget.story.likes!.length}', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(Icons.comment, color: Colors.grey[600]),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        double height = MediaQuery.of(context).size.height;
 
-
-            ],
+                        return ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: height * 0.8,
+                          ),
+                          child: CommentPage(story: widget.story),
+                        );
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: widget.story.description!.length > 20
                 ? RichText(
               text: TextSpan(
@@ -135,7 +177,7 @@ class _StoryCardState extends State<StoryCard> {
                   TextSpan(text: displayDescription),
                   TextSpan(
                     text: _showFullDescription ? " 접기" : " ... 더보기",
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         setState(() {
@@ -151,6 +193,7 @@ class _StoryCardState extends State<StoryCard> {
         ],
       ),
     );
+
 
   }
 }
