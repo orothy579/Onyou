@@ -22,6 +22,13 @@ class _AddStoryPageState extends State<AddStoryPage> {
   final _description = TextEditingController();
   List<String> _imageUrls = []; // 이미지 URL 목록을 저장
 
+  String? _selectedTeam;
+  final List<String> _teams = [
+    'brading', 'builder community', 'OBC', 'OCB', 'OEC',
+    'OFC', 'OSW', 'Onebody FC', 'Onebody House', '이웃'
+  ];
+
+
   uploadImages() async {
     String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
@@ -45,6 +52,11 @@ class _AddStoryPageState extends State<AddStoryPage> {
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
     final DocumentReference documentRef = myCollection.doc(_uid);
 
+    DocumentReference? teamDocumentRef;
+    if (_selectedTeam != null) {
+      teamDocumentRef = db.collection('teams').doc(_selectedTeam); // 'teams'는 팀이 저장된 컬렉션 이름을 나타냅니다. 필요에 따라 수정해야 합니다.
+    }
+
     final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
     final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
 
@@ -57,6 +69,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       description: _description.text,
       create_timestamp: now,
       userRef: documentRef,
+      teamRef: teamDocumentRef,
       likes: [],
     );
 
@@ -94,6 +107,29 @@ class _AddStoryPageState extends State<AddStoryPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: DropdownButton<String>(
+                hint: Text('팀을 선택해주세요.'),
+                value: _selectedTeam,
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedTeam = value;
+                  });
+                },
+                items: _teams.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(height: 20),
+
+
             SizedBox(height: 10),
             GridView.builder(
               shrinkWrap: true,
@@ -154,7 +190,13 @@ class _AddStoryPageState extends State<AddStoryPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+
+
+
+
+
+
+
           ],
         ),
       ),

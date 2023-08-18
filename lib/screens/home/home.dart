@@ -448,7 +448,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                               color: boxGrey,
                               borderRadius: BorderRadius.circular(10)),
-                          child: Text("공동체 소식", style: headLineGreenStyle)),
+                          child: Text("커뮤니티", style: headLineGreenStyle)),
                     ),
                     FutureBuilder<List<Story>>(
                         future: getDataASC(),
@@ -572,6 +572,91 @@ class _HomePageState extends State<HomePage> {
                                 child: CircularProgressIndicator());
                           }
                         }),
+                    Center(
+                      child: Container(
+                          height: 25,
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.grey[300], // 예시 색상입니다. boxGrey로 변경하셔도 됩니다.
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Text("커뮤니티", style: TextStyle(color: Colors.green[700]))), // 예시 스타일입니다. headLineGreenStyle로 변경하셔도 됩니다.
+                    ),
+                    FutureBuilder<List<Story>>(
+                      future: getDataASC(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<Story> datas = snapshot.data!;
+                          return GridView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: datas.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              Story data = datas[index];
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => DetailPage(storys: datas[index])),
+                                  );
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 7,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: NetworkImage(data.u_image!),
+                                        radius: 20,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        data.name!,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        data.title!,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 1, // 1을 설정하여 동그라미 형태로 만듭니다.
+                            ),
+                            shrinkWrap: true,
+                          );
+                        } else if (snapshot.hasError) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
                   ],
                 ),
               ],

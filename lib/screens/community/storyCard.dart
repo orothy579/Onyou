@@ -122,7 +122,117 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ... (기존의 Container 내용)
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(widget.story.u_image!),
+                    ),
+                    SizedBox(width: 10.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.story.title!,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        Text(
+                          widget.story.name!,
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                height: 300.0,
+                child: CarouselSlider.builder(
+                  itemCount: widget.story.images!.length,
+                  itemBuilder: (context, index, realIdx) {
+                    return Image.network(
+                      widget.story.images![index],
+                      fit: BoxFit.cover,
+                    );
+                  },
+                  options: CarouselOptions(
+                    autoPlay: false,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1.0,
+                    aspectRatio: 16/9,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            _isLiked ? Icons.favorite : Icons.favorite_border,
+                            color: _isLiked ? Colors.red : Colors.grey[600],
+                          ),
+                          onPressed: _toggleLike,
+                        ),
+                        Text('${widget.story.likes!.length}', style: TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.comment, color: Colors.grey[600]),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            double height = MediaQuery.of(context).size.height;
+
+                            return ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: height * 0.8,
+                              ),
+                              child: CommentPage(story: widget.story),
+                            );
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: widget.story.description!.length > 20
+                    ? RichText(
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: [
+                      TextSpan(text: displayDescription),
+                      TextSpan(
+                        text: _showFullDescription ? " 접기" : " ... 더보기",
+                        style: TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _showFullDescription = !_showFullDescription;
+                            });
+                          },
+                      ),
+                    ],
+                  ),
+                )
+                    : Text(widget.story.description!),
+              ),
             ],
           ),
         ),

@@ -16,6 +16,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 
+
 Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,9 +26,7 @@ Future<void> main() async{
     javaScriptAppKey: '1df23e709fe1c0e1acffdc3a13156ae2',
   );
 
-  WidgetsFlutterBinding.ensureInitialized();
   await dep.init();
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -36,10 +35,10 @@ Future<void> main() async{
   await initializeDateFormatting();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => EventProvider(),
-      child: OnyouApp(),
-    )
+      ChangeNotifierProvider(
+        create: (context) => EventProvider(),
+        child: OnyouApp(),
+      )
   );
 
 }
