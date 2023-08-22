@@ -13,6 +13,7 @@ import '../../model/Story.dart';
 import '../../model/user.dart';
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
+import '../addPages/selectionPage.dart';
 import './detail.dart';
 
 //관련 url 집어 넣는 url
@@ -242,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (context, __, ___) => AddStoryPage(),
+                        pageBuilder: (context, __, ___) => SelectionPage(),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero,
                       ),

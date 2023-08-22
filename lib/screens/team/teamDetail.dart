@@ -163,6 +163,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
 
                     if (Currentuser != null) {
                       final prayerTitle = PrayerTitle(
+                        id: '',
                         dateTime: Timestamp.fromDate(DateTime.now()),
                         userRef: FirebaseFirestore.instance
                             .collection('users')

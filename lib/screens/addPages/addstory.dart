@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:onebody/style/app_styles.dart';
 import '../../model/Story.dart';
-
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({Key? key}) : super(key: key);
@@ -19,15 +19,41 @@ class AddStoryPage extends StatefulWidget {
 class _AddStoryPageState extends State<AddStoryPage> {
   final _title = TextEditingController();
   final _description = TextEditingController();
-  List<String> _imageUrls = []; // 이미지 URL 목록을 저장
-
+  List<String> _imageUrls = [];
   String? _selectedTeam;
   final List<String> _teams = [
     'Branding', 'Builder Community', 'OBC', 'OCB', 'OEC',
     'OFC', 'OSW', 'Onebody FC', 'Onebody House', '이웃'
   ];
 
+  DocumentReference? _userTeamRef;
+  String? _userTeamName;
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserTeam();
+  }
+
+  _fetchUserTeam() async {
+    final DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(_uid);
+    final userDoc = await userRef.get();
+    final teamRefStr = userDoc['teamRef'];
+
+    if (teamRefStr != null) {
+      _userTeamRef = FirebaseFirestore.instance.doc(teamRefStr);
+      final teamDoc = await _userTeamRef!.get();
+      setState(() {
+        _userTeamName = teamDoc['name'];
+      });
+    }
+  }
+
+
+
+
+  // Form의 상태를 추적하기 위한 GlobalKey
+  final _formKey = GlobalKey<FormState>();
 
   uploadFiles() async {
     String dt = DateTime.now().toString();
@@ -64,16 +90,10 @@ class _AddStoryPageState extends State<AddStoryPage> {
   final db = FirebaseFirestore.instance;
   final _uid = FirebaseAuth.instance.currentUser!.uid;
 
-
   void StorySession() async {
     Timestamp now = Timestamp.now();
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
     final DocumentReference documentRef = myCollection.doc(_uid);
-
-    DocumentReference? teamDocumentRef;
-    if (_selectedTeam != null) {
-      teamDocumentRef = db.collection('teams').doc(_selectedTeam);
-    }
 
     final documentData = await documentRef.get();
     final fieldValname = documentData.get('name');
@@ -88,7 +108,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       description: _description.text,
       create_timestamp: now,
       userRef: documentRef,
-      teamRef: teamDocumentRef,
+      teamRef: _userTeamRef,
       likes: [],
     );
 
@@ -101,16 +121,12 @@ class _AddStoryPageState extends State<AddStoryPage> {
     }
   }
 
-
-  final _formKey = GlobalKey<FormState>();
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: onebody1,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -123,97 +139,108 @@ class _AddStoryPageState extends State<AddStoryPage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.send),
-            onPressed: StorySession,
+            onPressed: () {
+              if (_formKey.currentState!.validate()) { // Form 검증
+                StorySession();
+              }
+            },
           )
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-
-
-            SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: _imageUrls.length,
-              itemBuilder: (context, index) {
-                return Image.network(_imageUrls[index], fit: BoxFit.cover);
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: uploadFiles,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add_photo_alternate, size: 25,),
-                  SizedBox(width: 5),
-                  Text("사진 추가", style: TextStyle(fontSize: 16)),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.deepPurpleAccent,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                 ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextField(
-                controller: _title,
-                decoration: InputDecoration(
-                  labelText: '제목을 입력 해주세요.',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextField(
-                controller: _description,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: '어떤 이야기를 전하고 싶나요?',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: DropdownButton<String>(
-                hint: Text('팀을 선택해주세요.'),
-                value: _selectedTeam,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedTeam = value;
-                  });
+                itemCount: _imageUrls.length,
+                itemBuilder: (context, index) {
+                  return Image.network(_imageUrls[index], fit: BoxFit.cover);
                 },
-                items: _teams.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: uploadFiles,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add_photo_alternate, size: 25,),
+                    SizedBox(width: 5),
+                    Text("사진 추가", style: TextStyle(fontSize: 16)),
+                  ],
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: onebody1,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  controller: _title,
+                  decoration: InputDecoration(
+                    labelText: '제목을 입력 해주세요.',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  controller: _description,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    labelText: '어떤 이야기를 전하고 싶나요?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child:
+
+                DropdownButtonFormField<String>(
+                  hint: Text('팀을 선택해주세요.'),
+                  value: _userTeamName,
+                  onChanged: (String? value) {
+                    // 본인이 속한 팀만 표시되기 때문에 별도의 변경 작업은 필요하지 않습니다.
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '팀 정보가 없습니다.';
+                    }
+                    return null;
+                  },
+                  items: _userTeamName == null
+                      ? []
+                      : [DropdownMenuItem<String>(
+                    value: _userTeamName,
+                    child: Text(_userTeamName!),
+                  )],
+                )
+
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

@@ -11,6 +11,11 @@ const kShrineBackgroundWhite = Colors.white;
 const mainGreen = Color(0xFF547557);
 const camel = Color(0xFFE8D6B2);
 const boxGrey = Color(0xffe8e8e8);
+const onebody1 = Color(0xff46C2CB);
+const onebody2 = Color(0xfff2f7a1);
+const onebody3 = Color(0xffd3ffe5);
+const onebody4 = Color(0xff92fabc);
+const onebody5 = Color(0xff0014ff);
 
 const textColor = Color(0xFF3b3b3b);
 

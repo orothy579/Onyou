@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:onebody/screens/community/mixedList.dart';
 import 'package:onebody/screens/home/home.dart';
 import 'package:onebody/screens/shop/shop.dart';
 import 'package:onebody/screens/team/team.dart';
@@ -154,7 +155,7 @@ class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
     const TeamPage(),
-    StoryList(),
+    MixedList(),
     //const ShopPage(),
     const CalendarPage(),
     const Text("Profile")
