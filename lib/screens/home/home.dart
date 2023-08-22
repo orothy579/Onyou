@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onebody/screens/home/teamGridWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/app_styles.dart';
 import 'package:logger/logger.dart';
@@ -13,8 +14,6 @@ import '../../model/user.dart';
 import '../addPages/addnotice.dart';
 import '../addPages/addstory.dart';
 import './detail.dart';
-
-List<String> list_dropdown = <String>['OCB', 'OBC', 'OEC', 'OFC', 'OSW'];
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {
@@ -85,7 +84,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _uid = FirebaseAuth.instance.currentUser!.uid;
   // For Dropdown
-  String _dropdownValue = list_dropdown.first;
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
@@ -220,12 +218,6 @@ class _HomePageState extends State<HomePage> {
               expandedTitleScale: 1.0,
             ),
             actions: <Widget>[
-              // IconButton(
-              //     icon: Icon(
-              //       Icons.shopping_cart,
-              //       color: Colors.white,
-              //     ),
-              //     onPressed: () => {Navigator.pushNamed(context, '/wishlist')}),
               IconButton(
                   icon: Icon(
                     Icons.add,
@@ -277,22 +269,6 @@ class _HomePageState extends State<HomePage> {
               <Widget>[
                 Column(
                   children: [
-                    //For dropdown
-                    //Dropdown
-                    // DropdownButton<String>(
-                    //     value: _dropdownValue,
-                    //     items: list.map<DropdownMenuItem<String>>((String value) {
-                    //       return DropdownMenuItem<String>(
-                    //         value: value,
-                    //         child: Text(value),
-                    //       );
-                    //     }).toList(),
-                    //     onChanged: (String? value) {
-                    //       setState(() {
-                    //         _dropdownValue = value!;
-                    //       });
-                    //     }),
-
                     //"공지사항"
                     SizedBox(height: 30.0),
                     //carousel
@@ -440,228 +416,13 @@ class _HomePageState extends State<HomePage> {
                           .toList(),
                     )),
                     SizedBox(height: 30.0),
-                    Center(
-                      child: Container(
-                          height: 25,
-                          width: 100,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Text("커뮤니티", style: headLineGreenStyle)),
-                    ),
-                    FutureBuilder<List<Story>>(
-                        future: getDataASC(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<Story> datas = snapshot.data!;
-                            return GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: datas.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  Story data = datas[index];
-                                  return Card(
-                                    shadowColor: Colors.grey,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: camel,
-                                                    shape: BoxShape.circle
-                                                ),
-                                                width: 20,
-                                                height: 20,
-                                                child: Image.network(
-                                                    data.u_image!),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text("${data.name}"),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  70, 5, 0, 5),
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  foregroundColor:
-                                                      Colors.blueAccent,
-                                                  padding: EdgeInsets.zero,
-                                                  minimumSize: Size.zero,
-                                                  textStyle: TextStyle(
-                                                      fontSize: 10,
-                                                      overflow: TextOverflow
-                                                          .ellipsis),
-                                                  tapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                ),
-                                                onPressed: () => {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              DetailPage(
-                                                                storys: datas[
-                                                                    index],
-                                                              )))
-                                                },
-                                                child: const Text("more"),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.0),
-                                        // AspectRatio(
-                                        //     aspectRatio: 18 / 11,
-                                        //     child: Image.network(data.images.first)
-                                        // ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                16.0, 12.0, 16.0, 8.0),
-                                            child: SingleChildScrollView(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    "[${data.title!}]",
-                                                    maxLines: 1,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  const SizedBox(height: 8.0),
-                                                  Text(" ${data.description}"),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 8 / 9,
-                                ),
-                                shrinkWrap: true);
-                          } else if (snapshot.hasError) {
-                            return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Error: ${snapshot.error}',
-                                  style: TextStyle(fontSize: 15),
-                                ));
-                          } else {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                        }),
-                    Center(
-                      child: Container(
-                          height: 25,
-                          width: 100,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Colors.grey[300], // 예시 색상입니다. boxGrey로 변경하셔도 됩니다.
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Text("커뮤니티", style: TextStyle(color: Colors.green[700]))), // 예시 스타일입니다. headLineGreenStyle로 변경하셔도 됩니다.
-                    ),
-                    FutureBuilder<List<Story>>(
-                      future: getDataASC(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          List<Story> datas = snapshot.data!;
-                          return GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: datas.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              Story data = datas[index];
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => DetailPage(storys: datas[index])),
-                                  );
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.3),
-                                        spreadRadius: 2,
-                                        blurRadius: 7,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: NetworkImage(data.u_image!),
-                                        radius: 20,
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        data.name!,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        data.title!,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 1, // 1을 설정하여 동그라미 형태로 만듭니다.
-                            ),
-                            shrinkWrap: true,
-                          );
-                        } else if (snapshot.hasError) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          );
-                        } else {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
                   ],
                 ),
               ],
             ),
           ),
+          TeamGridWidget(),
+
         ],
       ),
     );

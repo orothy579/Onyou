@@ -1,12 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:onebody/screens/bottom_bar.dart';
 import '../../model/Story.dart';
 
 
@@ -24,28 +23,47 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
   String? _selectedTeam;
   final List<String> _teams = [
-    'brading', 'builder community', 'OBC', 'OCB', 'OEC',
+    'Branding', 'Builder Community', 'OBC', 'OCB', 'OEC',
     'OFC', 'OSW', 'Onebody FC', 'Onebody House', '이웃'
   ];
 
 
-  uploadImages() async {
+
+  uploadFiles() async {
     String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
-    final ImagePicker _picker = ImagePicker();
 
-    List<XFile>? images = await _picker.pickMultiImage();
-    for (var image in images!) {
-      var file = File(image.path);
-      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-${image.name}').putFile(file);
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-      _imageUrls.add(downloadUrl);
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'mkv'], // 이미지 및 동영상 확장자 추가
+      );
+
+      if (result == null || result.files.isEmpty) return; // 사용자가 파일 선택을 취소한 경우
+
+      for (var file in result.files) {
+        var currentFile = File(file.path!);  // non-null assertion 추가
+        String fileName = currentFile.path.split('/').last;
+        var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+        var downloadUrl = await snapshot.ref.getDownloadURL();
+        _imageUrls.add(downloadUrl); // 이 경우 _imageUrls에 이미지와 동영상 URL이 모두 포함됩니다.
+      }
+
+      setState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('파일이 성공적으로 업로드되었습니다!')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('파일 업로드 중 문제가 발생했습니다.')),
+      );
     }
-    setState(() {});
   }
 
   final db = FirebaseFirestore.instance;
   final _uid = FirebaseAuth.instance.currentUser!.uid;
+
 
   void StorySession() async {
     Timestamp now = Timestamp.now();
@@ -54,15 +72,16 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
     DocumentReference? teamDocumentRef;
     if (_selectedTeam != null) {
-      teamDocumentRef = db.collection('teams').doc(_selectedTeam); // 'teams'는 팀이 저장된 컬렉션 이름을 나타냅니다. 필요에 따라 수정해야 합니다.
+      teamDocumentRef = db.collection('teams').doc(_selectedTeam);
     }
 
-    final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
-    final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
+    final documentData = await documentRef.get();
+    final fieldValname = documentData.get('name');
+    final fieldValimage = documentData.get('image');
 
     Story story = Story(
       id: _title.text,
-      images: _imageUrls,  // 수정됨: 이미지 URL 목록을 전달
+      images: _imageUrls,
       name: fieldValname,
       u_image: fieldValimage,
       title: _title.text,
@@ -73,13 +92,17 @@ class _AddStoryPageState extends State<AddStoryPage> {
       likes: [],
     );
 
-    await db.collection('story').doc(story.title).set(story.toJson()).then(
-          (value) => log("Story uploaded successfully!"),
-      onError: (e) => log("Error while uploading!"),
-    );
-
-    Navigator.pushNamed(context, '/home');
+    try {
+      await db.collection('story').doc(story.title).set(story.toJson());
+      log("Story uploaded successfully!");
+      Navigator.pushNamed(context, '/home');
+    } catch (e) {
+      log("Error while uploading!");
+    }
   }
+
+
+  final _formKey = GlobalKey<FormState>();
 
 
   @override
@@ -108,27 +131,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
         child: Column(
           children: [
 
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: DropdownButton<String>(
-                hint: Text('팀을 선택해주세요.'),
-                value: _selectedTeam,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedTeam = value;
-                  });
-                },
-                items: _teams.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
-            SizedBox(height: 20),
-
 
             SizedBox(height: 10),
             GridView.builder(
@@ -146,7 +148,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: uploadImages,
+              onPressed: uploadFiles,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -191,12 +193,26 @@ class _AddStoryPageState extends State<AddStoryPage> {
               ),
             ),
 
-
-
-
-
-
-
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: DropdownButton<String>(
+                hint: Text('팀을 선택해주세요.'),
+                value: _selectedTeam,
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedTeam = value;
+                  });
+                },
+                items: _teams.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(height: 20),
           ],
         ),
       ),

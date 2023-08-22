@@ -7,6 +7,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../../model/Story.dart';
 import 'commentPage.dart';
 
+
+
 class StoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -91,8 +93,21 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
 
   bool _showFullDescription = false;
 
+  bool _isCurrentUserStoryOwner() {
+    final currentUserRef = 'users/' + FirebaseAuth.instance.currentUser!.uid;
+    return currentUserRef == widget.story.userRef!.path;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
+    double fontSize = widget.story.title!.length > 10 ? 15 : 20;
+
+    print(FirebaseAuth.instance.currentUser!.uid);
+    print(widget.story.userRef!.path);
+
+
     _isLiked = widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
     String displayDescription;
     if (widget.story.description!.length > 20) {
@@ -136,7 +151,9 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                       children: [
                         Text(
                           widget.story.title!,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                         Text(
                           widget.story.name!,
@@ -153,16 +170,19 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                 child: CarouselSlider.builder(
                   itemCount: widget.story.images!.length,
                   itemBuilder: (context, index, realIdx) {
-                    return Image.network(
-                      widget.story.images![index],
-                      fit: BoxFit.cover,
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0), // 둥근 모서리 추가
+                      child: Image.network(
+                        widget.story.images![index],
+                        fit: BoxFit.cover,
+                      ),
                     );
                   },
                   options: CarouselOptions(
                     autoPlay: false,
                     enlargeCenterPage: true,
-                    viewportFraction: 1.0,
-                    aspectRatio: 16/9,
+                    viewportFraction: 0.8, // 가운데 이미지를 제외하고 양쪽 이미지가 조금 보이게 수정
+                    aspectRatio: 16 / 9,
                   ),
                 ),
               ),
@@ -183,6 +203,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         Text('${widget.story.likes!.length}', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
+
                     IconButton(
                       icon: Icon(Icons.comment, color: Colors.grey[600]),
                       onPressed: () {
@@ -207,6 +228,17 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         );
                       },
                     ),
+
+                    if (_isCurrentUserStoryOwner())  // 게시물의 작성자만 삭제 아이콘 표시
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red[600]),
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('story')
+                              .doc(widget.story.id)
+                              .delete();
+                        },
+                      ),
                   ],
                 ),
               ),

@@ -22,11 +22,11 @@ class Team {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Team(
       id: doc.id,
-      name: data['name'],
-      users: (data['users'] as List).map((userRef) => FirebaseFirestore.instance.doc(userRef)).toList(),
-      prayerTitles: (data['prayerTitles'] as List).map((prayerTitleRef) => FirebaseFirestore.instance.doc(prayerTitleRef)).toList(),
-      stories: (data['stories'] as List).map((storyRef) => FirebaseFirestore.instance.doc(storyRef)).toList(),
-      imgURL: data['imgURL'],
+      name: data['name'] ?? "",
+      users: (data['users'] as List? ?? []).whereType<DocumentReference>().toList(),
+      prayerTitles: (data['prayerTitles'] as List? ?? []).whereType<DocumentReference>().toList(),
+      stories: (data['stories'] as List? ?? []).whereType<DocumentReference>().toList(),
+      imgURL: data['imgURL'] ?? "",
     );
   }
 
@@ -38,7 +38,6 @@ class Team {
       'prayerTitles': prayerTitles.map((docRef) => docRef.path).toList(),
       'stories': stories.map((docRef) => docRef.path).toList(),
       'imgURL': imgURL,
-
     };
   }
 }
