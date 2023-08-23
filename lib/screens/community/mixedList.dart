@@ -13,7 +13,6 @@ import '../../model/PrayerTitle.dart';
 class MixedList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
 
     return StreamBuilder(
@@ -52,7 +51,6 @@ class MixedList extends StatelessWidget {
         Map<DateTime, List<MixedItem>> mixedItemsByDate = {};
         for (var item in mixedItems) {
           final DateTime date = item.timestamp.toDate();
-
           final key = DateTime(date.year, date.month, date.day);
           if (mixedItemsByDate.containsKey(key)) {
             mixedItemsByDate[key]!.add(item);
@@ -65,38 +63,33 @@ class MixedList extends StatelessWidget {
         mixedItemsByDate.entries.forEach((entry) {
           sections.add(
             Text(
-                DateFormat('yyyy년 MM월 dd일').format(entry.key),
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black26),
-                textAlign: TextAlign.center
+              DateFormat('yyyy년 MM월 dd일').format(entry.key),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black26),
+              textAlign: TextAlign.center,
             ),
           );
 
-          sections.add(
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: entry.value.length,
-              itemBuilder: (context, index) {
-                final item = entry.value[index];
-                if (item.type == 'story') {
-                  return StoryCard(story: item.data as Story);
-                } else {
-                  final prayer = item.data as PrayerTitle;
-                  final isMine = currentUserUid == prayer.userRef.id;
-                  return PrayerCard(prayer: prayer, isMine: isMine);
-                }
-              },
-            ),
-          );
+          sections.addAll(entry.value.map((item) {
+            if (item.type == 'story') {
+              return StoryCard(story: item.data as Story);
+            } else {
+              final prayer = item.data as PrayerTitle;
+              final isMine = currentUserUid == prayer.userRef.id;
+              return PrayerCard(prayer: prayer, isMine: isMine);
+            }
+          }).toList());
         });
 
-        return ListView(
-          children: sections,
+        return SingleChildScrollView(
+          child: Column(
+            children: sections,
+          ),
         );
       },
     );
   }
 }
+
 
 class MixedItem {
   final Timestamp timestamp;

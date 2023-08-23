@@ -64,6 +64,7 @@ dependencies:
   kakao_flutter_sdk_navi: ^1.4.1 # 카카오내비
   kakao_flutter_sdk_friend: ^1.4.1 # 카카오톡 소셜(피커: 친구 선택하기)
   file_picker:
+  font_awesome_flutter: ^10.5.0
 
 
 dev_dependencies:
