@@ -14,30 +14,29 @@ class PrayerCard extends StatefulWidget {
   _PrayerCardState createState() => _PrayerCardState();
 }
 
-class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateMixin {
+class _PrayerCardState extends State<PrayerCard>
+    with SingleTickerProviderStateMixin {
   bool _isPrayedFor = false;
-  bool _showThankYouMessage = false;  // 추가된 변수
   late AnimationController _prayerAnimationController;
   late Animation<double> _prayerAnimation;
 
   String? userName;
+  String? userURL;
   String? teamName;
-
-
 
   @override
   void initState() {
     super.initState();
 
-    _isPrayedFor = widget.prayer.prayedFor?.contains(FirebaseAuth.instance.currentUser!.uid) ?? false;
+    _isPrayedFor = widget.prayer.prayedFor
+            ?.contains(FirebaseAuth.instance.currentUser!.uid) ??
+        false;
 
     _prayerAnimationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
-      value: 1.0,
     );
-
-    _prayerAnimation = Tween<double>(begin: 1.0, end: 1.0).animate(CurvedAnimation(
+    _prayerAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _prayerAnimationController,
       curve: Curves.elasticOut,
     ));
@@ -45,14 +44,12 @@ class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateM
     _fetchUserAndTeamData();
   }
 
-
   _fetchUserAndTeamData() async {
-    if (widget.prayer.userRef != null) {
-      DocumentSnapshot userDoc = await widget.prayer.userRef!.get();
-      setState(() {
-        userName = userDoc['name'];
-      });
-    }
+    DocumentSnapshot userDoc = await widget.prayer.userRef!.get();
+    setState(() {
+      userName = userDoc['name'];
+      userURL = userDoc['image'];
+    });
 
     if (widget.prayer.teamRef != null) {
       DocumentSnapshot teamDoc = await widget.prayer.teamRef!.get();
@@ -62,12 +59,12 @@ class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateM
     }
   }
 
-
-
   _togglePrayedFor() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DocumentReference prayerDoc = FirebaseFirestore.instance.collection('prayers').doc(widget.prayer.id);
+      DocumentReference prayerDoc = FirebaseFirestore.instance
+          .collection('prayers')
+          .doc(widget.prayer.id);
       if (_isPrayedFor) {
         await prayerDoc.update({
           'prayedFor': FieldValue.arrayRemove([user.uid]),
@@ -92,115 +89,153 @@ class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateM
         _isPrayedFor = !_isPrayedFor;
       });
     }
+  }
 
-    if (!_isPrayedFor) {
-      _prayerAnimationController.forward().then((_) {
-        setState(() {
-          _showThankYouMessage = true;
-        });
-        Future.delayed(Duration(seconds: 1), () {
-          _prayerAnimationController.reverse().then((_) {
-            setState(() {
-              _showThankYouMessage = false;
-            });
-          });
-        });
-      });
-    }
+  _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('기도 삭제'),
+          content: Text('이 기도를 정말로 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('삭제'),
+              onPressed: () {
+                _deletePrayer();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  _deletePrayer() async {
+    await FirebaseFirestore.instance.collection('prayers').doc(widget.prayer.id).delete();
   }
 
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-      stream: FirebaseFirestore.instance.collection('prayers').doc(widget.prayer.id).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('prayers')
+          .doc(widget.prayer.id)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+        // 여기서 로딩 상태를 검사하고 로딩 인디케이터를 반환합니다.
+        if (!snapshot.hasData || userName == null || userURL == null) {
+          return Center(child: CircularProgressIndicator());
         }
 
         final prayerData = snapshot.data!.data() as Map<String, dynamic>;
         final prayedForList = List<String>.from(prayerData['prayedFor'] ?? []);
-        _isPrayedFor = prayedForList.contains(FirebaseAuth.instance.currentUser!.uid);
+        _isPrayedFor =
+            prayedForList.contains(FirebaseAuth.instance.currentUser!.uid);
 
-        return Stack( // <-- Stack 위젯으로 감싸기 시작
+        return Stack(
           children: [
-          Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage('<USER_IMAGE_URL>'), // Use Firebase storage URL for user image
-                      radius: 25,
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(userName ?? '', style: TextStyle( fontSize: 16)),
-                          SizedBox(height: 5),
-                          Text(widget.prayer.description, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.comment_outlined),
-                          onPressed: () {
-                            // TODO: Implement comment functionality
-                          },
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(userURL!),
+                          radius: 20,
                         ),
-                        Text('0')  // TODO: Replace with the actual comment count
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        ScaleTransition(
-                          scale: _prayerAnimation,
-                          child: IconButton(
-                            icon: FaIcon(_isPrayedFor ? FontAwesomeIcons.handsPraying : FontAwesomeIcons.hand, color: _isPrayedFor ? Colors.blue : Colors.grey[600]),
-                            onPressed: _togglePrayedFor,
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            widget.prayer.title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text('${prayedForList.length}')
+                        if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: _showDeleteConfirmationDialog,
+                          ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.share_outlined),  // Share Icon
-                      onPressed: () {
-                        // TODO: Implement share functionality
-                      },
+                    SizedBox(height: 8),
+                    Text(userName ?? '',
+                        style:
+                            TextStyle(fontSize: 16, color: Colors.grey[600])),
+                    SizedBox(height: 5),
+                    Text(widget.prayer.description,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16)),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: FaIcon(
+                                  _isPrayedFor
+                                      ? FontAwesomeIcons.handsPraying
+                                      : FontAwesomeIcons.hand,
+                                  color: _isPrayedFor
+                                      ? Colors.blue
+                                      : Colors.grey[600]),
+                              onPressed: _togglePrayedFor,
+                            ),
+                            Text('${prayedForList.length}')
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.comment_outlined, color:Colors.grey[600]),
+                              onPressed: () {
+                                // TODO: Implement comment functionality
+                              },
+                            ),
+                            Text(
+                                '0') // TODO: Replace with the actual comment count
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.share_outlined), // Share Icon
+                          onPressed: () {
+                            // TODO: Implement share functionality
+                          },
+                        ),
+
+                      ],
                     ),
+                    if (teamName != null)
+                      Text('Team: $teamName',
+                          style:
+                              TextStyle(fontSize: 14, color: Colors.grey[600])),
                   ],
                 ),
-                if (teamName != null) Text('Team: $teamName', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-
-
-              ],
+              ),
             ),
-
-          ),
-
-        ),
-
-            if (_showThankYouMessage)
+            if (_isPrayedFor)
               Positioned.fill(
                 child: Center(
                   child: ScaleTransition(
@@ -208,8 +243,10 @@ class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateM
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FaIcon(FontAwesomeIcons.handsPraying , color: Colors.blue,),
-                        Text('기도해주셔서 감사해요!', style: TextStyle(fontWeight: FontWeight.bold)),
+                        FaIcon(FontAwesomeIcons.handsPraying,
+                            color: Colors.blue),
+                        Text('기도해주셔서 감사해요!',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -220,7 +257,6 @@ class _PrayerCardState extends State<PrayerCard> with SingleTickerProviderStateM
       },
     );
   }
-
 
   @override
   void dispose() {

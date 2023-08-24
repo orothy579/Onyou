@@ -2,24 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PrayerTitle {
   final String id;
+  final String title;
   final Timestamp dateTime;
   final DocumentReference userRef;
   final String description;
   DocumentReference? teamRef;
-  List<String>? prayedFor;// prayedFor 필드 추가
+  List<String>? prayedFor;
 
   PrayerTitle({
     required this.id,
+    required this.title,
     required this.dateTime,
     required this.userRef,
     required this.description,
     this.teamRef,
-    this.prayedFor,  // 생성자에 추가
+    this.prayedFor,
   });
 
   // Firebase에 저장할 수 있는 Map 형태로 데이터를 변환합니다.
   Map<String, dynamic> toMap() {
     return {
+      'title' : title,
       'dateTime': dateTime,
       'userRef': userRef,
       'description': description,
@@ -39,11 +42,12 @@ class PrayerTitle {
 
     return PrayerTitle(
       id: doc.id,
+      title: data['title'],
       dateTime: data['dateTime'],
       userRef: data['userRef'],
       description: data['description'],
       teamRef: data['teamRef'],
-      prayedFor: prayedForList, // Firestore로부터 prayedFor를 읽어와 객체를 생성
+      prayedFor: prayedForList,
     );
   }
 }

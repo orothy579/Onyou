@@ -7,8 +7,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../../model/Story.dart';
 import 'commentPage.dart';
 
-
-
 class StoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,7 +14,10 @@ class StoryList extends StatelessWidget {
       children: [
         Expanded(
           child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('story').orderBy('create_timestamp', descending: true).snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('story')
+                .orderBy('create_timestamp', descending: true)
+                .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
                 return CircularProgressIndicator();
@@ -24,7 +25,8 @@ class StoryList extends StatelessWidget {
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  final storyDoc = snapshot.data!.docs[index] as QueryDocumentSnapshot<Map<String,dynamic>>;
+                  final storyDoc = snapshot.data!.docs[index]
+                      as QueryDocumentSnapshot<Map<String, dynamic>>;
                   final story = Story.fromQuerySnapshot(storyDoc);
                   return StoryCard(story: story);
                 },
@@ -45,13 +47,17 @@ class StoryCard extends StatefulWidget {
 }
 
 class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMixin {
-  bool _isLiked = false;
   late AnimationController _heartAnimationController;
   late Animation<double> _heartAnimation;
+
+  bool isLiked = false;
 
   @override
   void initState() {
     super.initState();
+
+    isLiked = widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
+
     _heartAnimationController = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -62,33 +68,60 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
     ));
   }
 
-  _toggleLike() async {
+  Future<void> _toggleLike() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      if (_isLiked) {
-        await FirebaseFirestore.instance
-            .collection('story')
-            .doc(widget.story.id)
-            .update({
-          'likes': FieldValue.arrayRemove([user.uid]),
+    if (user == null) return;
+
+    final storyRef = FirebaseFirestore.instance.collection('story').doc(widget.story.id);
+
+    if (isLiked) {
+      await storyRef.update({
+        'likes': FieldValue.arrayRemove([user.uid]),
+      });
+    } else {
+      await storyRef.update({
+        'likes': FieldValue.arrayUnion([user.uid]),
+      });
+      _heartAnimationController.forward().then((_) {
+        Future.delayed(Duration(seconds: 1), () {
+          _heartAnimationController.reverse();
         });
-      } else {
-        await FirebaseFirestore.instance
-            .collection('story')
-            .doc(widget.story.id)
-            .update({
-          'likes': FieldValue.arrayUnion([user.uid]),
-        });
-        _heartAnimationController.forward().then((_) {
-          Future.delayed(Duration(seconds: 1), () {
-            _heartAnimationController.reverse();
-          });
-        });
-      }
-      setState(() {
-        _isLiked = !_isLiked;
       });
     }
+    setState(() {
+      isLiked = !isLiked;
+    });
+  }
+
+  Future<void> _deleteStory() async {
+    await FirebaseFirestore.instance.collection('story').doc(widget.story.id).delete();
+  }
+
+  void _showDeleteConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('기도 삭제'),
+          content: Text('이 기도를 정말로 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('삭제'),
+              onPressed: () async {
+                await _deleteStory();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   bool _showFullDescription = false;
@@ -99,16 +132,12 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
   }
 
 
-
   @override
   Widget build(BuildContext context) {
+    print("reload");
     double fontSize = widget.story.title!.length > 10 ? 15 : 20;
-
-    print(FirebaseAuth.instance.currentUser!.uid);
-    print(widget.story.userRef!.path);
-
-
-    _isLiked = widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
+    isLiked =
+        widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);
     String displayDescription;
     if (widget.story.description!.length > 20) {
       displayDescription = _showFullDescription
@@ -151,7 +180,8 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                       children: [
                         Text(
                           widget.story.title!,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: fontSize),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -160,7 +190,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -195,17 +225,18 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                       children: [
                         IconButton(
                           icon: Icon(
-                            _isLiked ? Icons.favorite : Icons.favorite_border,
-                            color: _isLiked ? Colors.red : Colors.grey[600],
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            color: isLiked ? Colors.red : Colors.grey[600],
                           ),
                           onPressed: _toggleLike,
                         ),
-                        Text('${widget.story.likes!.length}', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${widget.story.likes!.length}',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
-
                     IconButton(
-                      icon: Icon(Icons.comment, color: Colors.grey[600]),
+                      icon:
+                          Icon(Icons.comment_outlined, color: Colors.grey[600]),
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
@@ -228,41 +259,45 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         );
                       },
                     ),
-
-                    if (_isCurrentUserStoryOwner())  // 게시물의 작성자만 삭제 아이콘 표시
+                    IconButton(
+                      icon: Icon(Icons.share_outlined), // Share Icon
+                      onPressed: () {
+                        // TODO: Implement share functionality
+                      },
+                    ),
+                    if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.red[600]),
                         onPressed: () async {
-                          await FirebaseFirestore.instance
-                              .collection('story')
-                              .doc(widget.story.id)
-                              .delete();
+                          _showDeleteConfirmationDialog();
                         },
                       ),
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: widget.story.description!.length > 20
                     ? RichText(
-                  text: TextSpan(
-                    style: DefaultTextStyle.of(context).style,
-                    children: [
-                      TextSpan(text: displayDescription),
-                      TextSpan(
-                        text: _showFullDescription ? " 접기" : " ... 더보기",
-                        style: TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            setState(() {
-                              _showFullDescription = !_showFullDescription;
-                            });
-                          },
-                      ),
-                    ],
-                  ),
-                )
+                        text: TextSpan(
+                          style: DefaultTextStyle.of(context).style,
+                          children: [
+                            TextSpan(text: displayDescription),
+                            TextSpan(
+                              text: _showFullDescription ? " 접기" : " ... 더보기",
+                              style: TextStyle(color: Colors.blue),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  setState(() {
+                                    _showFullDescription =
+                                        !_showFullDescription;
+                                  });
+                                },
+                            ),
+                          ],
+                        ),
+                      )
                     : Text(widget.story.description!),
               ),
             ],
@@ -275,7 +310,8 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.favorite, color: Colors.red, size: 200),
-                Text('공감해주셔서 감사해요!', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('공감해주셔서 감사해요!',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),

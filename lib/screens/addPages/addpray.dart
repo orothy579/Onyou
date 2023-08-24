@@ -12,6 +12,7 @@ class AddPrayPage extends StatefulWidget {
 }
 
 class _AddPrayPageState extends State<AddPrayPage> {
+  final _title = TextEditingController();
   final _description = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final db = FirebaseFirestore.instance;
@@ -42,6 +43,7 @@ class _AddPrayPageState extends State<AddPrayPage> {
 
     // 먼저 PrayerTitle 객체 없이 데이터를 Firestore에 추가합니다.
     DocumentReference ref = await db.collection('prayers').add({
+      'title' : _title.text,
       'dateTime': now,
       'userRef': db.collection('users').doc(_uid),
       'description': _description.text,
@@ -54,6 +56,7 @@ class _AddPrayPageState extends State<AddPrayPage> {
 
     // 이제 ID를 사용하여 PrayerTitle 객체를 생성할 수 있습니다.
     PrayerTitle prayerTitle = PrayerTitle(
+      title: _title.text,
       id: docId,
       dateTime: now,
       userRef: db.collection('users').doc(_uid),
@@ -97,7 +100,6 @@ class _AddPrayPageState extends State<AddPrayPage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                // 드롭다운 버튼 추가
                 if (_userTeamRef != null)
                   DropdownButton<DocumentReference>(
                     value: _userTeamRef,
@@ -115,15 +117,40 @@ class _AddPrayPageState extends State<AddPrayPage> {
                     },
                   ),
                 SizedBox(height: 20),
-                TextField(
+                TextFormField(
+                  controller: _title,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    labelText: '제목을 입력해주세요.',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                  ),
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return '내용을 입력해주세요.';
+                    }
+                    return null;
+                  }
+
+
+                ),
+                SizedBox(height: 15.0,),
+                TextFormField(
                   controller: _description,
                   maxLines: 5,
                   decoration: InputDecoration(
-                    labelText: '기도 제목을 입력해주세요.',
+                    labelText: '무얼 같이 기도할까요?',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
+                  validator: (value){
+                    if(value == null || value.isEmpty){
+                      return '내용을 입력해주세요.';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 20),
               ],

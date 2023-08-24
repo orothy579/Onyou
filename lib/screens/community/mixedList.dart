@@ -10,7 +10,10 @@ import 'package:intl/src/intl/date_format.dart';
 
 import '../../model/PrayerTitle.dart';
 
+
 class MixedList extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
@@ -71,13 +74,22 @@ class MixedList extends StatelessWidget {
 
           sections.addAll(entry.value.map((item) {
             if (item.type == 'story') {
-              return StoryCard(story: item.data as Story);
-            } else {
-              final prayer = item.data as PrayerTitle;
+              final story = item.data as Story?;
+              if (story == null) {
+                return Center(child: Text("이야기가 없습니다."));
+              }
+              return StoryCard(story: story);
+            }
+            else {
+              final prayer = item.data as PrayerTitle?;
+              if (prayer == null) {
+                return Center(child: Text("기도 제목이 없습니다."));
+              }
               final isMine = currentUserUid == prayer.userRef.id;
               return PrayerCard(prayer: prayer, isMine: isMine);
             }
           }).toList());
+
         });
 
         return SingleChildScrollView(
@@ -98,3 +110,5 @@ class MixedItem {
 
   MixedItem(this.timestamp, this.type, this.data);
 }
+
+

@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onebody/style/app_styles.dart';
 import '../../model/Story.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({Key? key}) : super(key: key);
@@ -87,10 +88,50 @@ class _AddStoryPageState extends State<AddStoryPage> {
     }
   }
 
+  final ImagePicker picker = ImagePicker();
+  final List<XFile> _images = [];
+
+  void _selectImages() async {
+    final List<XFile>? selectedImages = await picker.pickMultiImage();
+
+    if (selectedImages != null) {
+      setState(() {
+        _images.addAll(selectedImages);
+      });
+    }
+  }
+
+
+  void _uploadImages() async {
+    String dt = DateTime.now().toString();
+    final _firebaseStorage = FirebaseStorage.instance;
+
+    for (var file in _images) {
+      final File currentFile = File(file.path);
+      String fileName = currentFile.path.split('/').last;
+      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+    }
+  }
+
+
+
+
   final db = FirebaseFirestore.instance;
   final _uid = FirebaseAuth.instance.currentUser!.uid;
 
   void StorySession() async {
+
+    String dt = DateTime.now().toString();
+    final _firebaseStorage = FirebaseStorage.instance;
+
+    for (var file in _images) {
+      final File currentFile = File(file.path);
+      String fileName = currentFile.path.split('/').last;
+      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+    }
+
     Timestamp now = Timestamp.now();
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
     final DocumentReference documentRef = myCollection.doc(_uid);

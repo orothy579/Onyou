@@ -95,7 +95,10 @@ class CommentPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final doc = comments[index];
                       return FutureBuilder<DocumentSnapshot>(
-                        future: FirebaseFirestore.instance.collection('users').doc(doc['userId']).get(),
+                        future: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(doc['userId'])
+                            .get(),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return CircularProgressIndicator();
@@ -112,13 +115,17 @@ class CommentPage extends StatelessWidget {
                             title: Text(doc['content']),
                             subtitle: Row(
                               children: [
-                                Text(username, style: TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 10), // A little spacing between username and time-ago string.
-                                Text(_timeAgoFromTimestamp(doc['timestamp'].toDate())),
+                                Text(username,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                SizedBox(
+                                    width:
+                                        10), // A little spacing between username and time-ago string.
+                                Text(_timeAgoFromTimestamp(
+                                    doc['timestamp'].toDate())),
                               ],
                             ),
                           );
-
                         },
                       );
                     },
@@ -128,17 +135,22 @@ class CommentPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _commentController,
-                decoration: InputDecoration(
-                  labelText: 'Write a comment...',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: _submitComment,
+              child: SingleChildScrollView(
+                reverse: true,
+                child: TextField(
+                  controller: _commentController,
+                  decoration: InputDecoration(
+                    labelText: 'Write a comment...',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: _submitComment,
+                    ),
                   ),
                 ),
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
               ),
-            ),
+            )
           ],
         );
       },
