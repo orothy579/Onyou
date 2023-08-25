@@ -12,9 +12,7 @@ import '../../model/Notice.dart';
 import '../../model/Story.dart';
 import '../../model/user.dart';
 import '../addPages/addnotice.dart';
-import '../addPages/addstory.dart';
 import '../addPages/selectionPage.dart';
-import './detail.dart';
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {

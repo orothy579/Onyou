@@ -149,7 +149,7 @@ class _PrayerCardState extends State<PrayerCard>
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -234,6 +234,7 @@ class _PrayerCardState extends State<PrayerCard>
                   ],
                 ),
               ),
+              margin: EdgeInsets.all(15.0),
             ),
             if (_isPrayedFor)
               Positioned.fill(
