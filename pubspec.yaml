@@ -66,6 +66,7 @@ dependencies:
   file_picker:
   font_awesome_flutter: ^10.5.0
   wechat_assets_picker: ^8.6.3
+  rxdart: ^0.27.7
 
 
 

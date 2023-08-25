@@ -28,7 +28,10 @@ class StoryList extends StatelessWidget {
                   final storyDoc = snapshot.data!.docs[index]
                       as QueryDocumentSnapshot<Map<String, dynamic>>;
                   final story = Story.fromQuerySnapshot(storyDoc);
-                  return StoryCard(story: story);
+                  return StoryCard(
+                      key : ValueKey(story.id),
+                      story: story
+                  );
                 },
               );
             },
@@ -41,7 +44,7 @@ class StoryList extends StatelessWidget {
 
 class StoryCard extends StatefulWidget {
   final Story story;
-  StoryCard({required this.story});
+  StoryCard({required this.story, Key? key}) : super(key: key);
   @override
   _StoryCardState createState() => _StoryCardState();
 }
