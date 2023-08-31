@@ -16,6 +16,7 @@ const onebody2 = Color(0xfff2f7a1);
 const onebody3 = Color(0xffd3ffe5);
 const onebody4 = Color(0xff92fabc);
 const onebody5 = Color(0xff0014ff);
+const onebody6 = Color(0xffcefc86);
 
 const textColor = Color(0xFF3b3b3b);
 
