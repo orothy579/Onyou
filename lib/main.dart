@@ -35,9 +35,10 @@ Future<void> main() async{
   await initializeDateFormatting();
 
   runApp(
-      ChangeNotifierProvider(
-        create: (context) => EventProvider(),
-        child: OnyouApp(),
+
+        ChangeNotifierProvider(
+          create: (context) => EventProvider(),
+          child: OnyouApp(),
       )
   );
 

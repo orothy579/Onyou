@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onebody/screens/community/prayertitleCard.dart';
 import 'package:onebody/screens/community/storyCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,6 @@ import 'package:intl/src/intl/date_format.dart';
 import '../../model/PrayerTitle.dart';
 import '../../model/user.dart';
 import '../home/home.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui'; // for the BackdropFilter
 
 class MixedList extends StatefulWidget {

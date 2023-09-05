@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:onebody/screens/home/teamMixedList.dart';
 import '../../model/teams.dart';
-import './teamStoryList.dart';
 
 class TeamGridWidget extends StatefulWidget {
   @override
@@ -44,7 +44,7 @@ class _TeamGridWidgetState extends State<TeamGridWidget> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => StoryList(teamRef: FirebaseFirestore.instance.doc('teams/${team.name}')),
+                      builder: (context) => TeamMixedList(teamRef: FirebaseFirestore.instance.doc('teams/${team.name}')),
                     ),
                   );
                 },

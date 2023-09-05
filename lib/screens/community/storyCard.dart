@@ -26,7 +26,7 @@ class StoryList extends StatelessWidget {
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   final storyDoc = snapshot.data!.docs[index]
-                      as QueryDocumentSnapshot<Map<String, dynamic>>;
+                  as QueryDocumentSnapshot<Map<String, dynamic>>;
                   final story = Story.fromQuerySnapshot(storyDoc);
                   return StoryCard(
                       key : ValueKey(story.id),
@@ -239,7 +239,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                     ),
                     IconButton(
                       icon:
-                          Icon(Icons.comment_outlined, color: Colors.grey[600]),
+                      Icon(Icons.comment_outlined, color: Colors.grey[600]),
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
@@ -280,27 +280,27 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: widget.story.description!.length > 20
                     ? RichText(
-                        text: TextSpan(
-                          style: DefaultTextStyle.of(context).style,
-                          children: [
-                            TextSpan(text: displayDescription),
-                            TextSpan(
-                              text: _showFullDescription ? " 접기" : " ... 더보기",
-                              style: TextStyle(color: Colors.blue),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  setState(() {
-                                    _showFullDescription =
-                                        !_showFullDescription;
-                                  });
-                                },
-                            ),
-                          ],
-                        ),
-                      )
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: [
+                      TextSpan(text: displayDescription),
+                      TextSpan(
+                        text: _showFullDescription ? " 접기" : " ... 더보기",
+                        style: TextStyle(color: Colors.blue),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            setState(() {
+                              _showFullDescription =
+                              !_showFullDescription;
+                            });
+                          },
+                      ),
+                    ],
+                  ),
+                )
                     : Text(widget.story.description!),
               ),
             ],
