@@ -5,16 +5,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:onebody/screens/community/mixedList.dart';
+import 'package:onebody/screens/gallery/GalleryPage.dart';
 import 'package:onebody/screens/home/home.dart';
-import 'package:onebody/screens/shop/shop.dart';
-import 'package:onebody/screens/team/team.dart';
 import 'package:http/http.dart' as http;
-import '../controllers/cart_controller.dart';
-import '../controllers/popular_product_controller.dart';
-import '../helper/dependencies.dart';
 import '../style/app_styles.dart';
 import 'calendar/calendar.dart';
 
@@ -153,9 +147,8 @@ class _BottomBarState extends State<BottomBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
-    const TeamPage(),
+    GalleryPage(),
     MixedList(),
-    //const ShopPage(),
     const CalendarPage(),
     const Text("Profile")
   ];
@@ -192,7 +185,7 @@ class _BottomBarState extends State<BottomBar> {
                   icon: Icon(Icons.home_outlined),
                   label: "홈", ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.groups_outlined), label: "팀"),
+                  icon: Icon(Icons.enhance_photo_translate_outlined), label: "팀"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.view_timeline_outlined), label: "커뮤니티"),
               // BottomNavigationBarItem(
