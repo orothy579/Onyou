@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onebody/screens/community/mixedList.dart';
 import 'package:onebody/screens/gallery/GalleryPage.dart';
 import 'package:onebody/screens/home/home.dart';
@@ -147,8 +148,8 @@ class _BottomBarState extends State<BottomBar> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     const HomePage(),
-    GalleryPage(),
     MixedList(),
+    GalleryPage(),
     const CalendarPage(),
     const Text("Profile")
   ];
@@ -185,9 +186,9 @@ class _BottomBarState extends State<BottomBar> {
                   icon: Icon(Icons.home_outlined),
                   label: "홈", ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.enhance_photo_translate_outlined), label: "팀"),
-              BottomNavigationBarItem(
                   icon: Icon(Icons.view_timeline_outlined), label: "커뮤니티"),
+              BottomNavigationBarItem(
+                  icon: FaIcon(FontAwesomeIcons.photoFilm), label: "사진첩"),
               // BottomNavigationBarItem(
               //     icon: Icon(Icons.shopping_cart_outlined), label: "굿즈"),
               BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "일정"),

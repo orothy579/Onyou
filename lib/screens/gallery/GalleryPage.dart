@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -32,6 +31,10 @@ class _GalleryPageState extends State<GalleryPage> {
       imageUrls = urls;
       isLoading = false;
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('로드가 완료되었습니다! 기다려 주셔서 감사합니다!'))
+    );
   }
 
   _showImageDialog(String imageUrl) {
@@ -45,7 +48,6 @@ class _GalleryPageState extends State<GalleryPage> {
               onPressed: () async {
                 Navigator.pop(context);
                 try {
-                  // Download the image using the image_downloader package
                   await ImageDownloader.downloadImage(imageUrl);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Image downloaded!')),
@@ -74,7 +76,7 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Gallery')),
+      appBar: AppBar(title: Text('Gallery'), automaticallyImplyLeading: false,),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : GridView.builder(
@@ -85,7 +87,21 @@ class _GalleryPageState extends State<GalleryPage> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () => _showImageDialog(imageUrls[index]),
-            child: Image.network(imageUrls[index]),
+            child: Image.network(
+              imageUrls[index],
+              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) return child;
+                else {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                    ),
+                  );
+                }
+              },
+            ),
           );
         },
       ),
