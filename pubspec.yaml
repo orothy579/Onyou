@@ -68,6 +68,7 @@ dependencies:
   wechat_assets_picker: ^8.6.3
   rxdart: ^0.27.7
   google_fonts: ^5.1.0
+  image_downloader: ^0.31.0
 
 
 
