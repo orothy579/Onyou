@@ -10,6 +10,7 @@ import 'package:onebody/screens/community/mixedList.dart';
 import 'package:onebody/screens/gallery/GalleryPage.dart';
 import 'package:onebody/screens/home/home.dart';
 import 'package:http/http.dart' as http;
+import 'package:onebody/screens/settings/settings.dart';
 import '../style/app_styles.dart';
 import 'calendar/calendar.dart';
 
@@ -151,7 +152,7 @@ class _BottomBarState extends State<BottomBar> {
     MixedList(),
     GalleryPage(),
     const CalendarPage(),
-    const Text("Profile")
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
