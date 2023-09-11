@@ -58,6 +58,17 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text("새글 알림, 댓글 알림, 일정 알림, 사진첩 알림, notice 알림"),
             // 추가 설정을 위한 로직을 여기에 넣을 수 있습니다.
           ),
+          ListTile(
+              title: Text("댓글 알림")),
+          ListTile(
+              title : Text("일정 알림")
+          ),
+          ListTile(
+              title: Text("사진첩 알림")
+          ),
+          ListTile(
+              title: Text("공지 알림")
+          ),
           SwitchListTile(
             title: Text("이메일 알림 받기"),
             value: receiveEmailNotification,
