@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           ListTile(
-            title: Text("새글 알림, 댓글 알림, 일정 알림, 사진첩 알림, notice 알림"),
+            title: Text("새글 알림"),
             // 추가 설정을 위한 로직을 여기에 넣을 수 있습니다.
           ),
           ListTile(
