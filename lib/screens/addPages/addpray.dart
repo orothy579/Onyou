@@ -1,7 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../model/prayerTitle.dart';
 
 class AddPrayPage extends StatefulWidget {
@@ -19,6 +22,18 @@ class _AddPrayPageState extends State<AddPrayPage> {
   final _uid = FirebaseAuth.instance.currentUser!.uid;
   DocumentReference? _userTeamRef;
 
+  File? _imageFile; // To store the selected image
+  final picker = ImagePicker(); // For image picker
+
+  Future pickImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _imageFile = File(pickedFile!.path);
+    });
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +48,7 @@ class _AddPrayPageState extends State<AddPrayPage> {
     });
   }
 
-  void addPrayerTitle() async {
+  void addPrayerTitle({required String imageUrl}) async {
     if (_userTeamRef == null) {
       log("User's team not found");
       return;
@@ -62,12 +77,34 @@ class _AddPrayPageState extends State<AddPrayPage> {
       userRef: db.collection('users').doc(_uid),
       description: _description.text,
       teamRef: _userTeamRef!,
+      imageUrl : imageUrl,
     );
 
     log("Prayer Title uploaded successfully with ID: $docId");
     Navigator.pushNamed(context, '/home');
   }
 
+  Future uploadImageToFirebase(BuildContext context) async {
+    String fileName = _imageFile!.path;
+    Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('prayers/$fileName');
+    UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile!);
+    TaskSnapshot taskSnapshot = await uploadTask;
+
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) {
+        // Save the image URL to Firestore with other details
+        addPrayerTitle(imageUrl: value);
+      },
+    );
+  }
+
+  void addPrayerTitleL({String? imageUrl}) async {
+    // Existing implementation and add imageUrl to Firestore
+    DocumentReference ref = await db.collection('prayers').add({
+      // ... Existing fields
+      'imageUrl': imageUrl,
+    });
+  }
 
 
   @override
@@ -87,7 +124,7 @@ class _AddPrayPageState extends State<AddPrayPage> {
             icon: Icon(Icons.send),
             onPressed: () {
               if (_formKey.currentState!.validate()) { // Form 검증
-                addPrayerTitle();
+                addPrayerTitle(imageUrl: '');
               }
             },
           )

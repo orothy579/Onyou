@@ -6,6 +6,7 @@ class PrayerTitle {
   final Timestamp dateTime;
   final DocumentReference userRef;
   final String description;
+  String? imageUrl;
   DocumentReference? teamRef;
   List<String>? prayedFor;
 
@@ -15,6 +16,7 @@ class PrayerTitle {
     required this.dateTime,
     required this.userRef,
     required this.description,
+    this.imageUrl,
     this.teamRef,
     this.prayedFor,
   });
@@ -28,6 +30,7 @@ class PrayerTitle {
       'description': description,
       'teamRef': teamRef,
       'prayedFor': prayedFor,  // Firebase 저장을 위해 추가
+      'imageUrl' : imageUrl,
     };
   }
 
@@ -48,6 +51,7 @@ class PrayerTitle {
       description: data['description'],
       teamRef: data['teamRef'],
       prayedFor: prayedForList,
+      imageUrl: data['imageUrl'],
     );
   }
 }
