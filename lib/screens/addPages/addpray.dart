@@ -130,6 +130,12 @@ class _AddPrayPageState extends State<AddPrayPage> {
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          pickImage();
+        },
+        child: Icon(Icons.add_a_photo),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
