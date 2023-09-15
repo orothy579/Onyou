@@ -18,7 +18,9 @@ import 'package:get/get.dart';
 final ThemeData _onbodyTheme = _buildOnebodyTheme();
 
 ThemeData _buildOnebodyTheme() {
-  final ThemeData base = ThemeData.light();
+  final ThemeData base = ThemeData(
+    fontFamily: 'Pretendard'
+  );
   return base.copyWith(
       colorScheme: base.colorScheme.copyWith(
       primary: mainGreen,
@@ -26,9 +28,11 @@ ThemeData _buildOnebodyTheme() {
       secondary: Colors.white,
       error: kShrineErrorRed,
   ),
+
   // TODO: Add the text themes (103)
   // TODO: Add the icon themes (103)
   // TODO: Decorate the inputs (103)
+
   );
 }
 
@@ -50,6 +54,7 @@ class _OnyouAppState extends State<OnyouApp> {
       title: 'Onebody Community',
       initialRoute: '/login',
       home: HomePage(),
+
       debugShowCheckedModeBanner: false,
       getPages: RouteHelper.routes,
       routes: {

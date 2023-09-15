@@ -116,6 +116,20 @@ flutter:
     - assets/OnebodyHouse.jpeg
     - assets/OSW.jpeg
 
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/static/Pretendard-Black.otf
+        - asset: assets/static/Pretendard-Bold.otf
+          weight: 700
+        - asset: assets/static/Pretendard-ExtraBold.otf
+        - asset: assets/static/Pretendard-ExtraLight.otf
+        - asset: assets/static/Pretendard-Light.otf
+        - asset: assets/static/Pretendard-Medium.otf
+        - asset: assets/static/Pretendard-Regular.otf
+        - asset: assets/static/Pretendard-SemiBold.otf
+        - asset: assets/static/Pretendard-Thin.otf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
