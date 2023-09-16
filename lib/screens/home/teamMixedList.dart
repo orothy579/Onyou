@@ -11,10 +11,12 @@ import '../../model/user.dart';
 import '../home/home.dart';
 import 'dart:ui'; // for the BackdropFilter
 
-
+import 'dart:async';
+import 'package:intl/intl.dart';
 
 class TeamMixedList extends StatefulWidget {
   final DocumentReference teamRef;
+
   TeamMixedList({required this.teamRef});
 
   @override
@@ -23,47 +25,57 @@ class TeamMixedList extends StatefulWidget {
 
 class _TeamMixedListState extends State<TeamMixedList> {
   List<MixedItem> mixedItems = [];
+  late StreamSubscription storySubscription;
+  late StreamSubscription prayerSubscription;
 
   @override
   void initState() {
     super.initState();
 
-
-
-    FirebaseFirestore.instance
+    storySubscription = FirebaseFirestore.instance
         .collection('story')
-        .where('teamRef', isEqualTo: widget.teamRef.path) // add story 할때, string 타입으로 저장
+        .where('teamRef', isEqualTo: widget.teamRef.path)
         .orderBy('create_timestamp', descending: true)
         .snapshots()
         .listen((snapshot) {
-      setState(() {
-        mixedItems.removeWhere((item) => item.type == 'story');
-        for (final doc in snapshot.docs) {
-          final story = Story.fromQuerySnapshot(
-              doc as QueryDocumentSnapshot<Map<String, dynamic>>);
-          mixedItems.add(MixedItem(story.create_timestamp!, 'story', story));
-        }
-        mixedItems.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      });
+      if (mounted) {
+        setState(() {
+          mixedItems.removeWhere((item) => item.type == 'story');
+          for (final doc in snapshot.docs) {
+            final story = Story.fromQuerySnapshot(
+                doc as QueryDocumentSnapshot<Map<String, dynamic>>);
+            mixedItems.add(MixedItem(story.create_timestamp!, 'story', story));
+          }
+          mixedItems.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        });
+      }
     });
 
-    FirebaseFirestore.instance
+    prayerSubscription = FirebaseFirestore.instance
         .collection('prayers')
-        .where('teamRef', isEqualTo: widget.teamRef) // add 할때, documentReference 타입으로 저장
+        .where('teamRef', isEqualTo: widget.teamRef)
         .orderBy('dateTime', descending: true)
         .snapshots()
         .listen((snapshot) {
-      setState(() {
-        mixedItems.removeWhere((item) => item.type == 'prayer');
-        for (final doc in snapshot.docs) {
-          final prayer = PrayerTitle.fromDocument(doc);
-          mixedItems.add(MixedItem(prayer.dateTime, 'prayer', prayer));
-        }
-        mixedItems.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      });
+      if (mounted) {
+        setState(() {
+          mixedItems.removeWhere((item) => item.type == 'prayer');
+          for (final doc in snapshot.docs) {
+            final prayer = PrayerTitle.fromDocument(doc);
+            mixedItems.add(MixedItem(prayer.dateTime, 'prayer', prayer));
+          }
+          mixedItems.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+        });
+      }
     });
   }
 
+  @override
+  void dispose() {
+    storySubscription.cancel();
+    prayerSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +102,10 @@ class _TeamMixedListState extends State<TeamMixedList> {
         Text(
           DateFormat('yyyy년 MM월 dd일').format(entry.key),
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black26),
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black26,
+              fontFamily: 'Pretendard'),
           textAlign: TextAlign.center,
         ),
       );
@@ -136,8 +151,8 @@ class _TeamMixedListState extends State<TeamMixedList> {
                             children: [
                               Text(
                                 "Shalom,",
-                                style:
-                                TextStyle(fontSize: 15, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.black , fontFamily: 'Pretendard'),
                               ),
                               Row(
                                 children: [
@@ -146,6 +161,7 @@ class _TeamMixedListState extends State<TeamMixedList> {
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
+                                        fontFamily: 'Pretendard',
                                         color: Colors.black),
                                   ),
                                   Container(
@@ -155,7 +171,7 @@ class _TeamMixedListState extends State<TeamMixedList> {
                                           color: Colors.transparent,
                                           shape: BoxShape.circle,
                                           border:
-                                          Border.all(color: Colors.black)),
+                                              Border.all(color: Colors.black)),
                                       width: 20,
                                       height: 20,
                                       child: ClipOval(

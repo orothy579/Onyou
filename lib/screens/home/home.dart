@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
             Icons.volunteer_activism_outlined,
             size: 50,
           ),
-          Text("인스타그램에 방문 하셔서 \n다양한 소식과 혜택을 접해 보세요!"),
+          Text("인스타그램에 방문 하셔서 \n다양한 소식과 혜택을 접해 보세요!" , style: TextStyle(fontFamily: 'Pretendard'),),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -178,14 +178,14 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           "Shalom,",
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15 , fontFamily: 'Pretendard'),
                         ),
                         Row(
                           children: [
                             Text(
                               "${data.name!} 님",
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.bold , fontFamily: 'Pretendard'),
                             ),
                             Container(
                               alignment: Alignment.bottomRight,
@@ -279,7 +279,8 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                               color: boxGrey,
                               borderRadius: BorderRadius.circular(10)),
-                          child: Text("News", style: headLineGreenStyle)),
+                          child: Text("News", style: headLineGreenStyle)
+                      ),
                     ),
                     //For blank
                     SizedBox(height: 30.0),
