@@ -9,7 +9,7 @@ import 'package:onebody/screens/community/storyCard.dart';
 import 'package:intl/src/intl/date_format.dart';
 import '../../model/user.dart';
 import '../home/home.dart';
-import 'dart:ui'; // for the BackdropFilter
+import 'dart:ui';
 
 import 'dart:async';
 import 'package:intl/intl.dart';
