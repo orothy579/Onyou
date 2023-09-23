@@ -10,7 +10,6 @@ import 'package:intl/src/intl/date_format.dart';
 import '../../model/user.dart';
 import '../home/home.dart';
 import 'dart:ui';
-
 import 'dart:async';
 import 'package:intl/intl.dart';
 
