@@ -185,9 +185,6 @@ class _LoginPageState extends State<LoginPage> {
     return userCredential.user;
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -232,9 +229,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 100.0,),
                 Padding(
-                  padding: EdgeInsets.only(right:120), // 모든 방향으로 16 픽셀의 패딩 적용
+                  padding: EdgeInsets.only(right:128), // 모든 방향으로 16 픽셀의 패딩 적용
                   child: Text(
-                    'Let login to Onebody',
+                    'Let\'s be an Onebody',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -243,9 +240,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 220), // 상단에 8 픽셀의 패딩 적용
+                  padding: EdgeInsets.only(right: 200), // 상단에 8 픽셀의 패딩 적용
                   child: Text(
-                    'Welcome!',
+                    'Welcome home!',
                     style: TextStyle(
                       fontSize: 10,
                       color: Color(0xFF52525C),
@@ -370,93 +367,99 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.of(context).pushReplacementNamed(
                         '/register'); // assuming you have a '/register' route
                   },
-                  child: Text('New user? Register'),
-                ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      User? user = await signInWithGoogle();
-                      if (user != null) {
-                        var docSnapshot = await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(user.uid)
-                            .get();
-                        var teamRef = docSnapshot.data()?['teamRef'];
-
-                        // If teamRef is null or empty, navigate to profile page
-                        if (teamRef == null || teamRef.isEmpty) {
-                          Navigator.of(context)
-                              .pushReplacementNamed('/profileRegister');
-                        } else {
-                          Navigator.of(context).pushReplacementNamed(
-                              '/home'); // assuming you have a '/home' route
-                        }
-                      }
-                    } catch (error) {
-                      print(error);
-
-                      // Show error message to the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('An error occurred during Google sign in.'),
-                        ),
-                      );
-                    }
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
-                    side:
-                        MaterialStateProperty.all(BorderSide(color: Colors.black)),
-                    minimumSize: MaterialStateProperty.all(Size(200.0, 50.0)),  // add this line
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/g-logo.png', height: 20.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('구글로 로그인',
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.0)),
-                      ),
-                    ],
+                  child:  Text(
+                    '아직 회원이 아니신가요?',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Color(0xFF52525C),
+                    ),
                   ),
                 ),
-                SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () async {
-                    try {
-                      User? user = await signInWithKakao();
-                      if (user != null) {
-                        var docSnapshot = await FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(user.uid)
-                            .get();
-                        var teamRef = docSnapshot.data()?['teamRef'];
-
-                        // If teamRef is null or empty, navigate to profile page
-                        if (teamRef == null || teamRef.isEmpty) {
-                          Navigator.of(context)
-                              .pushReplacementNamed('/profileRegister');
-                        } else {
-                          Navigator.of(context).pushReplacementNamed(
-                              '/home'); // assuming you have a '/home' route
-                        }
-                      }
-                    } catch (error) {
-                      print(error);
-
-                      // Show error message to the user
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('An error occurred during Kakao sign in.'),
-                        ),
-                      );
-                    }
-                  },
-                  child: Image.asset('assets/kakao_login_large_wide.png'),
-                )
+                // SizedBox(height: 16),
+                // ElevatedButton(
+                //   onPressed: () async {
+                //     try {
+                //       User? user = await signInWithGoogle();
+                //       if (user != null) {
+                //         var docSnapshot = await FirebaseFirestore.instance
+                //             .collection('users')
+                //             .doc(user.uid)
+                //             .get();
+                //         var teamRef = docSnapshot.data()?['teamRef'];
+                //
+                //         // If teamRef is null or empty, navigate to profile page
+                //         if (teamRef == null || teamRef.isEmpty) {
+                //           Navigator.of(context)
+                //               .pushReplacementNamed('/profileRegister');
+                //         } else {
+                //           Navigator.of(context).pushReplacementNamed(
+                //               '/home'); // assuming you have a '/home' route
+                //         }
+                //       }
+                //     } catch (error) {
+                //       print(error);
+                //
+                //       // Show error message to the user
+                //       ScaffoldMessenger.of(context).showSnackBar(
+                //         SnackBar(
+                //           content: Text('An error occurred during Google sign in.'),
+                //         ),
+                //       );
+                //     }
+                //   },
+                //   style: ButtonStyle(
+                //     backgroundColor: MaterialStateProperty.all(Colors.white),
+                //     side:
+                //         MaterialStateProperty.all(BorderSide(color: Colors.black)),
+                //     minimumSize: MaterialStateProperty.all(Size(200.0, 50.0)),  // add this line
+                //   ),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Image.asset('assets/g-logo.png', height: 20.0),
+                //       Padding(
+                //         padding: const EdgeInsets.only(left: 10.0),
+                //         child: Text('구글로 로그인',
+                //             style:
+                //                 TextStyle(color: Colors.black, fontSize: 16.0)),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // SizedBox(height: 16),
+                // GestureDetector(
+                //   onTap: () async {
+                //     try {
+                //       User? user = await signInWithKakao();
+                //       if (user != null) {
+                //         var docSnapshot = await FirebaseFirestore.instance
+                //             .collection('users')
+                //             .doc(user.uid)
+                //             .get();
+                //         var teamRef = docSnapshot.data()?['teamRef'];
+                //
+                //         // If teamRef is null or empty, navigate to profile page
+                //         if (teamRef == null || teamRef.isEmpty) {
+                //           Navigator.of(context)
+                //               .pushReplacementNamed('/profileRegister');
+                //         } else {
+                //           Navigator.of(context).pushReplacementNamed(
+                //               '/home'); // assuming you have a '/home' route
+                //         }
+                //       }
+                //     } catch (error) {
+                //       print(error);
+                //
+                //       // Show error message to the user
+                //       ScaffoldMessenger.of(context).showSnackBar(
+                //         SnackBar(
+                //           content: Text('An error occurred during Kakao sign in.'),
+                //         ),
+                //       );
+                //     }
+                //   },
+                //   child: Image.asset('assets/kakao_login_large_wide.png'),
+                // )
               ],
             ),
           ),
