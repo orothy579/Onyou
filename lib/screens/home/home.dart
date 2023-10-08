@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onebody/screens/home/TooltipBalloon.dart';
 import 'package:onebody/screens/home/teamGridWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/app_styles.dart';
@@ -86,12 +90,11 @@ class _HomePageState extends State<HomePage> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
-
   @override
   Widget build(BuildContext context) {
-    List<Widget> list_whoarewe = <Widget>[
+    List<Widget> listWhoarewe = <Widget>[
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Text(
+        const Text(
           "Onebody Community(OC)는\n"
           "예수그리스도의 한 몸 된 지체로서\n"
           "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
@@ -100,72 +103,128 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton(
-              child: Text("더 알아보기", style: TextStyle(color: kShrineBrown900)),
+              child: const Text("더 알아보기",
+                  style: TextStyle(color: kShrineBrown900)),
               onPressed: () => {_launchUrl(_url['Instagram']!)},
             ),
           ],
         ),
       ]),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Icon(
-            Icons.volunteer_activism_outlined,
-            size: 50,
-          ),
-          Text("인스타그램에 방문 하셔서 \n다양한 소식과 혜택을 접해 보세요!" , style: TextStyle(fontFamily: 'Pretendard'),),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: const Text(
-                  "방문하기",
-                  style: TextStyle(color: Colors.black54),
-                ),
-                onPressed: () => {_launchUrl(_url['Instagram']!)},
-              ),
-            ],
-          )
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const Icon(Icons.video_camera_back, size: 50),
-          const Text("새로운 영상이 올라왔어요!"),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: const Text(
-                  "방문하기",
-                  style: TextStyle(color: Colors.black54),
-                ),
-                onPressed: () => {_launchUrl(_url['Youtube']!)},
-              ),
-            ],
-          )
-        ],
-      ),
-      Center(
-        child: IconButton(
-          iconSize: 50,
-          icon: Icon(Icons.question_mark),
-          onPressed: () {
-            Navigator.pushNamed(context, '/sentence');
-          },
-        ),
-      ),
     ];
 
+    List<String> bibleVerses = [
+      "너희는 그리스도의 몸이요 지체의 각 부분이라 (고전12:27)",
+      // Add other verses...
+    ];
+    String randomVerse = bibleVerses[Random().nextInt(bibleVerses.length)];
+
     return Scaffold(
-      body:
-      CustomScrollView(
+      body: CustomScrollView(
         // CustomScrollView는 children이 아닌 slivers를 사용하며, slivers에는 스크롤이 가능한 위젯이나 리스트가 등록가능함
         slivers: <Widget>[
           // 앱바 추가
+          // SliverAppBar(
+          //   automaticallyImplyLeading: false,
+          //   elevation: 20,
+          //   flexibleSpace: FlexibleSpaceBar(
+          //     titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
+          //     title: FutureBuilder<Users>(
+          //       future: getUser(FirebaseAuth.instance.currentUser!.uid),
+          //       builder: (context, snapshot) {
+          //         if (snapshot.hasData) {
+          //           Users data = snapshot.data!;
+          //           return ListView(
+          //             children: [
+          //               Text(
+          //                 "Shalom,",
+          //                 style: TextStyle(fontSize: 15 , fontFamily: 'Pretendard'),
+          //               ),
+          //               Row(
+          //                 children: [
+          //                   Text(
+          //                     "${data.name!} 님",
+          //                     style: TextStyle(
+          //                         fontSize: 20, fontWeight: FontWeight.bold , fontFamily: 'Pretendard'),
+          //                   ),
+          //                   Container(
+          //                     alignment: Alignment.bottomRight,
+          //                     child: Container(
+          //                       decoration: BoxDecoration(
+          //                           color: camel, shape: BoxShape.circle),
+          //                       width: 20,
+          //                       height: 20,
+          //                       child: Image.network(data.image!),
+          //                     ),
+          //                   )
+          //                 ],
+          //               ),
+          //             ],
+          //           );
+          //         } else if (snapshot.hasError) {
+          //           return Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Text(
+          //                 'Error: ${snapshot.error}',
+          //                 style: TextStyle(fontSize: 15),
+          //               ));
+          //         } else {
+          //           return const Center(child: CircularProgressIndicator());
+          //         }
+          //       },
+          //     ),
+          //     centerTitle: false,
+          //     expandedTitleScale: 1.0,
+          //   ),
+          //   actions: <Widget>[
+          //     IconButton(
+          //         icon: Icon(
+          //           Icons.add,
+          //           color: Colors.white,
+          //         ),
+          //         onPressed: () {
+          //           Navigator.push(
+          //             context,
+          //             PageRouteBuilder(
+          //               pageBuilder: (context, __, ___) => AddNoticePage(),
+          //               transitionDuration: Duration.zero,
+          //               reverseTransitionDuration: Duration.zero,
+          //             ),
+          //           );
+          //         }),
+          //     IconButton(
+          //         icon: Icon(
+          //           Icons.add_circle,
+          //           color: Colors.white,
+          //         ),
+          //         onPressed: () {
+          //           Navigator.push(
+          //             context,
+          //             PageRouteBuilder(
+          //               pageBuilder: (context, __, ___) => SelectionPage(),
+          //               transitionDuration: Duration.zero,
+          //               reverseTransitionDuration: Duration.zero,
+          //             ),
+          //           );
+          //         }),
+          //     IconButton(
+          //         icon: const Icon(
+          //           Icons.exit_to_app,
+          //           color: Colors.white,
+          //         ),
+          //         onPressed: () async {
+          //           await FirebaseAuth.instance.signOut();
+          //           await GoogleSignIn().signOut();
+          //
+          //           Navigator.pushNamed(context, '/login');
+          //         }),
+          //   ],
+          //   // 최대 높이
+          //   expandedHeight: 100,
+          // ),
+          // 리스트 추가
           SliverAppBar(
             automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
             elevation: 20,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
@@ -174,95 +233,108 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Users data = snapshot.data!;
-                    return ListView(
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "Shalom,",
-                          style: TextStyle(fontSize: 15 , fontFamily: 'Pretendard'),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "${data.name!} 님",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold , fontFamily: 'Pretendard'),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Color(0xff92FABC),
+                            shape: BoxShape.circle,
+                          ),
+                          width: 40,
+                          height: 40,
+                          child: ClipOval(
+                            child: Image.network(
+                              data.image!,
+                              fit: BoxFit
+                                  .cover, // Ensure the image covers the container
                             ),
-                            Container(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: camel, shape: BoxShape.circle),
-                                width: 20,
-                                height: 20,
-                                child: Image.network(data.image!),
-                              ),
-                            )
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FutureBuilder<DocumentSnapshot>(
+                              future: data.teamRef
+                                  ?.get(), // assuming teamRef is a DocumentReference
+                              builder: (context, teamSnapshot) {
+                                if (teamSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Text("Loading team...");
+                                } else if (teamSnapshot.hasError) {
+                                  return Text("Error: ${teamSnapshot.error}");
+                                } else if (!teamSnapshot.hasData) {
+                                  return Text("No team data");
+                                } else {
+                                  Map<String, dynamic>? teamData =
+                                      teamSnapshot.data!.data()
+                                          as Map<String, dynamic>?;
+                                  return Text(
+                                    "${teamData?['name'] ?? 'No Name'}",
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontFamily: 'Pretendard',
+                                        color: Color(0xff52525C)),
+                                  );
+                                }
+                              },
+                            ),
+                            Text(
+                              data.name!,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Pretendard',
+                                  color: Color(0xff52525C)),
+                            ),
                           ],
                         ),
+                        const Spacer(),
                       ],
                     );
                   } else if (snapshot.hasError) {
                     return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Error: ${snapshot.error}',
-                          style: TextStyle(fontSize: 15),
-                        ));
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    );
                   } else {
                     return const Center(child: CircularProgressIndicator());
                   }
                 },
               ),
+              background: TooltipBalloon(text: randomVerse,),
+
               centerTitle: false,
               expandedTitleScale: 1.0,
             ),
             actions: <Widget>[
               IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, __, ___) => AddNoticePage(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  }),
+                icon: const FaIcon(
+                  FontAwesomeIcons.instagram,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  _launchUrl(_url['Instagram']!);
+                },
+              ),
               IconButton(
-                  icon: Icon(
-                    Icons.add_circle,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, __, ___) => SelectionPage(),
-                        transitionDuration: Duration.zero,
-                        reverseTransitionDuration: Duration.zero,
-                      ),
-                    );
-                  }),
-              IconButton(
-                  icon: const Icon(
-                    Icons.exit_to_app,
-                    color: Colors.white,
-                  ),
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                    await GoogleSignIn().signOut();
-
-                    Navigator.pushNamed(context, '/login');
-                  }),
+                icon: const FaIcon(
+                  FontAwesomeIcons.youtube,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  _launchUrl(_url['Youtube']!);
+                },
+              ),
             ],
-            // 최대 높이
             expandedHeight: 100,
           ),
-          // 리스트 추가
+
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
@@ -279,8 +351,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                               color: boxGrey,
                               borderRadius: BorderRadius.circular(10)),
-                          child: Text("News", style: headLineGreenStyle)
-                      ),
+                          child: Text("News", style: headLineGreenStyle)),
                     ),
                     //For blank
                     SizedBox(height: 30.0),
@@ -329,7 +400,7 @@ class _HomePageState extends State<HomePage> {
                                         left: 0.0,
                                         right: 0.0,
                                         child: Container(
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             gradient: LinearGradient(
                                               colors: [
                                                 Color.fromARGB(100, 0, 0, 0),
@@ -339,11 +410,11 @@ class _HomePageState extends State<HomePage> {
                                               end: Alignment.topCenter,
                                             ),
                                           ),
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 10.0, horizontal: 20.0),
                                           child: Text(
                                             '${documents[imgList.indexOf(item)]['name']}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
@@ -360,7 +431,7 @@ class _HomePageState extends State<HomePage> {
                                               Navigator.pushNamed(
                                                   context, '/login');
                                             },
-                                            child: Text(
+                                            child: const Text(
                                               "더 알아보기",
                                               style: TextStyle(
                                                 color: Colors.white,
@@ -383,7 +454,7 @@ class _HomePageState extends State<HomePage> {
                             items: imageSliders,
                           );
                         }),
-                    SizedBox(height: 30.0),
+                    const SizedBox(height: 30.0),
                     //Who are we?
                     Center(
                       child: Container(
@@ -395,34 +466,33 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(10)),
                           child: Text("소개", style: headLineGreenStyle)),
                     ),
-                    SizedBox(height: 30.0),
-                    Container(
-                        child: CarouselSlider(
+                    const SizedBox(height: 30.0),
+                    CarouselSlider(
                       options: CarouselOptions(
                         height: 150,
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 10),
+                        autoPlayInterval: const Duration(seconds: 10),
                         viewportFraction: 1,
                       ),
-                      items: list_whoarewe
+                      items: listWhoarewe
                           .map((item) => Container(
-                                margin: EdgeInsets.symmetric(horizontal: 20),
-                                child: Center(child: item),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: camel,
                                 ),
+                                child: Center(child: item),
                               ))
                           .toList(),
-                    )),
-                    SizedBox(height: 30.0),
+                    ),
+                    const SizedBox(height: 30.0),
                   ],
                 ),
               ],
             ),
           ),
           TeamGridWidget(),
-
         ],
       ),
     );
