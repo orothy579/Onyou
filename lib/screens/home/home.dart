@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:onebody/screens/home/TooltipBalloon.dart';
 import 'package:onebody/screens/home/teamGridWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,8 +13,7 @@ import 'package:logger/logger.dart';
 import '../../model/Notice.dart';
 import '../../model/Story.dart';
 import '../../model/user.dart';
-import '../addPages/addnotice.dart';
-import '../addPages/selectionPage.dart';
+
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {
@@ -122,112 +119,12 @@ class _HomePageState extends State<HomePage> {
       body: CustomScrollView(
         // CustomScrollView는 children이 아닌 slivers를 사용하며, slivers에는 스크롤이 가능한 위젯이나 리스트가 등록가능함
         slivers: <Widget>[
-          // 앱바 추가
-          // SliverAppBar(
-          //   automaticallyImplyLeading: false,
-          //   elevation: 20,
-          //   flexibleSpace: FlexibleSpaceBar(
-          //     titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
-          //     title: FutureBuilder<Users>(
-          //       future: getUser(FirebaseAuth.instance.currentUser!.uid),
-          //       builder: (context, snapshot) {
-          //         if (snapshot.hasData) {
-          //           Users data = snapshot.data!;
-          //           return ListView(
-          //             children: [
-          //               Text(
-          //                 "Shalom,",
-          //                 style: TextStyle(fontSize: 15 , fontFamily: 'Pretendard'),
-          //               ),
-          //               Row(
-          //                 children: [
-          //                   Text(
-          //                     "${data.name!} 님",
-          //                     style: TextStyle(
-          //                         fontSize: 20, fontWeight: FontWeight.bold , fontFamily: 'Pretendard'),
-          //                   ),
-          //                   Container(
-          //                     alignment: Alignment.bottomRight,
-          //                     child: Container(
-          //                       decoration: BoxDecoration(
-          //                           color: camel, shape: BoxShape.circle),
-          //                       width: 20,
-          //                       height: 20,
-          //                       child: Image.network(data.image!),
-          //                     ),
-          //                   )
-          //                 ],
-          //               ),
-          //             ],
-          //           );
-          //         } else if (snapshot.hasError) {
-          //           return Padding(
-          //               padding: const EdgeInsets.all(8.0),
-          //               child: Text(
-          //                 'Error: ${snapshot.error}',
-          //                 style: TextStyle(fontSize: 15),
-          //               ));
-          //         } else {
-          //           return const Center(child: CircularProgressIndicator());
-          //         }
-          //       },
-          //     ),
-          //     centerTitle: false,
-          //     expandedTitleScale: 1.0,
-          //   ),
-          //   actions: <Widget>[
-          //     IconButton(
-          //         icon: Icon(
-          //           Icons.add,
-          //           color: Colors.white,
-          //         ),
-          //         onPressed: () {
-          //           Navigator.push(
-          //             context,
-          //             PageRouteBuilder(
-          //               pageBuilder: (context, __, ___) => AddNoticePage(),
-          //               transitionDuration: Duration.zero,
-          //               reverseTransitionDuration: Duration.zero,
-          //             ),
-          //           );
-          //         }),
-          //     IconButton(
-          //         icon: Icon(
-          //           Icons.add_circle,
-          //           color: Colors.white,
-          //         ),
-          //         onPressed: () {
-          //           Navigator.push(
-          //             context,
-          //             PageRouteBuilder(
-          //               pageBuilder: (context, __, ___) => SelectionPage(),
-          //               transitionDuration: Duration.zero,
-          //               reverseTransitionDuration: Duration.zero,
-          //             ),
-          //           );
-          //         }),
-          //     IconButton(
-          //         icon: const Icon(
-          //           Icons.exit_to_app,
-          //           color: Colors.white,
-          //         ),
-          //         onPressed: () async {
-          //           await FirebaseAuth.instance.signOut();
-          //           await GoogleSignIn().signOut();
-          //
-          //           Navigator.pushNamed(context, '/login');
-          //         }),
-          //   ],
-          //   // 최대 높이
-          //   expandedHeight: 100,
-          // ),
-          // 리스트 추가
           SliverAppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             elevation: 20,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.fromLTRB(15, 45, 0, 0),
+              titlePadding: EdgeInsets.fromLTRB(15, 70, 0, 20),
               title: FutureBuilder<Users>(
                 future: getUser(FirebaseAuth.instance.currentUser!.uid),
                 builder: (context, snapshot) {
@@ -253,33 +150,38 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 10),
                         Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            FutureBuilder<DocumentSnapshot>(
-                              future: data.teamRef
-                                  ?.get(), // assuming teamRef is a DocumentReference
-                              builder: (context, teamSnapshot) {
-                                if (teamSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return Text("Loading team...");
-                                } else if (teamSnapshot.hasError) {
-                                  return Text("Error: ${teamSnapshot.error}");
-                                } else if (!teamSnapshot.hasData) {
-                                  return Text("No team data");
-                                } else {
-                                  Map<String, dynamic>? teamData =
-                                      teamSnapshot.data!.data()
-                                          as Map<String, dynamic>?;
-                                  return Text(
-                                    "${teamData?['name'] ?? 'No Name'}",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontFamily: 'Pretendard',
-                                        color: Color(0xff52525C)),
-                                  );
-                                }
-                              },
+                            Flexible(
+                              child: FutureBuilder<DocumentSnapshot>(
+                                future: data.teamRef
+                                    ?.get(), // assuming teamRef is a DocumentReference
+                                builder: (context, teamSnapshot) {
+                                  if (teamSnapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Text("Loading team...");
+                                  } else if (teamSnapshot.hasError) {
+                                    return Text("Error: ${teamSnapshot.error}");
+                                  } else if (!teamSnapshot.hasData) {
+                                    return Text("No team data");
+                                  } else {
+                                    Map<String, dynamic>? teamData =
+                                        teamSnapshot.data!.data()
+                                            as Map<String, dynamic>?;
+                                    return Text(
+                                      "${teamData?['name'] ?? 'No Name'}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontFamily: 'Pretendard',
+                                          color: Color(0xff52525C)),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                             Text(
                               data.name!,
@@ -332,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ],
-            expandedHeight: 100,
+            expandedHeight: 120,
           ),
 
           SliverList(
