@@ -8,14 +8,15 @@ class TooltipBalloon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textPadding = EdgeInsets.all(10.0);
-    final balloonPadding = EdgeInsets.only(left: 110, right: 10, top: 114, bottom: 28);
+    final balloonPadding = EdgeInsets.only(left: 110, right: 10, top: 114, bottom: 20);
 
     return Padding(
       padding: balloonPadding,
       child: IntrinsicHeight(
         child: CustomPaint(
-          painter: TooltipPainter(),
+           painter: TooltipPainter(),
           child: Container(
+
             padding: textPadding,
             child: Center(
               child: Text(
@@ -44,19 +45,19 @@ class TooltipPainter extends CustomPainter {
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(12.0));
 
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
+      ..color = Colors.white.withOpacity(1)
       ..style = PaintingStyle.fill;
 
     final outlinePaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
+      ..strokeWidth = 1;
 
     final shadowPaint = Paint()
       ..color = Color(0xffFE9393);
 
     // Paint the shadow
-    canvas.drawRRect(rrect.shift(Offset(0, 0)), shadowPaint);
+    canvas.drawRRect(rrect.shift(Offset(5, 0)), shadowPaint);
     // Paint the main box
     canvas.drawRRect(rrect, paint);
     // Paint the outline

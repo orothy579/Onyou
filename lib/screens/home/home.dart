@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:onebody/screens/home/TooltipBalloon.dart';
+import 'package:onebody/widgets/TooltipBalloon.dart';
 import 'package:onebody/screens/home/teamGridWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../style/app_styles.dart';
@@ -13,7 +13,6 @@ import 'package:logger/logger.dart';
 import '../../model/Notice.dart';
 import '../../model/Story.dart';
 import '../../model/user.dart';
-
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {
@@ -83,7 +82,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _uid = FirebaseAuth.instance.currentUser!.uid;
-  // For Dropdown
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
@@ -110,7 +108,10 @@ class _HomePageState extends State<HomePage> {
     ];
 
     List<String> bibleVerses = [
-      "너희는 그리스도의 몸이요 지체의 각 부분이라 (고전12:27)",
+      "너희는 그리스도의 몸이요 지체의 각 부분이라",
+      "오직 사랑 안에서 참된 것을 하여 범사에 그에게까지 자랄지라 그는 머리니 곧 그리스도라",
+      "내게 주신 영광을 내가 그들에게 주었사오니 이는 우리가 하나가 된 것 같이 그들도 하나가 되게 하려 함이니이다",
+      "이에 예수께서 제자들에게 이르시되 누구든지 나를 따라오려거든 자기를 부인하고 자기 십자가를 지고 나를 따를 것이니라 "
       // Add other verses...
     ];
     String randomVerse = bibleVerses[Random().nextInt(bibleVerses.length)];
@@ -209,8 +210,9 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
-              background: TooltipBalloon(text: randomVerse,),
-
+              background: TooltipBalloon(
+                text: randomVerse,
+              ),
               centerTitle: false,
               expandedTitleScale: 1.0,
             ),
@@ -236,142 +238,226 @@ class _HomePageState extends State<HomePage> {
             ],
             expandedHeight: 120,
           ),
-
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
                 Column(
                   children: [
                     //"공지사항"
-                    SizedBox(height: 30.0),
+                    SizedBox(height: 20.0),
                     //carousel
-                    Center(
-                      child: Container(
-                          height: 25,
-                          width: 100,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Text("News", style: headLineGreenStyle)),
-                    ),
-                    //For blank
-                    SizedBox(height: 30.0),
-                    StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('Notice')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError ||
-                              snapshot.connectionState ==
-                                  ConnectionState.waiting)
-                            return const Center(
-                                child: CircularProgressIndicator());
+                    Stack(
+                      children: [
+                        //CustomShadow(color: Colors.black,width: 260, height: 400,),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('Notice')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError ||
+                                snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
 
-                          //ChatGpt 리얼 대박이다 !! 고마워!!! document의 전체 내용을 받아와!
-                          List<dynamic> imgList = snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Map<String, dynamic> data =
-                                document.data() as Map<String, dynamic>;
-                            return data['image'];
-                          }).toList();
+                            List<dynamic> imgList = snapshot.data!.docs
+                                .map((DocumentSnapshot document) {
+                              Map<String, dynamic> data =
+                                  document.data() as Map<String, dynamic>;
+                              return data['image'];
+                            }).toList();
 
-                          List<dynamic> noticeName = snapshot.data!.docs
-                              .map((DocumentSnapshot document) {
-                            Object? data = document.get("name");
-                            return data;
-                          }).toList();
-
-                          final List<QueryDocumentSnapshot> documents =
-                              snapshot.data!.docs;
-
-                          List<Widget> imageSliders = imgList
-                              .map((item) => ClipRRect(
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0),
-                                  ),
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Image.network(
-                                        item,
-                                        fit: BoxFit.contain,
-                                        width: 100000,
+                            List<Widget> imageSliders = imgList
+                                .map((item) => Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xff52525C), width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        // boxShadow: [
+                                        //   BoxShadow(
+                                        //     color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
+                                        //     spreadRadius: 3,  // 그림자의 확장 반경
+                                        //     offset: Offset(3, 3),
+                                        //   )
+                                        // ]
                                       ),
-                                      Positioned(
-                                        bottom: 0.0,
-                                        left: 0.0,
-                                        right: 0.0,
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Color.fromARGB(100, 0, 0, 0),
-                                                Color.fromARGB(0, 0, 0, 0)
-                                              ],
-                                              begin: Alignment.bottomCenter,
-                                              end: Alignment.topCenter,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Image.network(item,
+                                                fit: BoxFit.cover,
+                                                width: double.infinity),
+                                            Positioned(
+                                              bottom: -20.0,
+                                              left: 0.0,
+                                              right: 0.0,
+                                              child: Container(
+                                                color: Colors.transparent,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20.0,
+                                                    vertical: 10.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '${snapshot.data!.docs[imgList.indexOf(item)]['name']}',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pushNamed(
+                                                            context, '/login');
+                                                      },
+                                                      child: const Text(
+                                                        "더 알아보기",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 15.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10.0, horizontal: 20.0),
-                                          child: Text(
-                                            '${documents[imgList.indexOf(item)]['name']}',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
+                                          ],
                                         ),
                                       ),
-                                      Positioned(
-                                        bottom: 0.0,
-                                        left: 200.0,
-                                        right: 0.0,
-                                        child: TextButton(
-                                            onPressed: () {
-                                              Navigator.pushNamed(
-                                                  context, '/login');
-                                            },
-                                            child: const Text(
-                                              "더 알아보기",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            )),
-                                      ),
-                                    ],
-                                  )))
-                              .toList();
+                                    ))
+                                .toList();
 
-                          return CarouselSlider(
-                            options: CarouselOptions(
-                              enlargeCenterPage: true,
-                              enableInfiniteScroll: false,
-                              initialPage: 0,
-                              autoPlay: true,
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                              child: CarouselSlider(
+                                options: CarouselOptions(
+                                  viewportFraction: 0.9,
+                                  height: 113,
+                                  enlargeCenterPage: true,
+                                  enableInfiniteScroll: false,
+                                  initialPage: 0,
+                                  autoPlay: true,
+                                ),
+                                items: imageSliders,
+                              ),
+                            );
+                          },
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 0.0),
+                            child: Container(
+                              height: 20,
+                              width: 60,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Color(0xff0014FF),
+                                border: Border.all(
+                                    color: Color(0xff52525C), width: 2),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: const Text("주요 공지",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10)),
                             ),
-                            items: imageSliders,
-                          );
-                        }),
-                    const SizedBox(height: 30.0),
-                    //Who are we?
-                    Center(
-                      child: Container(
-                          height: 25,
-                          width: 100,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: boxGrey,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Text("소개", style: headLineGreenStyle)),
+                          ),
+                        ),
+                      ],
                     ),
+
                     const SizedBox(height: 30.0),
+
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(22, 0, 0, 0),
+                      child: Row(
+                        children: [
+                          const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 한국어 텍스트
+                              Text(
+                                '원바디 커뮤니티란?',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 10.0), // 간격 추가
+                              // 영어 텍스트
+                              Text(
+                                "Get to Know Onebody Community!",
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Color(0xff52525C),
+                                ),
+                              ),
+                              SizedBox(width: 10.0), // 간격 추가
+                              // 버튼
+                            ],
+                          ),
+                          const SizedBox(width: 12.0),
+                          Container(
+                            alignment: Alignment.center,
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
+                                    spreadRadius: 0.8,  // 그림자의 확장 반경
+                                    offset: Offset(2, 2),
+                                  )
+                                ]
+
+                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                side: BorderSide(color: Color(0xff52525C), width: 2.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                elevation: 1.0,
+                                padding: EdgeInsets.fromLTRB(2, 0, 0, 0)
+                              ),
+                              onPressed: () {
+                                // TODO: 버튼이 클릭될 때 수행할 작업
+                              },
+                              child: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Color(0xff52525C),
+                                size: 18.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //Who are we?
+
+                    const SizedBox(height: 8.0),
+
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 150,
+                        height: 240,
                         autoPlay: true,
                         autoPlayInterval: const Duration(seconds: 10),
                         viewportFraction: 1,
@@ -381,14 +467,49 @@ class _HomePageState extends State<HomePage> {
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color(0xff52525C), width: 1),
                                   borderRadius: BorderRadius.circular(10.0),
-                                  color: camel,
+                                  color: Colors.white,
                                 ),
                                 child: Center(child: item),
                               ))
                           .toList(),
                     ),
                     const SizedBox(height: 30.0),
+
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(22, 0, 0, 0),
+                      child: const Row(
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 한국어 텍스트
+                              Text(
+                                '커뮤니티',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 10,),
+                          Text(
+                            "We are Onebody Community",
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              color: Color(0xff52525C),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 8.0),
+
                   ],
                 ),
               ],
