@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -85,27 +86,68 @@ class _HomePageState extends State<HomePage> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
+
+  Future<String?> getImageUrl(String path) async {
+    try {
+      return await storage.ref(path).getDownloadURL();
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
     List<Widget> listWhoarewe = <Widget>[
-      Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        const Text(
-          "Onebody Community(OC)는\n"
-          "예수그리스도의 한 몸 된 지체로서\n"
-          "살아계신 하나님과 몸의 머리 되신 \n예수그리스도의 지상명령에 순종합니다.",
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              child: const Text("더 알아보기",
-                  style: TextStyle(color: kShrineBrown900)),
-              onPressed: () => {_launchUrl(_url['Instagram']!)},
-            ),
-          ],
-        ),
-      ]),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const Text(
+            "Onebody Community(OC)는\n"
+                "예수 그리스도의 한 몸 된 지체로서\n"
+                "살아계신 하나님과 몸의 머리 되신 \n예수 그리스도의 지상명령에 순종합니다.",
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                child: const Text(
+                  "더 알아보기",
+                  style: TextStyle(color: kShrineBrown900),
+                ),
+                onPressed: () => {_launchUrl(_url['Instagram']!)},
+              ),
+
+            ],
+          ),
+
+        ],
+      ),
+
+      FutureBuilder<String?>(
+        future: getImageUrl('Introduce/introduce.jpeg'),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError || snapshot.data == null) {
+              return Icon(Icons.error);
+            } else {
+              // 네트워크 이미지를 표시합니다.
+              return Image.network(
+                  snapshot.data!,
+                  fit: BoxFit.cover,
+              );
+            }
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      )
     ];
+
 
     List<String> bibleVerses = [
       "너희는 그리스도의 몸이요 지체의 각 부분이라",
@@ -462,19 +504,19 @@ class _HomePageState extends State<HomePage> {
                         autoPlayInterval: const Duration(seconds: 10),
                         viewportFraction: 1,
                       ),
-                      items: listWhoarewe
-                          .map((item) => Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Color(0xff52525C), width: 1),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  color: Colors.white,
-                                ),
-                                child: Center(child: item),
-                              ))
-                          .toList(),
+                      items: listWhoarewe.map((item) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Color(0xff52525C), width: 1),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: item,
+                          ),
+                        );
+                      }).toList(),
                     ),
                     const SizedBox(height: 30.0),
 

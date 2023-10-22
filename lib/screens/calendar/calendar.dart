@@ -24,6 +24,7 @@ class _CalendarState extends State<CalendarPage> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+
   @override
   void initState() {
     super.initState();
@@ -263,7 +264,13 @@ class _CalendarState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("공동체 일정"),
+        elevation: 0,
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+        title: const Text(
+          "공동체 일정",
+          style: TextStyle(fontSize: 15, color: Color(0xff52525C) , fontWeight: FontWeight.bold),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
@@ -280,69 +287,140 @@ class _CalendarState extends State<CalendarPage> {
                   SizedBox(
                     height: 18.0,
                   ),
-                  TableCalendar<Event>(
-                    locale: 'ko_KR',
-                    firstDay: kFirstDay,
-                    lastDay: kLastDay,
-                    focusedDay: _focusedDay,
-                    availableCalendarFormats: {CalendarFormat.month: 'Month'},
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    rangeStartDay: _rangeStart,
-                    sixWeekMonthsEnforced: false,
-                    rangeEndDay: _rangeEnd,
-                    calendarFormat: _calendarFormat,
-                    rangeSelectionMode: _rangeSelectionMode,
-                    eventLoader: (day) {
-                      return allEvents?[day] ?? [];
-                    },
-                    startingDayOfWeek: StartingDayOfWeek.sunday,
-                    headerStyle: HeaderStyle(
-                      titleCentered: true,
-                    ),
-                    calendarStyle: CalendarStyle(
-                      defaultTextStyle: TextStyle().copyWith(
-                        fontSize: 16.0,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(right: 20),
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
+                                spreadRadius: 0.5,  // 그림자의 확장 반경
+                                offset: Offset(2, 0),
+                              )
+                            ]
+
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              side: BorderSide(color: Color(0xff52525C), width: 2.0),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)
+                              ),
+                              elevation: 1.0,
+                              padding: EdgeInsets.fromLTRB(2, 0, 0, 0)
+                          ),
+                          onPressed: () async {
+                            _showEventInputDialog(context, _selectedDay!);
+                          },
+                          child: Icon(
+                            Icons.add,
+                            color: Color(0xff52525C),
+                            size: 18.0,
+                          ),
+                        ),
                       ),
-                      cellMargin: EdgeInsets.all(6.0),
-                      cellPadding: EdgeInsets.all(6.0),
-                      outsideDaysVisible: false,
-                      cellAlignment: Alignment.center,
-                      canMarkersOverflow: true,
-                      weekendTextStyle: TextStyle().copyWith(
-                        fontSize: 16.0,
-                        color: Colors.lightGreen[800],
-                      ),
-                      holidayTextStyle: TextStyle().copyWith(
-                        fontSize: 16.0,
-                        color: Colors.lightGreen[800],
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: mainGreen,
-                        shape: BoxShape.circle,
-                      ),
-                      todayDecoration: BoxDecoration(
-                        color: Colors.lightGreen[200],
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    onDaySelected: _onDaySelected,
-                    onRangeSelected: _onRangeSelected,
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
-                    // onDayLongPressed: (date, events) {
-                    //   _showEventInputDialog(context, date);
-                    // },
+                    ],
                   ),
                   SizedBox(
-                    height: 30.0,
+                    height: 18.0,
+                  ),
+                  Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        width: 400,
+                        height: 440,
+                        decoration: BoxDecoration(
+                          color: Color(0xff4CC9D2),
+                          border:
+                              Border.all(color: Color(0xff52525C), width: 1),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20, 18, 20, 0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border:
+                              Border.all(color: Color(0xff52525C), width: 1),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: TableCalendar<Event>(
+                          locale: 'ko_KR',
+                          firstDay: kFirstDay,
+                          lastDay: kLastDay,
+                          focusedDay: _focusedDay,
+                          availableCalendarFormats: {
+                            CalendarFormat.month: 'Month'
+                          },
+                          selectedDayPredicate: (day) =>
+                              isSameDay(_selectedDay, day),
+                          rangeStartDay: _rangeStart,
+                          sixWeekMonthsEnforced: false,
+                          rangeEndDay: _rangeEnd,
+                          calendarFormat: _calendarFormat,
+                          rangeSelectionMode: _rangeSelectionMode,
+                          eventLoader: (day) {
+                            return allEvents?[day] ?? [];
+                          },
+                          startingDayOfWeek: StartingDayOfWeek.sunday,
+                          headerStyle: HeaderStyle(
+                            titleCentered: true,
+                          ),
+                          calendarStyle: CalendarStyle(
+                            defaultTextStyle: TextStyle().copyWith(
+                              fontSize: 16.0,
+                            ),
+                            cellMargin: EdgeInsets.all(6.0),
+                            cellPadding: EdgeInsets.all(6.0),
+                            outsideDaysVisible: false,
+                            cellAlignment: Alignment.center,
+                            canMarkersOverflow: true,
+                            weekendTextStyle: TextStyle().copyWith(
+                              fontSize: 16.0,
+                              color: Colors.lightGreen[800],
+                            ),
+                            holidayTextStyle: TextStyle().copyWith(
+                              fontSize: 16.0,
+                              color: Colors.lightGreen[800],
+                            ),
+                            // selectedDecoration: BoxDecoration(
+                            //   color: mainGreen,
+                            //   shape: BoxShape.circle,
+                            // ),
+                            // todayDecoration: BoxDecoration(
+                            //   color: Colors.lightGreen[200],
+                            //   shape: BoxShape.circle,
+                            // ),
+                          ),
+                          onDaySelected: _onDaySelected,
+                          onRangeSelected: _onRangeSelected,
+                          onFormatChanged: (format) {
+                            if (_calendarFormat != format) {
+                              setState(() {
+                                _calendarFormat = format;
+                              });
+                            }
+                          },
+                          onPageChanged: (focusedDay) {
+                            _focusedDay = focusedDay;
+                          },
+                          // onDayLongPressed: (date, events) {
+                          //   _showEventInputDialog(context, date);
+                          // },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 15.0,
                   ),
                   StreamBuilder<List<Event>>(
                     stream: getEventsByDate(_selectedDay),
@@ -356,17 +434,40 @@ class _CalendarState extends State<CalendarPage> {
                             itemCount: events?.length,
                             itemBuilder: (context, index) {
                               final event = events?[index];
+                              Color containerColor;
+                              Color listTextColor;
+
+                              switch (index % 3) {
+                                case 0:
+                                  containerColor = Color(0xffFFF27E);
+                                  listTextColor = Color(0xff52525C);
+                                  break;
+                                case 1:
+                                  containerColor = Color(0xffCFFFDC);
+                                  listTextColor = Color(0xff52525C);
+                                  break;
+                                case 2:
+                                  containerColor = Color(0xff0014FF);
+                                  listTextColor = Colors.white;
+
+                                  break;
+                                  default:
+                                    containerColor = Colors.white;
+                                    listTextColor = Color(0xff52525C);
+
+                              }
                               return Container(
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 12.0,
                                   vertical: 4.0,
                                 ),
                                 decoration: BoxDecoration(
+                                  color: containerColor,
                                   border: Border.all(),
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                                 child: ListTile(
-                                  title: Text('${event?.title}'),
+                                  title: Text('${event?.title}' ,style: TextStyle(color: listTextColor),),
                                   trailing: IconButton(
                                     icon: Icon(
                                       Icons.delete,
@@ -398,13 +499,6 @@ class _CalendarState extends State<CalendarPage> {
             }
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          _showEventInputDialog(context, _selectedDay!);
-        },
-        backgroundColor: Colors.green, // 버튼의 배경색을 초록색으로 설정합니다.
       ),
     );
   }
