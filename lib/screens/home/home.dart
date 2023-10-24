@@ -88,7 +88,6 @@ class _HomePageState extends State<HomePage> {
 
   final FirebaseStorage storage = FirebaseStorage.instance;
 
-
   Future<String?> getImageUrl(String path) async {
     try {
       return await storage.ref(path).getDownloadURL();
@@ -98,18 +97,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     List<Widget> listWhoarewe = <Widget>[
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           const Text(
             "Onebody Community(OC)는\n"
-                "예수 그리스도의 한 몸 된 지체로서\n"
-                "살아계신 하나님과 몸의 머리 되신 \n예수 그리스도의 지상명령에 순종합니다.",
+            "예수 그리스도의 한 몸 된 지체로서\n"
+            "살아계신 하나님과 몸의 머리 되신 \n예수 그리스도의 지상명령에 순종합니다.",
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -121,13 +118,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 onPressed: () => {_launchUrl(_url['Instagram']!)},
               ),
-
             ],
           ),
-
         ],
       ),
-
       FutureBuilder<String?>(
         future: getImageUrl('Introduce/introduce.jpeg'),
         builder: (context, snapshot) {
@@ -137,8 +131,8 @@ class _HomePageState extends State<HomePage> {
             } else {
               // 네트워크 이미지를 표시합니다.
               return Image.network(
-                  snapshot.data!,
-                  fit: BoxFit.cover,
+                snapshot.data!,
+                fit: BoxFit.cover,
               );
             }
           } else {
@@ -147,7 +141,6 @@ class _HomePageState extends State<HomePage> {
         },
       )
     ];
-
 
     List<String> bibleVerses = [
       "너희는 그리스도의 몸이요 지체의 각 부분이라",
@@ -285,8 +278,45 @@ class _HomePageState extends State<HomePage> {
               <Widget>[
                 Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(right: 10),
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xff0014FF)
+                                      .withOpacity(1), // 그림자의 색상
+                                  spreadRadius: 0.8, // 그림자의 확장 반경
+                                  offset: Offset(2, 2),
+                                )
+                              ]),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                side: BorderSide(
+                                    color: Color(0xff52525C), width: 2.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                elevation: 1.0,
+                                padding: EdgeInsets.fromLTRB(2, 0, 0, 0)),
+                            onPressed: () async {},
+                            child: Icon(
+                              Icons.add,
+                              color: Color(0xff52525C),
+                              size: 25.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
                     //"공지사항"
-                    SizedBox(height: 20.0),
+                    SizedBox(height: 10.0),
                     //carousel
                     Stack(
                       children: [
@@ -312,18 +342,13 @@ class _HomePageState extends State<HomePage> {
 
                             List<Widget> imageSliders = imgList
                                 .map((item) => Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
                                       decoration: BoxDecoration(
                                         border: Border.all(
                                             color: Color(0xff52525C), width: 2),
                                         borderRadius:
                                             BorderRadius.circular(10.0),
-                                        // boxShadow: [
-                                        //   BoxShadow(
-                                        //     color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
-                                        //     spreadRadius: 3,  // 그림자의 확장 반경
-                                        //     offset: Offset(3, 3),
-                                        //   )
-                                        // ]
                                       ),
                                       child: ClipRRect(
                                         borderRadius:
@@ -385,7 +410,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                               child: CarouselSlider(
                                 options: CarouselOptions(
-                                  viewportFraction: 0.9,
+                                  viewportFraction: 1,
                                   height: 113,
                                   enlargeCenterPage: true,
                                   enableInfiniteScroll: false,
@@ -459,27 +484,24 @@ class _HomePageState extends State<HomePage> {
                             width: 35,
                             height: 35,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-
+                                borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
-                                    spreadRadius: 0.8,  // 그림자의 확장 반경
+                                    color: Color(0xff0014FF)
+                                        .withOpacity(1), // 그림자의 색상
+                                    spreadRadius: 0.8, // 그림자의 확장 반경
                                     offset: Offset(2, 2),
                                   )
-                                ]
-
-                            ),
+                                ]),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                side: BorderSide(color: Color(0xff52525C), width: 2.0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)
-                                ),
-                                elevation: 1.0,
-                                padding: EdgeInsets.fromLTRB(2, 0, 0, 0)
-                              ),
+                                  backgroundColor: Colors.white,
+                                  side: BorderSide(
+                                      color: Color(0xff52525C), width: 2.0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  elevation: 1.0,
+                                  padding: EdgeInsets.fromLTRB(2, 0, 0, 0)),
                               onPressed: () {
                                 // TODO: 버튼이 클릭될 때 수행할 작업
                               },
@@ -506,9 +528,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                       items: listWhoarewe.map((item) {
                         return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Color(0xff52525C), width: 1),
+                            border:
+                                Border.all(color: Color(0xff52525C), width: 1),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: ClipRRect(
@@ -538,7 +561,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          SizedBox(width: 10,),
+                          SizedBox(
+                            width: 10,
+                          ),
                           Text(
                             "We are Onebody Community",
                             style: TextStyle(
@@ -551,7 +576,6 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     const SizedBox(height: 8.0),
-
                   ],
                 ),
               ],

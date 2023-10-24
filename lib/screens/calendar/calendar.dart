@@ -292,16 +292,16 @@ class _CalendarState extends State<CalendarPage> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(right: 20),
-                        width: 30,
-                        height: 30,
+                        width: 35,
+                        height: 35,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
 
                             boxShadow: [
                               BoxShadow(
                                 color: Color(0xff0014FF).withOpacity(1), // 그림자의 색상
-                                spreadRadius: 0.5,  // 그림자의 확장 반경
-                                offset: Offset(2, 0),
+                                spreadRadius: 0.8,  // 그림자의 확장 반경
+                                offset: Offset(2, 2),
                               )
                             ]
 
@@ -338,7 +338,7 @@ class _CalendarState extends State<CalendarPage> {
                         width: 400,
                         height: 440,
                         decoration: BoxDecoration(
-                          color: Color(0xff4CC9D2),
+                          color: Color(0xff548CFF),
                           border:
                               Border.all(color: Color(0xff52525C), width: 1),
                           borderRadius: BorderRadius.circular(10.0),
@@ -385,11 +385,11 @@ class _CalendarState extends State<CalendarPage> {
                             canMarkersOverflow: true,
                             weekendTextStyle: TextStyle().copyWith(
                               fontSize: 16.0,
-                              color: Colors.lightGreen[800],
+                              color: Color(0xff52525C),
                             ),
                             holidayTextStyle: TextStyle().copyWith(
                               fontSize: 16.0,
-                              color: Colors.lightGreen[800],
+                              color: Color(0xff52525C),
                             ),
                             // selectedDecoration: BoxDecoration(
                             //   color: mainGreen,
@@ -439,15 +439,15 @@ class _CalendarState extends State<CalendarPage> {
 
                               switch (index % 3) {
                                 case 0:
-                                  containerColor = Color(0xffFFF27E);
-                                  listTextColor = Color(0xff52525C);
-                                  break;
-                                case 1:
                                   containerColor = Color(0xffCFFFDC);
                                   listTextColor = Color(0xff52525C);
                                   break;
+                                case 1:
+                                  containerColor = Color(0xff60EFB8);
+                                  listTextColor = Color(0xff52525C);
+                                  break;
                                 case 2:
-                                  containerColor = Color(0xff0014FF);
+                                  containerColor = Color(0xff7900FF);
                                   listTextColor = Colors.white;
 
                                   break;
