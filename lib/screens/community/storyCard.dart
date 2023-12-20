@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,17 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
   }
 
   Future<void> _deleteStory() async {
+    // Firestore에서 스토리 데이터 가져오기
+    var storyDocument = await FirebaseFirestore.instance.collection('story').doc(widget.story.id).get();
+    var storyData = storyDocument.data(); // 경로 맞는지 확인 할 필요 있다.
+
+    if (storyData != null && storyData['imageUrl'] != null) {
+      // Firebase Storage에서 이미지 삭제
+      String imageUrl = storyData['imageUrl'];
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    }
+
+    // Firestore에서 스토리 삭제
     await FirebaseFirestore.instance.collection('story').doc(widget.story.id).delete();
   }
 
@@ -105,8 +117,8 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('기도 삭제'),
-          content: Text('이 기도를 정말로 삭제하시겠습니까?'),
+          title: Text('스토리 삭제'),
+          content: Text('이 스토리를 정말로 삭제하시겠습니까?'),
           actions: [
             TextButton(
               child: Text('취소'),
