@@ -143,97 +143,113 @@ class _PrayerCardState extends State<PrayerCard>
         return Stack(
           children: [
             Card(
-              elevation: 3,
+              color: Colors.white,
+              elevation: 0,
               shape: RoundedRectangleBorder(
+                side: BorderSide(color: Color(0xff52525C), width: 1), // 테두리의 색상과 두께를 지정합니다.
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(userURL!),
-                          radius: 20,
-                        ),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            widget.prayer.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
-                          IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: _showDeleteConfirmationDialog,
-                          ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Text(userName ?? '',
-                        style:
-                            TextStyle(fontSize: 16, color: Colors.grey[600])),
-                    SizedBox(height: 5),
-                    Text(widget.prayer.description,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: FaIcon(
-                                  _isPrayedFor
-                                      ? FontAwesomeIcons.handsPraying
-                                      : FontAwesomeIcons.hand,
-                                  color: _isPrayedFor
-                                      ? Colors.blue
-                                      : Colors.grey[600]),
-                              onPressed: _togglePrayedFor,
-                            ),
-                            Text('${prayedForList.length}')
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.comment_outlined, color:Colors.grey[600]),
-                              onPressed: () {
-                                // TODO: Implement comment functionality
-                              },
-                            ),
-                            Text(
-                                '0') // TODO: Replace with the actual comment count
-                          ],
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.share_outlined), // Share Icon
-                          onPressed: () {
-                            // TODO: Implement share functionality
-                          },
-                        ),
+              margin: const EdgeInsets.all(15.0),
+              child: Container(
 
-                      ],
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xff0092FABC).withOpacity(1),
+                      spreadRadius: 0.8,
+                      offset: Offset(0,4),
                     ),
-                    if (teamName != null)
-                      Text('Team: $teamName',
-                          style:
-                              TextStyle(fontSize: 14, color: Colors.grey[600])),
                   ],
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(userURL!),
+                            radius: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              widget.prayer.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: _showDeleteConfirmationDialog,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(userName ?? '',
+                          style:
+                              TextStyle(fontSize: 16, color: Colors.grey[600])),
+                      const SizedBox(height: 5),
+                      Text(widget.prayer.description,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: FaIcon(
+                                    _isPrayedFor
+                                        ? FontAwesomeIcons.handsPraying
+                                        : FontAwesomeIcons.hand,
+                                    color: _isPrayedFor
+                                        ? Colors.blue
+                                        : Colors.grey[600]),
+                                onPressed: _togglePrayedFor,
+                              ),
+                              Text('${prayedForList.length}')
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.comment_outlined, color:Colors.grey[600]),
+                                onPressed: () {
+                                  // TODO: Implement comment functionality
+                                },
+                              ),
+                              const Text(
+                                  '0') // TODO: Replace with the actual comment count
+                            ],
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.share_outlined), // Share Icon
+                            onPressed: () {
+                              // TODO: Implement share functionality
+                            },
+                          ),
+
+                        ],
+                      ),
+                      if (teamName != null)
+                        Text('Team: $teamName',
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.grey[600])),
+                    ],
+                  ),
+                ),
               ),
-              margin: EdgeInsets.all(15.0),
             ),
             if (_isPrayedFor)
               Positioned.fill(
