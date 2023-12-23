@@ -115,7 +115,7 @@ class _MixedListState extends State<MixedList> {
                   Text(
                     "공동체 소식 타임라인",
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Color(0xff52525C),
                     ),
@@ -159,7 +159,7 @@ class _MixedListState extends State<MixedList> {
                 right: 0,
                 bottom: -10, // 버튼 밑으로 선을 내리려면 여기 값을 음수로 설정합니다.
                 child: Container(
-                  height: 2.0,
+                  height: 1.0,
                   color: Colors.black,
                 ),
               ),
