@@ -111,8 +111,7 @@ class _PrayerCardState extends State<PrayerCard>
             TextButton(
               child: Text('삭제'),
               onPressed: () {
-                _deletePrayer();
-                Navigator.of(context).pop();
+                _deletePrayer(); Navigator.of(context).pop();
               },
             ),
           ],
