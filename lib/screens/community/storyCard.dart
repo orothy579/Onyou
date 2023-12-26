@@ -176,7 +176,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircleAvatar(
                       radius: 25,

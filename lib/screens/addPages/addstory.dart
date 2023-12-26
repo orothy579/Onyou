@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:developer' as developer;
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -91,48 +91,48 @@ class _AddStoryPageState extends State<AddStoryPage> {
   final ImagePicker picker = ImagePicker();
   final List<XFile> _images = [];
 
-  void _selectImages() async {
+
+
+  final db = FirebaseFirestore.instance;
+  final _uid = FirebaseAuth.instance.currentUser!.uid;
+
+
+  void _selectAndUploadImages() async {
+    // 이미지 선택
     final List<XFile>? selectedImages = await picker.pickMultiImage();
 
     if (selectedImages != null) {
       setState(() {
         _images.addAll(selectedImages);
       });
+
+      // 이미지 업로드
+      await _uploadImages();
+
+      // 스토리 업로드
+      await _uploadStory();
     }
   }
 
-
-  void _uploadImages() async {
+  Future<void> _uploadImages() async {
     String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
 
     for (var file in _images) {
       final File currentFile = File(file.path);
       String fileName = currentFile.path.split('/').last;
+
+      // 업로드
       var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+
+      // 다운로드 URL 가져오기 (여기서 사용하지 않지만 필요하면 활용 가능)
       var downloadUrl = await snapshot.ref.getDownloadURL();
     }
   }
 
-
-
-
-  final db = FirebaseFirestore.instance;
-  final _uid = FirebaseAuth.instance.currentUser!.uid;
-
-  void StorySession() async {
-
-    String dt = DateTime.now().toString();
-    final _firebaseStorage = FirebaseStorage.instance;
-
-    for (var file in _images) {
-      final File currentFile = File(file.path);
-      String fileName = currentFile.path.split('/').last;
-      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-    }
-
+  Future<void> _uploadStory() async {
     Timestamp now = Timestamp.now();
+
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
     final DocumentReference documentRef = myCollection.doc(_uid);
 
@@ -155,10 +155,11 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
     try {
       await db.collection('story').doc(story.title).set(story.toJson());
-      log("Story uploaded successfully!");
+      developer.log("Story uploaded successfully!");
       Navigator.pushNamed(context, '/home');
-    } catch (e) {
-      log("Error while uploading!");
+    } catch (e, stackTrace) {
+      developer.log("Error while uploading: $e", name: "MyApp", error: "ERROR");
+      print("Stack trace: $stackTrace");
     }
   }
 
@@ -182,7 +183,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
             icon: Icon(Icons.send),
             onPressed: () {
               if (_formKey.currentState!.validate()) { // Form 검증
-                StorySession();
+                _selectAndUploadImages();
               }
             },
           )
@@ -209,7 +210,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: uploadFiles,
+                onPressed: _selectAndUploadImages,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onebody/screens/addPages/selectionPage.dart';
 import 'package:onebody/screens/community/prayertitleCard.dart';
 import 'package:onebody/screens/community/storyCard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -143,7 +144,12 @@ class _MixedListState extends State<MixedList> {
                         elevation: 1.0,
                         padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SelectionPage())
+                        );
+                      },
                       child: const Icon(
                         Icons.add,
                         color: Color(0xff52525C),

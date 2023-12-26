@@ -26,10 +26,10 @@ class _AddPrayPageState extends State<AddPrayPage> {
   final picker = ImagePicker(); // For image picker
 
   Future pickImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    // final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _imageFile = File(pickedFile!.path);
+      // _imageFile = File(pickedFile!.path);
     });
   }
 
