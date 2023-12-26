@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../model/PrayerTitle.dart';
+import 'commentPage.dart';
 
 class PrayerCard extends StatefulWidget {
   final PrayerTitle prayer;
@@ -150,7 +151,6 @@ class _PrayerCardState extends State<PrayerCard>
               ),
               margin: const EdgeInsets.all(15.0),
               child: Container(
-
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.white,
@@ -188,7 +188,7 @@ class _PrayerCardState extends State<PrayerCard>
                           ),
                           if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
                             IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
+                              icon: const Icon(Icons.delete, color: Colors.grey),
                               onPressed: _showDeleteConfirmationDialog,
                             ),
                         ],
@@ -203,18 +203,17 @@ class _PrayerCardState extends State<PrayerCard>
                               fontWeight: FontWeight.bold, fontSize: 16)),
                       SizedBox(height: 10),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.end ,// Adjusted alignment
                         children: [
                           Row(
                             children: [
                               IconButton(
                                 icon: FaIcon(
-                                    _isPrayedFor
-                                        ? FontAwesomeIcons.handsPraying
-                                        : FontAwesomeIcons.hand,
-                                    color: _isPrayedFor
-                                        ? Colors.blue
-                                        : Colors.grey[600]),
+                                  _isPrayedFor
+                                      ? FontAwesomeIcons.handsPraying
+                                      : FontAwesomeIcons.hand,
+                                  color: _isPrayedFor ? Colors.blue : Colors.grey[600],
+                                ),
                                 onPressed: _togglePrayedFor,
                               ),
                               Text('${prayedForList.length}')
@@ -223,24 +222,41 @@ class _PrayerCardState extends State<PrayerCard>
                           Row(
                             children: [
                               IconButton(
-                                icon: Icon(Icons.comment_outlined, color:Colors.grey[600]),
+                                icon:
+                                Icon(Icons.comment_outlined, color: Colors.grey[600]),
                                 onPressed: () {
-                                  // TODO: Implement comment functionality
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      double height = MediaQuery.of(context).size.height;
+
+                                      return ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxHeight: height * 0.8,
+                                        ),
+                                      );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
-                              const Text(
-                                  '0') // TODO: Replace with the actual comment count
+                              const Text('0') // TODO: Replace with the actual comment count
                             ],
                           ),
                           IconButton(
-                            icon: Icon(Icons.share_outlined), // Share Icon
+                            icon: Icon(Icons.share_outlined),
                             onPressed: () {
                               // TODO: Implement share functionality
                             },
                           ),
-
                         ],
                       ),
+
                       if (teamName != null)
                         Text('Team: $teamName',
                             style:

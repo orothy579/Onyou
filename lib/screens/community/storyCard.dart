@@ -167,16 +167,8 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
           margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
-            border: Border.all(color: Colors.grey[200]!),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 2.0,
-                blurRadius: 5.0,
-                offset: Offset(0, 3),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(color: Color(0xff52525C)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,12 +176,12 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircleAvatar(
                       radius: 25,
                       backgroundImage: NetworkImage(widget.story.u_image!),
                     ),
-                    SizedBox(width: 10.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -206,6 +198,13 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         ),
                       ],
                     ),
+                    if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.grey),
+                        onPressed: () async {
+                          _showDeleteConfirmationDialog();
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -234,7 +233,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Row(
                       children: [
@@ -280,13 +279,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         // TODO: Implement share functionality
                       },
                     ),
-                    if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red[600]),
-                        onPressed: () async {
-                          _showDeleteConfirmationDialog();
-                        },
-                      ),
+
                   ],
                 ),
               ),
