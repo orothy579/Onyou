@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,9 +19,8 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  final _title = TextEditingController();
-  final _description = TextEditingController();
-  List<String> _imageUrls = [];
+  // final _title = TextEditingController();
+  // final _description = TextEditingController();
   String? _selectedTeam;
   final List<String> _teams = [
     'Branding', 'Builder Community', 'OBC', 'OCB', 'OEC',
@@ -51,97 +51,127 @@ class _AddStoryPageState extends State<AddStoryPage> {
   }
 
 
-
-
   // Form의 상태를 추적하기 위한 GlobalKey
   final _formKey = GlobalKey<FormState>();
+  // final ImagePicker picker = ImagePicker();
+  // final List<XFile> _images = [];
 
-  uploadFiles() async {
+
+  //
+  // final db = FirebaseFirestore.instance;
+  // final _uid = FirebaseAuth.instance.currentUser!.uid;
+
+
+  // void _selectAndUploadImages() async {
+  //   // 이미지 선택
+  //   final List<XFile>? selectedImages = await picker.pickMultiImage();
+  //
+  //   if (selectedImages != null) {
+  //     setState(() {
+  //       _images.addAll(selectedImages);
+  //     });
+  //
+  //     // 이미지 업로드
+  //     await _uploadImages();
+  //
+  //     // 스토리 업로드
+  //     await _uploadStory();
+  //   }
+  // }
+  //
+  // Future<void> _uploadImages() async {
+  //   String dt = DateTime.now().toString();
+  //   final _firebaseStorage = FirebaseStorage.instance;
+  //
+  //   for (var file in _images) {
+  //     final File currentFile = File(file.path);
+  //     String fileName = currentFile.path.split('/').last;
+  //
+  //     // 업로드
+  //     var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+  //
+  //     // 다운로드 URL 가져오기 (여기서 사용하지 않지만 필요하면 활용 가능)
+  //     var downloadUrl = await snapshot.ref.getDownloadURL();
+  //   }
+  // }
+  //
+  // Future<void> _uploadStory() async {
+  //   Timestamp now = Timestamp.now();
+  //
+  //   final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
+  //   final DocumentReference documentRef = myCollection.doc(_uid);
+  //
+  //   final documentData = await documentRef.get();
+  //   final fieldValname = documentData.get('name');
+  //   final fieldValimage = documentData.get('image');
+  //
+  //   Story story = Story(
+  //     id: _title.text,
+  //     images: _imageUrls,
+  //     name: fieldValname,
+  //     u_image: fieldValimage,
+  //     title: _title.text,
+  //     description: _description.text,
+  //     create_timestamp: now,
+  //     userRef: documentRef,
+  //     teamRef: _userTeamRef,
+  //     likes: [],
+  //   );
+  //
+  //   try {
+  //     await db.collection('story').doc(story.title).set(story.toJson());
+  //     developer.log("Story uploaded successfully!");
+  //     Navigator.pushNamed(context, '/home');
+  //   } catch (e, stackTrace) {
+  //     developer.log("Error while uploading: $e", name: "MyApp", error: "ERROR");
+  //     print("Stack trace: $stackTrace");
+  //   }
+  // }
+
+
+  final _title = TextEditingController();
+  final _description = TextEditingController();
+  List<String> _imageUrls = []; // List to store multiple image URLs
+
+  uploadImages() async {
     String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
+    final ImagePicker _picker = ImagePicker();
 
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'mkv'], // 이미지 및 동영상 확장자 추가
-      );
+    List<XFile>? images = await _picker.pickMultiImage();
 
-      if (result == null || result.files.isEmpty) return; // 사용자가 파일 선택을 취소한 경우
-
-      for (var file in result.files) {
-        var currentFile = File(file.path!);  // non-null assertion 추가
-        String fileName = currentFile.path.split('/').last;
-        var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
+    if (images != null) {
+      for (XFile image in images) {
+        var file = File(image.path);
+        var snapshot = await _firebaseStorage.ref().child('story/story-$dt').putFile(file);
         var downloadUrl = await snapshot.ref.getDownloadURL();
-        _imageUrls.add(downloadUrl); // 이 경우 _imageUrls에 이미지와 동영상 URL이 모두 포함됩니다.
+        setState(() {
+          _imageUrls.add(downloadUrl);
+        });
       }
-
-      setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('파일이 성공적으로 업로드되었습니다!')),
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('파일 업로드 중 문제가 발생했습니다.')),
-      );
     }
   }
-
-  final ImagePicker picker = ImagePicker();
-  final List<XFile> _images = [];
-
-
 
   final db = FirebaseFirestore.instance;
   final _uid = FirebaseAuth.instance.currentUser!.uid;
 
-
-  void _selectAndUploadImages() async {
-    // 이미지 선택
-    final List<XFile>? selectedImages = await picker.pickMultiImage();
-
-    if (selectedImages != null) {
-      setState(() {
-        _images.addAll(selectedImages);
-      });
-
-      // 이미지 업로드
-      await _uploadImages();
-
-      // 스토리 업로드
-      await _uploadStory();
-    }
-  }
-
-  Future<void> _uploadImages() async {
-    String dt = DateTime.now().toString();
-    final _firebaseStorage = FirebaseStorage.instance;
-
-    for (var file in _images) {
-      final File currentFile = File(file.path);
-      String fileName = currentFile.path.split('/').last;
-
-      // 업로드
-      var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
-
-      // 다운로드 URL 가져오기 (여기서 사용하지 않지만 필요하면 활용 가능)
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-    }
-  }
-
-  Future<void> _uploadStory() async {
+  void StorySession() async {
     Timestamp now = Timestamp.now();
 
+    // Get a reference to the Firestore collection
     final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
+
+    // Get a document reference
     final DocumentReference documentRef = myCollection.doc(_uid);
 
-    final documentData = await documentRef.get();
-    final fieldValname = documentData.get('name');
-    final fieldValimage = documentData.get('image');
+    // Get the value of a specific field in the document
+    final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
+    final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
+
+    // Ensure there is at least a default image URL
+    _imageUrls.add("https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png");
 
     Story story = Story(
-      id: _title.text,
       images: _imageUrls,
       name: fieldValname,
       u_image: fieldValimage,
@@ -149,19 +179,18 @@ class _AddStoryPageState extends State<AddStoryPage> {
       description: _description.text,
       create_timestamp: now,
       userRef: documentRef,
-      teamRef: _userTeamRef,
       likes: [],
     );
 
     try {
       await db.collection('story').doc(story.title).set(story.toJson());
-      developer.log("Story uploaded successfully!");
-      Navigator.pushNamed(context, '/home');
-    } catch (e, stackTrace) {
-      developer.log("Error while uploading: $e", name: "MyApp", error: "ERROR");
-      print("Stack trace: $stackTrace");
+      log("Story uploaded successfully!");
+      Navigator.pushNamed(context, '/');
+    } catch (e) {
+      log("Error while uploading!");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +212,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
             icon: Icon(Icons.send),
             onPressed: () {
               if (_formKey.currentState!.validate()) { // Form 검증
-                _selectAndUploadImages();
+                StorySession();
               }
             },
           )
@@ -210,7 +239,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _selectAndUploadImages,
+                onPressed: uploadImages,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
