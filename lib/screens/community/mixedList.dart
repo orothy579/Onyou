@@ -104,82 +104,78 @@ class _MixedListState extends State<MixedList> {
     List<Widget> sections = [];
 
     sections.add(
-        Container(
-          margin: EdgeInsets.all(10),
-          child: Stack(
-            clipBehavior: Clip.none, // Overflow를 허용합니다.
-            children: <Widget>[
-              // 텍스트와 버튼을 포함하는 Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "공동체 소식 타임라인",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff52525C),
-                    ),
+      Container(
+        margin: EdgeInsets.all(10),
+        child: Stack(
+          clipBehavior: Clip.none, // Overflow를 허용합니다.
+          children: <Widget>[
+            // 텍스트와 버튼을 포함하는 Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "공동체 소식 타임라인",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff52525C),
                   ),
-                  Container(
-                    width: 35,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xff0014FF).withOpacity(1),
-                          spreadRadius: 0.8,
-                          offset: Offset(1, 1),
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Color(0xff52525C), width: 2.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 1.0,
-                        padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SelectionPage())
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        color: Color(0xff52525C),
-                        size: 25.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // 선을 그리는 Container
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: -10, // 버튼 밑으로 선을 내리려면 여기 값을 음수로 설정합니다.
-                child: Container(
-                  height: 1.0,
-                  color: Colors.black,
                 ),
+                Container(
+                  width: 35,
+                  height: 35,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xff0014FF).withOpacity(1),
+                        spreadRadius: 0.8,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: BorderSide(color: Color(0xff52525C), width: 2.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 1.0,
+                      padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SelectionPage()));
+                    },
+                    child: const Icon(
+                      Icons.add,
+                      color: Color(0xff52525C),
+                      size: 25.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // 선을 그리는 Container
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: -10, // 버튼 밑으로 선을 내리려면 여기 값을 음수로 설정합니다.
+              child: Container(
+                height: 1.0,
+                color: Colors.black,
               ),
-
-            ],
-          ),
+            ),
+          ],
         ),
-
+      ),
     );
 
     mixedItemsByDate.entries.forEach((entry) {
-      sections.add(
-        SizedBox(height: 10)
-      );
+      sections.add(SizedBox(height: 10));
       sections.add(
         Text(
           DateFormat('yyyy년 MM월 dd일').format(entry.key),

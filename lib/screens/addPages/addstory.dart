@@ -2,7 +2,6 @@ import 'dart:developer' as developer;
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,8 +18,6 @@ class AddStoryPage extends StatefulWidget {
 }
 
 class _AddStoryPageState extends State<AddStoryPage> {
-  // final _title = TextEditingController();
-  // final _description = TextEditingController();
   String? _selectedTeam;
   final List<String> _teams = [
     'Branding', 'Builder Community', 'OBC', 'OCB', 'OEC',
@@ -172,6 +169,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
     _imageUrls.add("https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png");
 
     Story story = Story(
+      id: _title.text,
       images: _imageUrls,
       name: fieldValname,
       u_image: fieldValimage,
@@ -179,6 +177,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       description: _description.text,
       create_timestamp: now,
       userRef: documentRef,
+      teamRef: _userTeamRef,
       likes: [],
     );
 
