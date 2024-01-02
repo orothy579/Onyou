@@ -5,6 +5,7 @@ import 'package:onebody/screens/addPages/addnotice.dart';
 import 'package:onebody/screens/addPages/addstory.dart';
 import 'package:onebody/screens/bottom_bar.dart';
 import 'package:onebody/screens/cart/cart_page.dart';
+import 'package:onebody/screens/community/mixedList.dart';
 import 'package:onebody/screens/home/home.dart';
 import 'package:onebody/screens/home/sentence.dart';
 import 'package:onebody/screens/profile.dart';
@@ -61,6 +62,7 @@ class _OnyouAppState extends State<OnyouApp> {
         '/home' : (BuildContext context) => BottomBar(id : 0),
         '/login' : (BuildContext context) => LoginPage(),
         '/addnotice' : (BuildContext context) => const AddNoticePage(),
+        '/community' : (BuildContext context) =>  MixedList(),
         '/addstory' : (BuildContext context) => const AddStoryPage(),
         '/sentence' : (BuildContext context) => const SentencePage(),
         '/shop' : (BuildContext context) => const ShopPage(),

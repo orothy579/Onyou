@@ -6,9 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:onebody/screens/addPages/selectionPage.dart';
 import 'package:onebody/style/app_styles.dart';
 import '../../model/Story.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../bottom_bar.dart';
 
 class AddStoryPage extends StatefulWidget {
   const AddStoryPage({Key? key}) : super(key: key);
@@ -20,8 +23,16 @@ class AddStoryPage extends StatefulWidget {
 class _AddStoryPageState extends State<AddStoryPage> {
   String? _selectedTeam;
   final List<String> _teams = [
-    'Branding', 'Builder Community', 'OBC', 'OCB', 'OEC',
-    'OFC', 'OSW', 'Onebody FC', 'Onebody House', '이웃'
+    'Branding',
+    'Builder Community',
+    'OBC',
+    'OCB',
+    'OEC',
+    'OFC',
+    'OSW',
+    'Onebody FC',
+    'Onebody House',
+    '이웃'
   ];
 
   DocumentReference? _userTeamRef;
@@ -34,7 +45,8 @@ class _AddStoryPageState extends State<AddStoryPage> {
   }
 
   _fetchUserTeam() async {
-    final DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(_uid);
+    final DocumentReference userRef =
+        FirebaseFirestore.instance.collection('users').doc(_uid);
     final userDoc = await userRef.get();
     final teamRefStr = userDoc['teamRef'];
 
@@ -47,104 +59,45 @@ class _AddStoryPageState extends State<AddStoryPage> {
     }
   }
 
-
   // Form의 상태를 추적하기 위한 GlobalKey
   final _formKey = GlobalKey<FormState>();
-  // final ImagePicker picker = ImagePicker();
-  // final List<XFile> _images = [];
-
-
-  //
-  // final db = FirebaseFirestore.instance;
-  // final _uid = FirebaseAuth.instance.currentUser!.uid;
-
-
-  // void _selectAndUploadImages() async {
-  //   // 이미지 선택
-  //   final List<XFile>? selectedImages = await picker.pickMultiImage();
-  //
-  //   if (selectedImages != null) {
-  //     setState(() {
-  //       _images.addAll(selectedImages);
-  //     });
-  //
-  //     // 이미지 업로드
-  //     await _uploadImages();
-  //
-  //     // 스토리 업로드
-  //     await _uploadStory();
-  //   }
-  // }
-  //
-  // Future<void> _uploadImages() async {
-  //   String dt = DateTime.now().toString();
-  //   final _firebaseStorage = FirebaseStorage.instance;
-  //
-  //   for (var file in _images) {
-  //     final File currentFile = File(file.path);
-  //     String fileName = currentFile.path.split('/').last;
-  //
-  //     // 업로드
-  //     var snapshot = await _firebaseStorage.ref().child('story/story-$dt-$fileName').putFile(currentFile);
-  //
-  //     // 다운로드 URL 가져오기 (여기서 사용하지 않지만 필요하면 활용 가능)
-  //     var downloadUrl = await snapshot.ref.getDownloadURL();
-  //   }
-  // }
-  //
-  // Future<void> _uploadStory() async {
-  //   Timestamp now = Timestamp.now();
-  //
-  //   final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
-  //   final DocumentReference documentRef = myCollection.doc(_uid);
-  //
-  //   final documentData = await documentRef.get();
-  //   final fieldValname = documentData.get('name');
-  //   final fieldValimage = documentData.get('image');
-  //
-  //   Story story = Story(
-  //     id: _title.text,
-  //     images: _imageUrls,
-  //     name: fieldValname,
-  //     u_image: fieldValimage,
-  //     title: _title.text,
-  //     description: _description.text,
-  //     create_timestamp: now,
-  //     userRef: documentRef,
-  //     teamRef: _userTeamRef,
-  //     likes: [],
-  //   );
-  //
-  //   try {
-  //     await db.collection('story').doc(story.title).set(story.toJson());
-  //     developer.log("Story uploaded successfully!");
-  //     Navigator.pushNamed(context, '/home');
-  //   } catch (e, stackTrace) {
-  //     developer.log("Error while uploading: $e", name: "MyApp", error: "ERROR");
-  //     print("Stack trace: $stackTrace");
-  //   }
-  // }
-
 
   final _title = TextEditingController();
   final _description = TextEditingController();
   List<String> _imageUrls = []; // List to store multiple image URLs
 
   uploadImages() async {
-    String dt = DateTime.now().toString();
     final _firebaseStorage = FirebaseStorage.instance;
     final ImagePicker _picker = ImagePicker();
 
     List<XFile>? images = await _picker.pickMultiImage();
 
     if (images != null) {
-      for (XFile image in images) {
+      for (int i = 0; i < images.length; i++) {
+        var image = images[i];
         var file = File(image.path);
-        var snapshot = await _firebaseStorage.ref().child('story/story-$dt').putFile(file);
-        var downloadUrl = await snapshot.ref.getDownloadURL();
-        setState(() {
-          _imageUrls.add(downloadUrl);
-        });
+
+        // 현재 시간 정보를 얻습니다.
+        DateTime now = DateTime.now();
+
+        // 이미지 번호를 추가하여 파일 이름을 생성합니다.
+        String uniqueFileName =
+            'story/${now.year}-${now.month}-${now.day}_${now.hour}:${now.minute}:${now.second}_${i + 1}.jpg';
+
+        try {
+          // 이미지를 업로드합니다.
+          var snapshot =
+              await _firebaseStorage.ref().child(uniqueFileName).putFile(file);
+
+          // 업로드된 이미지의 다운로드 URL을 얻어옵니다.
+          var downloadUrl = await snapshot.ref.getDownloadURL();
+
+          setState(() {
+            _imageUrls.add(downloadUrl);
+          });
+        } catch (e) {
+          print('이미지 업로드 실패: $e');
+        }
       }
     }
   }
@@ -156,17 +109,20 @@ class _AddStoryPageState extends State<AddStoryPage> {
     Timestamp now = Timestamp.now();
 
     // Get a reference to the Firestore collection
-    final CollectionReference myCollection = FirebaseFirestore.instance.collection('users');
+    final CollectionReference myCollection =
+        FirebaseFirestore.instance.collection('users');
 
     // Get a document reference
     final DocumentReference documentRef = myCollection.doc(_uid);
 
     // Get the value of a specific field in the document
     final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
-    final fieldValimage = await documentRef.get().then((doc) => doc.get('image'));
+    final fieldValimage =
+        await documentRef.get().then((doc) => doc.get('image'));
 
     // Ensure there is at least a default image URL
-    _imageUrls.add("https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png");
+    _imageUrls.add(
+        "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png");
 
     Story story = Story(
       id: _title.text,
@@ -184,12 +140,12 @@ class _AddStoryPageState extends State<AddStoryPage> {
     try {
       await db.collection('story').doc(story.title).set(story.toJson());
       log("Story uploaded successfully!");
-      Navigator.pushNamed(context, '/');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => BottomBar(id: 1)));
     } catch (e) {
       log("Error while uploading!");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -204,13 +160,15 @@ class _AddStoryPageState extends State<AddStoryPage> {
             Navigator.pop(context);
           },
         ),
-        title: Text('소식을 전하세요 ☺️', style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            Text('소식을 전하세요 ☺️', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.send),
             onPressed: () {
-              if (_formKey.currentState!.validate()) { // Form 검증
+              if (_formKey.currentState!.validate()) {
+                // Form 검증
                 StorySession();
               }
             },
@@ -242,7 +200,10 @@ class _AddStoryPageState extends State<AddStoryPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.add_photo_alternate, size: 25,),
+                    Icon(
+                      Icons.add_photo_alternate,
+                      size: 25,
+                    ),
                     SizedBox(width: 5),
                     Text("사진 추가", style: TextStyle(fontSize: 16)),
                   ],
@@ -284,30 +245,28 @@ class _AddStoryPageState extends State<AddStoryPage> {
               ),
               SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child:
-
-                DropdownButtonFormField<String>(
-                  hint: Text('팀을 선택해주세요.'),
-                  value: _userTeamName,
-                  onChanged: (String? value) {
-                    // 본인이 속한 팀만 표시되기 때문에 별도의 변경 작업은 필요하지 않습니다.
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '팀 정보가 없습니다.';
-                    }
-                    return null;
-                  },
-                  items: _userTeamName == null
-                      ? []
-                      : [DropdownMenuItem<String>(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: DropdownButtonFormField<String>(
+                    hint: Text('팀을 선택해주세요.'),
                     value: _userTeamName,
-                    child: Text(_userTeamName!),
-                  )],
-                )
-
-              ),
+                    onChanged: (String? value) {
+                      // 본인이 속한 팀만 표시되기 때문에 별도의 변경 작업은 필요하지 않습니다.
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '팀 정보가 없습니다.';
+                      }
+                      return null;
+                    },
+                    items: _userTeamName == null
+                        ? []
+                        : [
+                            DropdownMenuItem<String>(
+                              value: _userTeamName,
+                              child: Text(_userTeamName!),
+                            )
+                          ],
+                  )),
               SizedBox(height: 20),
             ],
           ),

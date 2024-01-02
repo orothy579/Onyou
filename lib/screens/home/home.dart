@@ -14,6 +14,7 @@ import 'package:logger/logger.dart';
 import '../../model/Notice.dart';
 import '../../model/Story.dart';
 import '../../model/user.dart';
+import '../addPages/selectionPage.dart';
 
 //관련 url 집어 넣는 url
 final Map<String, Uri> _url = {
@@ -304,7 +305,12 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius: BorderRadius.circular(12)),
                                 elevation: 1.0,
                                 padding: EdgeInsets.fromLTRB(2, 0, 0, 0)),
-                            onPressed: () async {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SelectionPage()));
+                            },
                             child: Icon(
                               Icons.add,
                               color: Color(0xff52525C),
