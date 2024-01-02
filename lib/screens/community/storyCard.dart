@@ -152,7 +152,6 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    print("reload");
     double fontSize = widget.story.title!.length > 10 ? 15 : 20;
     isLiked =
         widget.story.likes!.contains(FirebaseAuth.instance.currentUser!.uid);

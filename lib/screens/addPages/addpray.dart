@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../model/prayerTitle.dart';
+import '../bottom_bar.dart';
 
 class AddPrayPage extends StatefulWidget {
   const AddPrayPage({Key? key}) : super(key: key);
@@ -66,22 +67,8 @@ class _AddPrayPageState extends State<AddPrayPage> {
 
     });
 
-    // 추가된 문서의 ID를 추출합니다.
-    String docId = ref.id;
-
-    // 이제 ID를 사용하여 PrayerTitle 객체를 생성할 수 있습니다.
-    PrayerTitle prayerTitle = PrayerTitle(
-      title: _title.text,
-      id: docId,
-      dateTime: now,
-      userRef: db.collection('users').doc(_uid),
-      description: _description.text,
-      teamRef: _userTeamRef!,
-      imageUrl : imageUrl,
-    );
-
-    log("Prayer Title uploaded successfully with ID: $docId");
-    Navigator.pushNamed(context, '/home');
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => BottomBar(id: 1)));
   }
 
   Future uploadImageToFirebase(BuildContext context) async {
