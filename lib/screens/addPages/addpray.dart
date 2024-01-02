@@ -130,12 +130,12 @@ class _AddPrayPageState extends State<AddPrayPage> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          pickImage();
-        },
-        child: Icon(Icons.add_a_photo),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     pickImage();
+      //   },
+      //   child: Icon(Icons.add_a_photo),
+      // ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -144,21 +144,21 @@ class _AddPrayPageState extends State<AddPrayPage> {
             child: Column(
               children: [
                 if (_userTeamRef != null)
-                  DropdownButton<DocumentReference>(
-                    value: _userTeamRef,
-                    items: [
-                      DropdownMenuItem(
-                        child: Text(_userTeamRef!.id),
-                        value: _userTeamRef,
-                      ),
-                      // 다른 팀의 항목도 추가 가능
-                    ],
-                    onChanged: (newTeam) {
-                      setState(() {
-                        _userTeamRef = newTeam;
-                      });
-                    },
-                  ),
+                  // DropdownButton<DocumentReference>(
+                  //   value: _userTeamRef,
+                  //   items: [
+                  //     DropdownMenuItem(
+                  //       child: Text(_userTeamRef!.id),
+                  //       value: _userTeamRef,
+                  //     ),
+                  //     // 다른 팀의 항목도 추가 가능
+                  //   ],
+                  //   onChanged: (newTeam) {
+                  //     setState(() {
+                  //       _userTeamRef = newTeam;
+                  //     });
+                  //   },
+                  // ),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _title,
