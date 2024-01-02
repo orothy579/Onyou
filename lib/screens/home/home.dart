@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:onebody/screens/addPages/addnotice.dart';
 import 'package:onebody/widgets/TooltipBalloon.dart';
 import 'package:onebody/screens/home/teamGridWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -309,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SelectionPage()));
+                                      builder: (context) => AddNoticePage()));
                             },
                             child: Icon(
                               Icons.add,
@@ -389,8 +390,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
-                                                        Navigator.pushNamed(
-                                                            context, '/login');
+
                                                       },
                                                       child: const Text(
                                                         "더 알아보기",

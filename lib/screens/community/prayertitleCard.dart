@@ -95,6 +95,7 @@ class _PrayerCardState extends State<PrayerCard>
   Future<void> _deletePrayer() async {
     await FirebaseFirestore.instance.collection('prayers').doc(widget.prayer.id).delete();
   }
+
   _showDeleteConfirmationDialog() {
     showDialog(
       context: context,

@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:onebody/screens/addPages/selectionPage.dart';
 import 'package:onebody/style/app_styles.dart';
 import '../../model/Story.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,29 +34,11 @@ class _AddStoryPageState extends State<AddStoryPage> {
     '이웃'
   ];
 
-  DocumentReference? _userTeamRef;
-  String? _userTeamName;
-
   @override
   void initState() {
     super.initState();
-    _fetchUserTeam();
   }
 
-  _fetchUserTeam() async {
-    final DocumentReference userRef =
-        FirebaseFirestore.instance.collection('users').doc(_uid);
-    final userDoc = await userRef.get();
-    final teamRefStr = userDoc['teamRef'];
-
-    if (teamRefStr != null) {
-      _userTeamRef = FirebaseFirestore.instance.doc(teamRefStr);
-      final teamDoc = await _userTeamRef!.get();
-      setState(() {
-        _userTeamName = teamDoc['name'];
-      });
-    }
-  }
 
   // Form의 상태를 추적하기 위한 GlobalKey
   final _formKey = GlobalKey<FormState>();
@@ -110,7 +91,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
     // Get a reference to the Firestore collection
     final CollectionReference myCollection =
-        FirebaseFirestore.instance.collection('users');
+    FirebaseFirestore.instance.collection('users');
 
     // Get a document reference
     final DocumentReference documentRef = myCollection.doc(_uid);
@@ -118,7 +99,15 @@ class _AddStoryPageState extends State<AddStoryPage> {
     // Get the value of a specific field in the document
     final fieldValname = await documentRef.get().then((doc) => doc.get('name'));
     final fieldValimage =
-        await documentRef.get().then((doc) => doc.get('image'));
+    await documentRef.get().then((doc) => doc.get('image'));
+
+    // Create a DocumentReference for the selected team
+    DocumentReference? teamRef;
+      // 팀명을 사용하여 Firestore의 컬렉션 경로 생성
+      String teamPath = 'teams/$_selectedTeam';
+
+      // teamRef를 생성한 DocumentReference로 설정
+      teamRef = FirebaseFirestore.instance.doc(teamPath);
 
     Story story = Story(
       id: _title.text,
@@ -129,7 +118,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
       description: _description.text,
       create_timestamp: now,
       userRef: documentRef,
-      teamRef: _userTeamRef,
+      teamRef: teamRef,
       likes: [],
     );
 
@@ -241,28 +230,30 @@ class _AddStoryPageState extends State<AddStoryPage> {
               ),
               SizedBox(height: 20),
               Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: DropdownButtonFormField<String>(
-                    hint: Text('팀을 선택해주세요.'),
-                    value: _userTeamName,
-                    onChanged: (String? value) {
-                      // 본인이 속한 팀만 표시되기 때문에 별도의 변경 작업은 필요하지 않습니다.
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '팀 정보가 없습니다.';
-                      }
-                      return null;
-                    },
-                    items: _userTeamName == null
-                        ? []
-                        : [
-                            DropdownMenuItem<String>(
-                              value: _userTeamName,
-                              child: Text(_userTeamName!),
-                            )
-                          ],
-                  )),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: DropdownButtonFormField<String>(
+                  hint: Text('팀을 선택해주세요.'),
+                  value: _selectedTeam,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedTeam = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '팀 정보가 없습니다.';
+                    }
+                    return null;
+                  },
+                  items: _teams.map((String team) {
+                    return DropdownMenuItem<String>(
+                      value: team,
+                      child: Text(team),
+                    );
+                  }).toList(),
+                ),
+              ),
+
               SizedBox(height: 20),
             ],
           ),
