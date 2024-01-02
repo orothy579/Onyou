@@ -131,34 +131,41 @@ class _PrayerCardState extends State<PrayerCard>
     RenderBox button = context.findRenderObject() as RenderBox;
     var offset = button.localToGlobal(Offset.zero);
 
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        offset.dx + 300, // left
-        offset.dy + 70, // top
-        MediaQuery.of(context).size.width - offset.dx, // right
-        MediaQuery.of(context).size.height - offset.dy, // bottom
-      ),
-      items: [
+    List<PopupMenuEntry<String>> popupMenuItems = [
+      if (widget.isMine) // 게시물의 작성자만 삭제 아이콘 표시
         PopupMenuItem<String>(
           value: 'edit',
           child: ListTile(
             title: Text('수정하기'),
           ),
         ),
+      if (widget.isMine) // 게시물의 작성자만 삭제 아이콘 표시
         PopupMenuItem<String>(
           value: 'delete',
           child: ListTile(
             title: Text('삭제하기'),
           ),
+          onTap: () {
+            _showDeleteConfirmationDialog();
+          },
         ),
-        PopupMenuItem<String>(
-          value: 'share',
-          child: ListTile(
-            title: Text('공유하기'),
-          ),
+      PopupMenuItem<String>(
+        value: 'share',
+        child: ListTile(
+          title: Text('공유하기'),
         ),
-      ],
+      ),
+    ];
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx + 300,
+        offset.dy + 70,
+        MediaQuery.of(context).size.width - offset.dx,
+        MediaQuery.of(context).size.height - offset.dy,
+      ),
+      items: popupMenuItems,
       elevation: 8.0,
     );
   }

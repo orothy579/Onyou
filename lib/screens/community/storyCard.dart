@@ -97,6 +97,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
     });
   }
 
+
   Future<void> _deleteStory() async {
     // Firestore에서 스토리 데이터 가져오기
     var storyDocument = await FirebaseFirestore.instance.collection('story').doc(widget.story.id).get();
@@ -112,6 +113,49 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
 
     // Firestore에서 스토리 삭제
     await FirebaseFirestore.instance.collection('story').doc(widget.story.id).delete();
+  }
+
+  Future<void> _showPopupMenu(BuildContext context) async {
+    RenderBox button = context.findRenderObject() as RenderBox;
+    var offset = button.localToGlobal(Offset.zero);
+
+    List<PopupMenuEntry<String>> popupMenuItems = [
+      if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
+        PopupMenuItem<String>(
+        value: 'edit',
+        child: ListTile(
+          title: Text('수정하기'),
+        ),
+      ),
+      if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: ListTile(
+            title: Text('삭제하기'),
+          ),
+          onTap: () {
+            _showDeleteConfirmationDialog();
+          },
+        ),
+      PopupMenuItem<String>(
+        value: 'share',
+        child: ListTile(
+          title: Text('공유하기'),
+        ),
+      ),
+    ];
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx + 300,
+        offset.dy + 70,
+        MediaQuery.of(context).size.width - offset.dx,
+        MediaQuery.of(context).size.height - offset.dy,
+      ),
+      items: popupMenuItems,
+      elevation: 8.0,
+    );
   }
 
 
@@ -184,6 +228,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                       radius: 25,
                       backgroundImage: NetworkImage(widget.story.u_image!),
                     ),
+                    SizedBox(width: 15.0,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -200,13 +245,14 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                         ),
                       ],
                     ),
-                    if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
+                    Spacer(), // Added Spacer to push IconButton to the right
                       IconButton(
-                        icon: Icon(Icons.delete, color: Colors.grey),
-                        onPressed: () async {
-                          _showDeleteConfirmationDialog();
-                        },
-                      ),
+                          icon: const Icon(Icons.more_vert, color: Colors.grey),
+                          onPressed: () async {
+                            await _showPopupMenu(context);
+                          },
+                        ),
+
                   ],
                 ),
               ),
@@ -277,12 +323,6 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                             ),
                           ),
                         );
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.share_outlined), // Share Icon
-                      onPressed: () {
-                        // TODO: Implement share functionality
                       },
                     ),
 

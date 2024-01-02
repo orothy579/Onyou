@@ -182,7 +182,14 @@ class _AddStoryPageState extends State<AddStoryPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: uploadImages,
-                child: Row(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: onebody1,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
@@ -192,13 +199,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
                     SizedBox(width: 5),
                     Text("사진 추가", style: TextStyle(fontSize: 16)),
                   ],
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: onebody1,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
                 ),
               ),
               SizedBox(height: 20),
