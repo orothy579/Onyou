@@ -99,6 +99,7 @@ class _PrayerCardState extends State<PrayerCard>
         .delete();
   }
 
+
   _showDeleteConfirmationDialog() {
     showDialog(
       context: context,
@@ -125,6 +126,44 @@ class _PrayerCardState extends State<PrayerCard>
       },
     );
   }
+
+  Future<void> _showPopupMenu(BuildContext context) async {
+    RenderBox button = context.findRenderObject() as RenderBox;
+    var offset = button.localToGlobal(Offset.zero);
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx + 300, // left
+        offset.dy + 70, // top
+        MediaQuery.of(context).size.width - offset.dx, // right
+        MediaQuery.of(context).size.height - offset.dy, // bottom
+      ),
+      items: [
+        PopupMenuItem<String>(
+          value: 'edit',
+          child: ListTile(
+            title: Text('수정하기'),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'delete',
+          child: ListTile(
+            title: Text('삭제하기'),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'share',
+          child: ListTile(
+            title: Text('공유하기'),
+          ),
+        ),
+      ],
+      elevation: 8.0,
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -193,10 +232,12 @@ class _PrayerCardState extends State<PrayerCard>
                           ),
                           if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
                             IconButton(
-                              icon:
-                                  const Icon(Icons.delete, color: Colors.grey),
-                              onPressed: _showDeleteConfirmationDialog,
-                            ),
+                              icon: const Icon(Icons.more_vert, color: Colors.grey),
+                              onPressed: () async {
+                                await _showPopupMenu(context);
+                              },
+                            )
+
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -257,16 +298,9 @@ class _PrayerCardState extends State<PrayerCard>
                                   );
                                 },
                               ),
-                              const Text(
-                                  '0') // TODO: Replace with the actual comment count
                             ],
                           ),
-                          IconButton(
-                            icon: Icon(Icons.share_outlined),
-                            onPressed: () {
-                              // TODO: Implement share functionality
-                            },
-                          ),
+
                         ],
                       ),
                       if (teamName != null)
