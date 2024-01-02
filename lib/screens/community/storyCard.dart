@@ -100,17 +100,20 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
   Future<void> _deleteStory() async {
     // Firestore에서 스토리 데이터 가져오기
     var storyDocument = await FirebaseFirestore.instance.collection('story').doc(widget.story.id).get();
-    var storyData = storyDocument.data(); // 경로 맞는지 확인 할 필요 있다.
+    var storyData = storyDocument.data();
 
-    if (storyData != null && storyData['imageUrl'] != null) {
-      // Firebase Storage에서 이미지 삭제
-      String imageUrl = storyData['imageUrl'];
-      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    if (storyData != null && storyData['images'] != null) {
+      // Firebase Storage에서 각 이미지 삭제
+      List<String> imageUrls = List<String>.from(storyData['images']);
+      for (String imageUrl in imageUrls) {
+        await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+      }
     }
 
     // Firestore에서 스토리 삭제
     await FirebaseFirestore.instance.collection('story').doc(widget.story.id).delete();
   }
+
 
   void _showDeleteConfirmationDialog() {
     showDialog(
@@ -208,28 +211,32 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
                   ],
                 ),
               ),
-              Container(
-                width: double.infinity,
-                height: 300.0,
-                child: CarouselSlider.builder(
-                  itemCount: widget.story.images!.length,
-                  itemBuilder: (context, index, realIdx) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0), // 둥근 모서리 추가
-                      child: Image.network(
-                        widget.story.images![index],
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                  options: CarouselOptions(
-                    autoPlay: false,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.8, // 가운데 이미지를 제외하고 양쪽 이미지가 조금 보이게 수정
-                    aspectRatio: 16 / 9,
+              Visibility(
+                visible: widget.story.images != null && widget.story.images!.isNotEmpty,
+                child: Container(
+                  width: double.infinity,
+                  height: 300.0,
+                  child: CarouselSlider.builder(
+                    itemCount: widget.story.images!.length,
+                    itemBuilder: (context, index, realIdx) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Image.network(
+                          widget.story.images![index],
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                    options: CarouselOptions(
+                      autoPlay: false,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.8,
+                      aspectRatio: 16 / 9,
+                    ),
                   ),
                 ),
               ),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(

@@ -120,10 +120,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
     final fieldValimage =
         await documentRef.get().then((doc) => doc.get('image'));
 
-    // Ensure there is at least a default image URL
-    _imageUrls.add(
-        "https://cdn.icon-icons.com/icons2/2770/PNG/512/camera_icon_176688.png");
-
     Story story = Story(
       id: _title.text,
       images: _imageUrls,
