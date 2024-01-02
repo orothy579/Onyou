@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onebody/screens/community/commentPage_prayer.dart';
 import '../../model/PrayerTitle.dart';
+import '../editPages/EditPrayerPage.dart';
 
 class PrayerCard extends StatefulWidget {
   final PrayerTitle prayer;
@@ -138,6 +139,14 @@ class _PrayerCardState extends State<PrayerCard>
           child: ListTile(
             title: Text('수정하기'),
           ),
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditPrayerPage(documentId: widget.prayer.id),
+              ),
+            );
+          },
         ),
       if (widget.isMine) // 게시물의 작성자만 삭제 아이콘 표시
         PopupMenuItem<String>(

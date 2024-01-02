@@ -39,7 +39,6 @@ class _AddStoryPageState extends State<AddStoryPage> {
     super.initState();
   }
 
-
   // Form의 상태를 추적하기 위한 GlobalKey
   final _formKey = GlobalKey<FormState>();
 
@@ -109,27 +108,35 @@ class _AddStoryPageState extends State<AddStoryPage> {
       // teamRef를 생성한 DocumentReference로 설정
       teamRef = FirebaseFirestore.instance.doc(teamPath);
 
-    Story story = Story(
-      id: _title.text,
-      images: _imageUrls,
-      name: fieldValname,
-      u_image: fieldValimage,
-      title: _title.text,
-      description: _description.text,
-      create_timestamp: now,
-      userRef: documentRef,
-      teamRef: teamRef,
-      likes: [],
-    );
 
     try {
-      await db.collection('story').doc(story.title).set(story.toJson());
-      log("Story uploaded successfully!");
+      // 새로운 story 문서 추가
+      DocumentReference ref = await db.collection('story').add({
+        'images' : _imageUrls,
+        'name': fieldValname,
+        'u_image': fieldValimage,
+        'title': _title.text,
+        'description': _description.text,
+        'create_timestamp': now,
+        'userRef': documentRef,
+        'teamRef': teamRef,
+        'likes': [],
+      });
+
+      // 업데이트할 데이터
+      Map<String, dynamic> updateData = {'storyID': ref.id};
+
+      // 새로운 story 문서의 ID를 해당 문서에 업데이트
+      await db.collection('story').doc(ref.id).update(updateData);
+
+      log("Story uploaded successfully with ID: ${ref.id}");
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => BottomBar(id: 1)));
     } catch (e) {
       log("Error while uploading!");
     }
+
   }
 
   @override

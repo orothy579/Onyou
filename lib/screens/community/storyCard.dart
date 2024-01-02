@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../model/Story.dart';
+import '../editPages/EditStoryPage.dart';
 import 'commentPage.dart';
 
 class StoryList extends StatelessWidget {
@@ -29,6 +30,8 @@ class StoryList extends StatelessWidget {
                   final storyDoc = snapshot.data!.docs[index]
                   as QueryDocumentSnapshot<Map<String, dynamic>>;
                   final story = Story.fromQuerySnapshot(storyDoc);
+                  print('Story ID: ${story.id}');
+
                   return StoryCard(
                       key : ValueKey(story.id),
                       story: story
@@ -77,6 +80,7 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
     if (user == null) return;
 
     final storyRef = FirebaseFirestore.instance.collection('story').doc(widget.story.id);
+    print(widget.story.id);
 
     if (isLiked) {
       await storyRef.update({
@@ -125,7 +129,14 @@ class _StoryCardState extends State<StoryCard> with SingleTickerProviderStateMix
         value: 'edit',
         child: ListTile(
           title: Text('수정하기'),
-        ),
+        ), onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditStoryPage(documentId: widget.story.id!),
+              ),
+            );
+          },
       ),
       if (_isCurrentUserStoryOwner()) // 게시물의 작성자만 삭제 아이콘 표시
         PopupMenuItem<String>(
