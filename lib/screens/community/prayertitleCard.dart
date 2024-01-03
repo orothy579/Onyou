@@ -100,7 +100,6 @@ class _PrayerCardState extends State<PrayerCard>
         .delete();
   }
 
-
   _showDeleteConfirmationDialog() {
     showDialog(
       context: context,
@@ -139,11 +138,12 @@ class _PrayerCardState extends State<PrayerCard>
           child: ListTile(
             title: Text('수정하기'),
           ),
-          onTap: (){
+          onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EditPrayerPage(documentId: widget.prayer.id),
+                builder: (context) =>
+                    EditPrayerPage(documentId: widget.prayer.id),
               ),
             );
           },
@@ -178,8 +178,6 @@ class _PrayerCardState extends State<PrayerCard>
       elevation: 8.0,
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -248,12 +246,12 @@ class _PrayerCardState extends State<PrayerCard>
                           ),
                           if (widget.isMine) // 로그인한 사용자가 업로드한 사용자와 동일한 경우
                             IconButton(
-                              icon: const Icon(Icons.more_vert, color: Colors.grey),
+                              icon: const Icon(Icons.more_vert,
+                                  color: Colors.grey),
                               onPressed: () async {
                                 await _showPopupMenu(context);
                               },
                             )
-
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -316,7 +314,6 @@ class _PrayerCardState extends State<PrayerCard>
                               ),
                             ],
                           ),
-
                         ],
                       ),
                       if (teamName != null)
