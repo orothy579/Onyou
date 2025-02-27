@@ -1,16 +1,40 @@
-# onebody
+# Onyou
 
-A new Flutter project.
+**Onyou**는 Onebody Community의 community app입니다. 이 프로젝트는 아직 개발 중입니다.
 
-## Getting Started
+## 주요 기능
 
-This project is a starting point for a Flutter application.
+- **기능 1**: 소식 공유
+- **기능 2**: 아카이빙
+- **기능 3**: 홍보
 
-A few resources to get you started if this is your first Flutter project:
+## 설치 방법
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. **저장소 클론**: 터미널에서 다음 명령어를 실행하여 저장소를 클론합니다.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+   ```bash
+   git clone https://github.com/orothy579/Onyou.git
+   ```
+
+2. **프로젝트 디렉토리로 이동**: 클론한 저장소의 디렉토리로 이동합니다.
+
+   ```bash
+   cd Onyou
+   ```
+
+3. **필요한 패키지 설치**: 프로젝트에서 사용하는 패키지를 설치합니다.
+
+   ```bash
+   flutter pub get
+   ```
+
+4. **프로젝트 실행**: 아래 명령어를 통해 프로젝트를 실행합니다.
+
+   ```bash
+   flutter run
+   ```
+
+## 사용 방법
+
+1. **앱 실행**: 위의 설치 방법에 따라 앱을 실행합니다.
+2. **기능 사용**: 앱 내에서 제공하는 다양한 기능을 탐색하고 사용합니다.
